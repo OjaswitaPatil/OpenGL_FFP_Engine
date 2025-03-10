@@ -1,9 +1,9 @@
 #include "Models.h"
 
-Model Triangle1;
-Model Triangle2;
+Model triangle;
+Model quad;
 
-void createTriangle(Model *Triangle)
+void createTriangle(Model *triangle)
 {
     GLfloat triangleVertices[] = {
         0.0f, 1.0f, 0.0f,
@@ -17,107 +17,162 @@ void createTriangle(Model *Triangle)
         0.0f, 0.0f, 1.0f
         };
 
-    Triangle->vertices = NULL;
-    Triangle->verticesSize = sizeof(triangleVertices) / sizeof(triangleVertices[0]);
-    Triangle->vertices = (GLfloat*)malloc(sizeof(GLfloat) * Triangle->verticesSize);
+    triangle->vertices = NULL;
+    triangle->verticesSize = sizeof(triangleVertices) / sizeof(triangleVertices[0]);
+    triangle->vertices = (GLfloat*)malloc(sizeof(GLfloat) * triangle->verticesSize);
     
-    for(GLint i = 0; i < Triangle->verticesSize; i++)
+    for(GLint i = 0; i < triangle->verticesSize; i++)
     {
-        Triangle->vertices[i] = triangleVertices[i];
+        triangle->vertices[i] = triangleVertices[i];
     }
 
-    Triangle->colors = NULL;
-    Triangle->colorsSize = sizeof(triangleColors) / sizeof(triangleColors[0]);
-    Triangle->colors = (GLfloat*)malloc(sizeof(GLfloat) * Triangle->colorsSize);
+    triangle->colors = NULL;
+    triangle->colorsSize = sizeof(triangleColors) / sizeof(triangleColors[0]);
+    triangle->colors = (GLfloat*)malloc(sizeof(GLfloat) * triangle->colorsSize);
 
-    for(GLint i = 0; i < Triangle->colorsSize; i++)
+    for(GLint i = 0; i < triangle->colorsSize; i++)
     {
-        Triangle->colors[i] = triangleColors[i];
+        triangle->colors[i] = triangleColors[i];
     }
 
-    Triangle->modeltype = TRIANGLE;
+    triangle->modeltype = TRIANGLE;
 
-    Triangle->translate.x = 0.0f;
-    Triangle->translate.y = 0.0f;
-    Triangle->translate.z = 0.0f;
+    triangle->translate.x = -1.5f;
+    triangle->translate.y = 0.0f;
+    triangle->translate.z = -6.0f;
 
-    Triangle->scale.x = 1.0f;
-    Triangle->scale.y = 1.0f;
-    Triangle->scale.z = 1.0f;
+    triangle->scale.x = 1.0f;
+    triangle->scale.y = 1.0f;
+    triangle->scale.z = 1.0f;
 
-    Triangle->rotationAngle.x = 0.0f;
-    Triangle->rotationAngle.y = 0.0f;
-    Triangle->rotationAngle.z = 0.0f;
+    triangle->rotationAngle.x = 0.0f;
+    triangle->rotationAngle.y = 0.0f;
+    triangle->rotationAngle.z = 0.0f;
 
-    Triangle->customModelAttributes = NULL;
+    triangle->customModelAttributes = NULL;
 
     //texcoords
-    Triangle->texcoords = NULL;
-    Triangle->texcoordsSize = 0;
+    triangle->texcoords = NULL;
+    triangle->texcoordsSize = 0;
 
     //normals
-    Triangle->normals = NULL;
-    Triangle->normalsSize = 0;
+    triangle->normals = NULL;
+    triangle->normalsSize = 0;
 }
 
-void drawTriangle(Model *Triangle)
+void drawTriangle(Model *triangle)
 {
-    
-    glTranslatef(Triangle->translate.x, Triangle->translate.y, Triangle->translate.z);
-    glRotatef(Triangle->rotationAngle.x, 1.0f, 0.0f, 0.0f);
-    glRotatef(Triangle->rotationAngle.y, 0.0f, 1.0f, 0.0f);
-    glRotatef(Triangle->rotationAngle.z, 0.0f, 0.0f, 1.0f);
-    glScalef(Triangle->scale.x, Triangle->scale.y, Triangle->scale.z);
+    glLoadIdentity();
+    glTranslatef(triangle->translate.x, triangle->translate.y, triangle->translate.z);
+    glRotatef(triangle->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(triangle->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(triangle->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(triangle->scale.x, triangle->scale.y, triangle->scale.z);
 
     glBegin(GL_TRIANGLES);
 
-    for(GLint i = 0; i < Triangle->verticesSize; i+=3)
+    for(GLint i = 0; i < triangle->verticesSize; i+=3)
     {
-        glColor3f(Triangle->colors[i], Triangle->colors[i+1], Triangle->colors[i+2]);
-        glVertex3f(Triangle->vertices[i], Triangle->vertices[i+1], Triangle->vertices[i+2]);
+        glColor3f(triangle->colors[i], triangle->colors[i+1], triangle->colors[i+2]);
+        glVertex3f(triangle->vertices[i], triangle->vertices[i+1], triangle->vertices[i+2]);
     }
 
     glEnd();
 }
 
+void createQuad(Model *quad)
+{
+    GLfloat quadVertices[] = {
+        1.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f,
+        -1.0f, -1.0f, 0.0f,
+        1.0f, -1.0f, 0.0f
+        };
+    
+    GLfloat quadColors[] = {
+        1.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f
+        };
+
+    quad->vertices = NULL;
+    quad->verticesSize = sizeof(quadVertices) / sizeof(quadVertices[0]);
+    quad->vertices = (GLfloat*)malloc(sizeof(GLfloat) * quad->verticesSize);
+    
+    for(GLint i = 0; i < quad->verticesSize; i++)
+    {
+        quad->vertices[i] = quadVertices[i];
+    }
+
+    quad->colors = NULL;
+    quad->colorsSize = sizeof(quadColors) / sizeof(quadColors[0]);
+    quad->colors = (GLfloat*)malloc(sizeof(GLfloat) * quad->colorsSize);
+
+    for(GLint i = 0; i < quad->colorsSize; i++)
+    {
+        quad->colors[i] = quadColors[i];
+    }
+
+    quad->modeltype = RECTANGLE;
+
+    quad->translate.x = 1.5f;
+    quad->translate.y = 0.0f;
+    quad->translate.z = -6.0f;
+
+    quad->scale.x = 1.0f;
+    quad->scale.y = 1.0f;
+    quad->scale.z = 1.0f;
+
+    quad->rotationAngle.x = 0.0f;
+    quad->rotationAngle.y = 0.0f;
+    quad->rotationAngle.z = 0.0f;
+
+    quad->customModelAttributes = NULL;
+
+    //texcoords
+    quad->texcoords = NULL;
+    quad->texcoordsSize = 0;
+
+    //normals
+    quad->normals = NULL;
+    quad->normalsSize = 0;
+}
+
+void drawQuad(Model *quad)
+{
+    glLoadIdentity();
+    glTranslatef(quad->translate.x, quad->translate.y, quad->translate.z);
+    glRotatef(quad->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(quad->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(quad->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(quad->scale.x, quad->scale.y, quad->scale.z);
+
+    glBegin(GL_QUADS);
+
+    for(GLint i = 0; i < quad->verticesSize; i+=3)
+    {
+        glColor3f(quad->colors[i], quad->colors[i+1], quad->colors[i+2]);
+        glVertex3f(quad->vertices[i], quad->vertices[i+1], quad->vertices[i+2]);
+    }
+
+    glEnd();
+}
+
+void drawModel(Model *model)
+{
+    switch(model->modeltype)
+    {
+        case TRIANGLE:
+        drawTriangle(&triangle);
+        break;
+
+        case RECTANGLE:
+        drawQuad(&quad);
+        break;
+    }
+}
 
 
 
 
-
-
-
-
-
-// void drawTriangle()
-// {
-//     // translate triangle backword by Z
-//     glTranslatef(-1.5f, 0.0f, -6.0f);
-//     glRotatef(angleTriangle, 0.0f, 1.0f, 0.0f);
-
-//     // drawing code of triangle
-//     glBegin(GL_TRIANGLES);
-//     glColor3f(1.0f, 0.0f, 0.0f);
-//     glVertex3f(0.0f, 1.0f, 0.0f);
-//     glColor3f(0.0f, 1.0f, 0.0f);
-//     glVertex3f(-1.0f, -1.0f, 0.0f);
-//     glColor3f(0.0f, 0.0f, 1.0f);
-//     glVertex3f(1.0f, -1.0f, 0.0f);
-//     glEnd();
-// }
-
-// void drawRectangle()
-// {
-//     // translate triangle backword x y Z
-//     glTranslatef(1.5f, 0.0f, -6.0f);
-//     glRotatef(angleRectangle, 1.0f, 0.0f, 0.0f);
-
-//     // drawing code of triangle
-//     glBegin(GL_QUADS);
-//     glColor3f(0.0f, 0.0f, 1.0f);
-//     glVertex3f(1.0f, 1.0f, 0.0f);
-//     glVertex3f(-1.0f, 1.0f, 0.0f);
-//     glVertex3f(-1.0f, -1.0f, 0.0f);
-//     glVertex3f(1.0f, -1.0f, 0.0f);
-//     glEnd();
-// }

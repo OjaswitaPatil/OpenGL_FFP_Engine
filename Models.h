@@ -41,14 +41,16 @@ typedef struct
 	GLfloat *customModelAttributes;
 }Model;
 
-extern Model Triangle1;
-extern Model Triangle2;
+extern Model triangle;
+extern Model quad;
 
-void createTriangle(Model *Triangle);
-void drawTriangle(Model *Triangle);
+void createTriangle(Model *triangle);
+void drawTriangle(Model *triangle);
 
+void createQuad(Model *quad);
+void drawQuad(Model *quad);
 
-
+void drawModel();
 
 #endif
 

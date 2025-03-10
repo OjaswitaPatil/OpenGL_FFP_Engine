@@ -1,6 +1,7 @@
 #include "globalHeaders.h"
 #include "EngineMain.h"
 #include "Models.h"
+#include "linkedList.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
@@ -347,12 +348,8 @@ int initialize(void)
 
     fprintf(gpFile, "\n\n*************initialize() Completed ***********\n");
 
-    createTriangle(&Triangle1);
-    Triangle1.translate.x = -1.5f;
-    Triangle1.translate.z = -6.0f;
-    createTriangle(&Triangle2);
-    Triangle2.translate.x = 1.5f;
-    Triangle2.translate.z = -6.0f;
+    createModel(TRIANGLE);
+    createModel(RECTANGLE);
 
     return(0);
 }
@@ -406,18 +403,8 @@ void display(void)
     // set matrix to model view mode
     glMatrixMode(GL_MODELVIEW);
 
-    // SEt to identity matrix
-    glLoadIdentity(); 
 
-    drawTriangle(&Triangle1);
-
-    glLoadIdentity(); 
-
-    drawTriangle(&Triangle2);
-
-    // glLoadIdentity(); 
-
-    // drawRectangle();
+    drawAllModels();
 
     // swap the buffers
     SwapBuffers(ghdc);
@@ -426,16 +413,16 @@ void display(void)
 void update(void)
 {
     // code
-    Triangle1.rotationAngle.y = Triangle1.rotationAngle.y + 0.05f;
-    if(Triangle1.rotationAngle.y >= 360.0f)
+    triangle.rotationAngle.y = triangle.rotationAngle.y + 0.05f;
+    if(triangle.rotationAngle.y >= 360.0f)
     {
-        Triangle1.rotationAngle.y = Triangle1.rotationAngle.y - 360.0f;
+        triangle.rotationAngle.y = triangle.rotationAngle.y - 360.0f;
     }
 
-    Triangle2.rotationAngle.y = Triangle2.rotationAngle.y + 0.05f;
-    if(Triangle2.rotationAngle.y >= 360.0f)
+    quad.rotationAngle.x = quad.rotationAngle.x + 0.05f;
+    if(quad.rotationAngle.x >= 360.0f)
     {
-        Triangle2.rotationAngle.y = Triangle2.rotationAngle.y - 360.0f;
+        quad.rotationAngle.x = quad.rotationAngle.x - 360.0f;
     }
 }
 
