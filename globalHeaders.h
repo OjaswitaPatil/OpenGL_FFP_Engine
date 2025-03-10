@@ -9,6 +9,5 @@
 // openGl related header files
 #include<gl/GL.h>
 #include<gl/GLU.h>
-#include "EngineMain.h"
 
 #endif
