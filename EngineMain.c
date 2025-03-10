@@ -1,11 +1,4 @@
- // win32 headers
-#include<windows.h>
-#include<stdio.h>   // file read krne write krne open krne close krne 
-#include<stdlib.h>  //exit vhaysathi
-// openGl related header files
-#include<gl/GL.h>
-#include<gl/GLU.h>
-#include "EngineMain.h"
+#include "globalHeaders.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
