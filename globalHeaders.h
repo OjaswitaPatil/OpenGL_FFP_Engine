@@ -10,4 +10,8 @@
 #include<gl/GL.h>
 #include<gl/GLU.h>
 
+// variables realated with file I/O
+extern char gszLogFileName[];
+extern FILE *gpFile;
+
 #endif

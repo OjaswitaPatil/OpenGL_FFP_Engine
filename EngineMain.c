@@ -276,6 +276,7 @@ int initialize(void)
     // function declarations
     void printGLInfo(void);
     void resize(int, int);
+    
 
     // variable declartions
     PIXELFORMATDESCRIPTOR pfd;
@@ -346,6 +347,13 @@ int initialize(void)
 
     fprintf(gpFile, "\n\n*************initialize() Completed ***********\n");
 
+    createTriangle(&Triangle1);
+    Triangle1.translate.x = -1.5f;
+    Triangle1.translate.z = -6.0f;
+    createTriangle(&Triangle2);
+    Triangle2.translate.x = 1.5f;
+    Triangle2.translate.z = -6.0f;
+
     return(0);
 }
 
@@ -401,11 +409,15 @@ void display(void)
     // SEt to identity matrix
     glLoadIdentity(); 
 
-    drawTriangle();
+    drawTriangle(&Triangle1);
 
     glLoadIdentity(); 
 
-    drawRectangle();
+    drawTriangle(&Triangle2);
+
+    // glLoadIdentity(); 
+
+    // drawRectangle();
 
     // swap the buffers
     SwapBuffers(ghdc);
@@ -414,16 +426,16 @@ void display(void)
 void update(void)
 {
     // code
-    angleTriangle = angleTriangle + 0.05f;
-    if(angleTriangle >= 360.0f)
+    Triangle1.rotationAngle.y = Triangle1.rotationAngle.y + 0.05f;
+    if(Triangle1.rotationAngle.y >= 360.0f)
     {
-        angleTriangle = angleTriangle - 360.0f;
+        Triangle1.rotationAngle.y = Triangle1.rotationAngle.y - 360.0f;
     }
 
-    angleRectangle = angleRectangle - 0.05f;
-    if(angleRectangle <= 0.0f)
+    Triangle2.rotationAngle.y = Triangle2.rotationAngle.y + 0.05f;
+    if(Triangle2.rotationAngle.y >= 360.0f)
     {
-        angleRectangle = angleRectangle + 360.0f;
+        Triangle2.rotationAngle.y = Triangle2.rotationAngle.y - 360.0f;
     }
 }
 
