@@ -14,4 +14,6 @@
 extern char gszLogFileName[];
 extern FILE *gpFile;
 
+extern HWND ghwnd; 
+
 #endif
