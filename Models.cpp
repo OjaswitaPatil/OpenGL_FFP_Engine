@@ -35,7 +35,7 @@ void createTriangle(Model *model)
 
     model->modeltype = TRIANGLE;
 
-    model->translate.x = -1.5f;
+    model->translate.x = 0.0f;
     model->translate.y = 0.0f;
     model->translate.z = -6.0f;
 
@@ -118,7 +118,7 @@ void createQuad(Model *model)
 
     model->modeltype = RECTANGLE;
 
-    model->translate.x = 1.5f;
+    model->translate.x = 0.0f;
     model->translate.y = 0.0f;
     model->translate.z = -6.0f;
 
