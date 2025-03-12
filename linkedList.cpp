@@ -2,7 +2,7 @@
 
 struct Node *head = NULL;
 struct Node *last = NULL;
-struct Node *selectedShape = NULL;
+struct Node *selectedmodel = head;
 
 void createModel(ModelType modelType)
 {
@@ -12,11 +12,11 @@ void createModel(ModelType modelType)
     switch(modelType)
     {
         case TRIANGLE:
-        createTriangle(&triangle);
+        createTriangle(&(ptr->model));
         break;
 
         case RECTANGLE:
-        createQuad(&quad);
+        createQuad(&(ptr->model));
         break;
     }
 
@@ -39,10 +39,10 @@ void createModel(ModelType modelType)
         last = ptr;
     }
 
-    selectedShape = ptr;
+    selectedmodel = ptr;
 }
 
-void deleteShape(struct Node *ptr)
+void deleteModel(struct Node *ptr)
 {
     if(ptr == NULL)
         return;
@@ -71,9 +71,9 @@ void deleteShape(struct Node *ptr)
     }
 
     if(head != NULL)
-        selectedShape = selectedShape->pre;
+        selectedmodel = selectedmodel->pre;
     else   
-        selectedShape = NULL;
+        selectedmodel = NULL;
 
   
     //free structre shape heap memory

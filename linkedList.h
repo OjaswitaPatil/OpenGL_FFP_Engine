@@ -13,7 +13,7 @@ struct Node
 
 extern struct Node *head;
 extern struct Node *last;
-extern struct Node *selectedShape;
+extern struct Node *selectedmodel;
 
 void createModel(ModelType modelType);
 

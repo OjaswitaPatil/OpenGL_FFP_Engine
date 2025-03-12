@@ -2,6 +2,7 @@
 #include "EngineMain.h"
 #include "Models.h"
 #include "linkedList.h"
+#include "ImGUIHelper.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
@@ -16,10 +17,10 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // global variable declrations
 // variables realted with fulll screen
-BOOL gbFullScreen = FALSE;  
-HWND ghwnd = NULL;  
+BOOL gbFullScreen = FALSE;   
 DWORD dwStyle;
 WINDOWPLACEMENT wpPrev;
+HWND ghwnd = NULL;
 
 // variables realated with file I/O
 char gszLogFileName[] = "Log.txt";
@@ -34,6 +35,11 @@ BOOL gbEscapeKeyIsPress = FALSE;
 // opengl related global variables
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
+
+//###imgui###
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+//############
 
 // ENTRY POINT FUNCTION
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLine, int iCmdShow)
@@ -123,6 +129,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     // SET THIS WINDOW AS FORGROUND AND ACTIVE WINDOW
     SetForegroundWindow(hwnd);
     SetFocus(hwnd);
+    
+    // set ImGUI context
+    setupImGUIContext();
 
     // game loop
     while(bDone == FALSE)
@@ -170,6 +179,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
     void toggleFullScreen(void);
     void resize(int, int);
     void uninitialize(void);
+
+    // ### imgui ###
+    if (ImGui_ImplWin32_WndProcHandler(hwnd, iMsg, wParam, lParam))
+        return true;
 
     // code
     switch(iMsg)
@@ -229,7 +242,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
         break;
 
         case WM_CLOSE:
-        uninitialize();
+        gbEscapeKeyIsPress = TRUE;
         break;
 
         case WM_DESTROY:
@@ -261,14 +274,14 @@ void toggleFullScreen(void)
                 SetWindowPos(ghwnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, mi.rcMonitor.right - mi.rcMonitor.left, mi.rcMonitor.bottom - mi.rcMonitor.top, SWP_NOZORDER | SWP_FRAMECHANGED);
             }
         }
-        ShowCursor(FALSE);
+        // ShowCursor(FALSE);
     }
     else
     {
         SetWindowPlacement(ghwnd, &wpPrev);
         SetWindowLong(ghwnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
         SetWindowPos(ghwnd, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_FRAMECHANGED);
-        ShowCursor(TRUE);
+        // ShowCursor(TRUE);
     }
 }
 
@@ -348,8 +361,8 @@ int initialize(void)
 
     fprintf(gpFile, "\n\n*************initialize() Completed ***********\n");
 
-    createModel(TRIANGLE);
-    createModel(RECTANGLE);
+    // createModel(TRIANGLE);
+    // createModel(RECTANGLE);
 
     return(0);
 }
@@ -397,33 +410,26 @@ void resize(int width, int height)
 
 void display(void)
 {
-    // clear opengl buffers
+    // Start the ImGui frame
+    startImGUIFrame();
+    // Generate UI (Not rendering here)
+    generateUI();
+
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // set matrix to model view mode
     glMatrixMode(GL_MODELVIEW);
-
-
+ 
     drawAllModels();
 
-    // swap the buffers
+    //Render/display Generated UI 
+    renderGeneratedUI();
+
     SwapBuffers(ghdc);
 }
 
 void update(void)
 {
     // code
-    triangle.rotationAngle.y = triangle.rotationAngle.y + 0.05f;
-    if(triangle.rotationAngle.y >= 360.0f)
-    {
-        triangle.rotationAngle.y = triangle.rotationAngle.y - 360.0f;
-    }
-
-    quad.rotationAngle.x = quad.rotationAngle.x + 0.05f;
-    if(quad.rotationAngle.x >= 360.0f)
-    {
-        quad.rotationAngle.x = quad.rotationAngle.x - 360.0f;
-    }
 }
 
 void uninitialize(void)
@@ -433,6 +439,9 @@ void uninitialize(void)
 
     //code
     fprintf(gpFile, "\n\n*************uninitialize() Started ***********\n");
+
+    // uninitialize ImGUI
+    uninitializeImGUI();
 
     // if is existing in FS then restore to back
     if(gbFullScreen == TRUE)
