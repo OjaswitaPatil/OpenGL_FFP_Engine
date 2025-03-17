@@ -3,6 +3,7 @@
 #include "Models.h"
 #include "linkedList.h"
 #include "ImGUIHelper.h"
+#include "TextRendering.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")

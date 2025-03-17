@@ -48,6 +48,12 @@ void generateUI()
 			createModel(RECTANGLE);
 			scaleAllOffSet = 0.0f;
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Text")) 
+		{                   
+			createModel(TEXT);
+			scaleAllOffSet = 0.0f;
+		}
 	
 		ImGui::NewLine();
 		if (ImGui::Button("Delete selected Shape"))  

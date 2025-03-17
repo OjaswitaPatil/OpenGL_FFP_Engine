@@ -5,10 +5,14 @@
 #include<windows.h>
 #include<stdio.h>
 #include<stdlib.h>
+#include<math.h>
 
 // openGl related header files
 #include<gl/GL.h>
 #include<gl/GLU.h>
+
+// opengl related global variables
+extern HDC ghdc;
 
 // variables realated with file I/O
 extern char gszLogFileName[];
