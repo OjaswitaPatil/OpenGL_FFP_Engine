@@ -4,8 +4,10 @@ GLuint  base;                           // Base Display List For The Font Set
 GLfloat cnt1;                           // 1st Counter Used To Move Text & For Coloring
 GLfloat cnt2;                           // 2nd Counter Used To Move Text & For Coloring
 BOOL keys[256];                      // Array Used For The Keyboard Routine
-const char* fontName = "Snap ITC";                                              // Define the font name
-const char* textString = "NO STRING";                                // string to draw
+const char* fontName = "Times New Roman";                                              // Define the font name
+//const char* textString = "NO STRING";                                // string to draw
+char textString[128] = ""; // Buffer to store user input
+bool showInputBox = false; 
 
 GLvoid BuildFont(GLvoid)                    // Build Our Bitmap Font
 {
@@ -61,9 +63,9 @@ GLvoid glPrint(const char *fmt, ...)                // Custom GL "Print" Routine
     glPopAttrib();                      // Pops The Display List Bits   ( NEW )
 }
 
-GLvoid showText(GLvoid)
+GLvoid showText(char* text)
 {
-    glPrint(textString);  // Print GL Text To The Screen
+    glPrint(text);  // Print GL Text To The Screen
 
     cnt1+=0.0021f;                       // Increase The First Counter
     cnt2+=0.0021f;                       // Increase The Second Count

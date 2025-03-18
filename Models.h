@@ -38,6 +38,7 @@ typedef struct
 	GLint normalsSize;
 	
 	GLfloat *customModelAttributes;
+	char *text;
 }Model;
 
 void createTriangle(Model *model);

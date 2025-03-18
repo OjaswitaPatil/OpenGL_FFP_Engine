@@ -206,6 +206,10 @@ void createText(Model *model)
     model->normals = NULL;
     model->normalsSize = 0;
 
+    //get Text
+    model->text = (char*)malloc(sizeof(textString));
+    strcpy(model->text, textString);
+
     BuildFont();
 }
 
@@ -262,7 +266,7 @@ void drawText(Model *model)
     }
     textAnimationTimerCounter++;
 
-    showText();
+    showText(model->text);
 }
 
 void drawModel(Model *model)

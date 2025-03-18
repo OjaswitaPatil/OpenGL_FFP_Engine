@@ -9,11 +9,12 @@ extern GLfloat cnt2;                           // 2nd Counter Used To Move Text 
  
 extern BOOL keys[256];                      // Array Used For The Keyboard Routine
 extern const char* fontName;
-extern const char* textString;
+extern char textString[128];
+extern bool showInputBox; 
 
 GLvoid BuildFont(GLvoid);
 GLvoid KillFont(GLvoid);
 GLvoid glPrint(const char *fmt, ...);
-GLvoid showText(GLvoid);
+GLvoid showText(char* text);
 
 #endif
