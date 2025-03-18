@@ -18,6 +18,10 @@ void createModel(ModelType modelType)
         case RECTANGLE:
         createQuad(&(ptr->model));
         break;
+
+        case TEXT:
+        createText(&(ptr->model));
+        break;
     }
 
     ptr->next = NULL;
