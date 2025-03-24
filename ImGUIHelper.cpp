@@ -48,6 +48,12 @@ void generateUI()
 				scaleAllOffSet = 0.0f;
 			}
 			ImGui::SameLine();
+			if (ImGui::Button("Pyramid")) 
+			{                   
+				createModel(PYRAMID);
+				scaleAllOffSet = 0.0f;
+			}
+			ImGui::SameLine();
 
 			if (ImGui::Button("TEXT"))
 			{

@@ -14,7 +14,8 @@ typedef enum
 {
 	TRIANGLE = 0,
 	RECTANGLE,
-    TEXT
+    TEXT,
+	PYRAMID
 }ModelType;
 
 typedef struct
@@ -49,6 +50,9 @@ void drawQuad(Model *model);
 
 void createText(Model *model);
 void drawText(Model *model);
+
+void createPyramid(Model *model);
+void drawPyramid(Model *model);
 
 void drawModel();
 

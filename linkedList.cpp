@@ -22,6 +22,10 @@ void createModel(ModelType modelType)
         case TEXT:
         createText(&(ptr->model));
         break;
+
+        case PYRAMID:
+        createPyramid(&ptr->model);
+        break;
     }
 
     ptr->next = NULL;
