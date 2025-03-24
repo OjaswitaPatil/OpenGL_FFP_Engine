@@ -37,7 +37,7 @@ void createTriangle(Model *model)
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
-    model->translate.z = -6.0f;
+    model->translate.z = 0.0f;
 
     model->scale.x = 1.0f;
     model->scale.y = 1.0f;
@@ -60,7 +60,8 @@ void createTriangle(Model *model)
 
 void drawTriangle(Model *model)
 {
-    glLoadIdentity();
+    glPushMatrix();
+
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
     glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
@@ -76,6 +77,8 @@ void drawTriangle(Model *model)
     }
 
     glEnd();
+
+    glPopMatrix();
 }
 
 void createQuad(Model *model)
@@ -120,7 +123,7 @@ void createQuad(Model *model)
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
-    model->translate.z = -6.0f;
+    model->translate.z = 0.0f;
 
     model->scale.x = 1.0f;
     model->scale.y = 1.0f;
@@ -144,7 +147,8 @@ void createQuad(Model *model)
 
 void drawQuad(Model *model)
 {
-    glLoadIdentity();
+    glPushMatrix();
+
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
@@ -159,6 +163,8 @@ void drawQuad(Model *model)
     }
 
     glEnd();
+
+    glPopMatrix();
 }
 
 void createText(Model *model)
@@ -186,7 +192,7 @@ void createText(Model *model)
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
-    model->translate.z = -6.0f;
+    model->translate.z = 0.0f;
 
     model->scale.x = 1.0f;
     model->scale.y = 1.0f;
@@ -215,7 +221,7 @@ void createText(Model *model)
 
 void drawText(Model *model)
 {
-    glLoadIdentity();
+    glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
     glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
@@ -267,6 +273,8 @@ void drawText(Model *model)
     textAnimationTimerCounter++;
 
     showText(model->text);
+
+    glPopMatrix();
 }
 
 void createPyramid(Model *model)
@@ -323,7 +331,7 @@ void createPyramid(Model *model)
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
-    model->translate.z = -6.0f;
+    model->translate.z = 0.0f;
 
     model->scale.x = 1.0f;
     model->scale.y = 1.0f;
@@ -346,7 +354,8 @@ void createPyramid(Model *model)
 
 void drawPyramid(Model *model)
 {
-    glLoadIdentity();
+    glPushMatrix();
+
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
@@ -361,6 +370,8 @@ void drawPyramid(Model *model)
     }
 
     glEnd();
+
+    glPopMatrix();
 }
 
 
@@ -387,6 +398,96 @@ void drawModel(Model *model)
     }
 }
 
+void drawGridAroundSelectedModel(Model *model)
+{
+	glPushMatrix();
 
+	glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+	glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+	glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+	glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+	glScalef(model->scale.x, model->scale.y, model->scale.z);
+
+	//X-Axis
+	glLineWidth(1.0f);
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(-3.0f, 0.0f, 0.0f);
+	glVertex3f(3.0f, 0.0f, 0.0f);
+	glEnd();
+
+	//Y Axis
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 3.0f, 0.0f);
+	glVertex3f(0.0f, -3.0f, 0.0f);
+	glEnd();
+
+	//z axis
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 3.0f);
+	glVertex3f(0.0f, 0.0f, -3.0f);
+	glEnd();
+
+	glPopMatrix();
+}
+
+void drawGridForEntireScene(void)
+{
+    glTranslatef(0.0f, 0.0f, -10.0f);
+    glRotatef(screenRotate.rotate.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(screenRotate.rotate.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(screenRotate.rotate.z, 0.0f, 0.0f, 1.0f);
+
+	//X-Axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(-10.0f, 0.0f, 0.0f);
+	glVertex3f(10.0f, 0.0f, 0.0f);
+	glEnd();
+
+	for(int i = 0; i <= 20; i++)
+	{
+		glLineWidth(1.0f);
+		glBegin(GL_LINES);
+		glColor3f(0.5f, 0.5f, 0.5f);
+
+		//lines on z axis
+		glVertex3f(-10.0f, 0.0f, (float)i/2);
+		glVertex3f(10.0f, 0.0f, (float)i/2);
+
+		glVertex3f(-10.0f, 0.0f, -(float)i/2);
+		glVertex3f(10.0f, 0.0f, -(float)i/2);
+
+		//lines on X axis
+		glVertex3f((float)i/2, 0.0f, -10.0f);
+		glVertex3f((float)i/2, 0.0f, 10.0f);
+
+		glVertex3f(-(float)i/2, 0.0f, -10.0f);
+		glVertex3f(-(float)i/2, 0.0f, 10.0f);
+
+
+		glEnd();
+	}
+
+
+	//Y Axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 10.0f, 0.0f);
+	glVertex3f(0.0f, -10.0f, 0.0f);
+	glEnd();
+
+	//z axis
+	glLineWidth(3.0f);
+	glBegin(GL_LINES);
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 20.0f);
+	glVertex3f(0.0f, 0.0f, -20.0f);
+	glEnd();
+}
 
 

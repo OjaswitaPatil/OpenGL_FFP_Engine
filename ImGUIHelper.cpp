@@ -34,6 +34,22 @@ void generateUI()
 	static float scaleAllOffSet = 0.0f;
     if(ImGui::Begin("Engine's Controls"));
     {
+		if(ImGui::CollapsingHeader("ScreenRotation"))
+		{
+
+			ImGui::SliderFloat("SceneRotationX", &(screenRotate.rotate.x),-360.0f, 360.0f);
+			ImGui::SliderFloat("SceneRotationY", &(screenRotate.rotate.y),-360.0f, 360.0f);
+			ImGui::SliderFloat("SceneRotationZ", &(screenRotate.rotate.z),-360.0f, 360.0f);
+			
+			if (ImGui::Button("Reset Scene Rotation"))  
+			{                        
+				screenRotate.rotate.x = 9.0f;
+				screenRotate.rotate.y = 12.0f;
+				screenRotate.rotate.z = 0.0f;
+			}
+
+		}
+		
         if(ImGui::CollapsingHeader("Add/Delete Shape"))
 		{
 			if (ImGui::Button("Triangle"))  

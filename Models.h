@@ -3,13 +3,6 @@
 
 #include "globalHeaders.h"
 
-typedef struct
-{
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-}vec3;
-
 typedef enum
 {
 	TRIANGLE = 0,
@@ -55,6 +48,12 @@ void createPyramid(Model *model);
 void drawPyramid(Model *model);
 
 void drawModel();
+
+void drawGridAroundSelectedModel(Model *model);
+void drawGridForEntireScene(void);
+
+
+
 
 #endif
 

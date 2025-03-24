@@ -104,6 +104,9 @@ void drawAllModels(void)
 
         ptr= ptr->next;   
     }
+
+    if(selectedmodel!= NULL)
+        drawGridAroundSelectedModel(&(selectedmodel->model));
 }
 
 

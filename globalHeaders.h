@@ -12,6 +12,19 @@
 #include<gl/GL.h>
 #include<gl/GLU.h>
 
+typedef struct
+{
+	GLfloat x;
+	GLfloat y;
+	GLfloat z;
+}vec3;
+
+struct ScreenRotate
+{
+    vec3 rotate;
+};
+extern struct ScreenRotate screenRotate;
+
 // opengl related global variables
 extern HDC ghdc;
 
