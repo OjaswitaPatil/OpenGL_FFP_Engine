@@ -1,7 +1,6 @@
 #include "Models.h"
 #include "TextRendering.h"
 
-
 void createTriangle(Model *model)
 {
     GLfloat modelVertices[] = {
@@ -127,6 +126,7 @@ void createQuad(Model *model)
     model->scale.y = 1.0f;
     model->scale.z = 1.0f;
 
+
     model->rotationAngle.x = 0.0f;
     model->rotationAngle.y = 0.0f;
     model->rotationAngle.z = 0.0f;
@@ -146,7 +146,6 @@ void drawQuad(Model *model)
 {
     glLoadIdentity();
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
-    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
     glScalef(model->scale.x, model->scale.y, model->scale.z);
@@ -164,11 +163,12 @@ void drawQuad(Model *model)
 
 void createText(Model *model)
 {
+    
     GLfloat modelColors[] = {
         1.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
         0.0f, 0.0f, 1.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f
         };
 
     model->vertices = NULL;

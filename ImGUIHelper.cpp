@@ -172,8 +172,24 @@ void generateUI()
 							selectedmodel->model.colors[j+3] = colorsForAllVertices[3];
 						}
 					}
+                    
+					
 					ImGui::TreePop();
 		        }
+
+				if (ImGui::TreeNode("Blending"))
+				{
+					static float blendValue = 1.0f; 
+
+					ImGui::SliderFloat("blend", &blendValue, 0.0f, 1.0f);
+
+					for (GLint i = 3; i < selectedmodel->model.colorsSize; i += 4) 
+					{
+						selectedmodel->model.colors[i] = blendValue; 
+					}
+
+					ImGui::TreePop();
+				}
 			}
 		}
         ImGui::End();
