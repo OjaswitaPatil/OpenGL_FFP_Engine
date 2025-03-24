@@ -311,6 +311,7 @@ int initialize(void)
     pfd.cGreenBits = 8;
     pfd.cBlueBits = 8;
     pfd.cAlphaBits = 8;
+    pfd.cDepthBits = 32;
 
     // getdc
     ghdc = GetDC(ghwnd);
@@ -352,6 +353,15 @@ int initialize(void)
 
     // print gl info
     printGLInfo();
+    // depth realted function call
+    glShadeModel(GL_SMOOTH);
+    glClearDepth(1.0f);                                                         // go in my depth buffer and set 1.0
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    glEnable(GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // from here onwards openGL code starts
     // tell opengl to choose the color to clear the screen
@@ -416,7 +426,7 @@ void display(void)
     // Generate UI (Not rendering here)
     generateUI();
 
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
  
