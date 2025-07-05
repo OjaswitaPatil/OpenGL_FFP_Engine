@@ -12,6 +12,8 @@
 #include<gl/GL.h>
 #include<gl/GLU.h>
 
+#define MAX_FILE_PATH_LENGTH 1024
+
 typedef struct
 {
 	GLfloat x;

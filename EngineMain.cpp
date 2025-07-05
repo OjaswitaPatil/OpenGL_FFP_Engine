@@ -4,6 +4,7 @@
 #include "linkedList.h"
 #include "ImGUIHelper.h"
 #include "TextRendering.h"
+#include "Texture.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
@@ -72,6 +73,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     {
         fprintf(gpFile, "*************Winmain() started ***********\n");
         fprintf(gpFile, "Winmain() -> Log file created successfully !!!\n");
+        fflush(gpFile);
     }
 
 
@@ -386,13 +388,22 @@ int initialize(void)
     screenRotate.rotate.y = 12.0f;
     screenRotate.rotate.z = 0.0f;
 
-    // warm up resize
-    resize(WIN_WIDTH, WIN_HEIGHT);
+    //load texture test
+    addTextureNameToallTexturesArray("Stone.bmp"); 
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+
+    //enable texturing
+    glEnable(GL_TEXTURE_2D);
 
     fprintf(gpFile, "\n\n*************initialize() Completed ***********\n");
 
     // createModel(TRIANGLE);
     // createModel(RECTANGLE);
+
+    // warm up resize
+    resize(WIN_WIDTH, WIN_HEIGHT);
 
     return(0);
 }
@@ -485,6 +496,20 @@ void uninitialize(void)
         toggleFullScreen();
         gbFullScreen = FALSE;
     }
+
+    //delete allLoadedTextureArray
+    for(int i = 0; i<numberOfTextureAvailablesinallTexturesArray; i++)
+    {
+        if(allLoadedTextureIdentifiers_Array[0])
+        {
+            glDeleteTextures(1, &allLoadedTextureIdentifiers_Array[0]);
+            allLoadedTextureIdentifiers_Array[0] = 0;
+        }
+        free(allTextureNames_Array[i]); 
+    }
+    free(allLoadedTextureIdentifiers_Array);
+    free(allTextureNames_Array);
+
     // make hdc as current context by releasing rendering contex as current contex
     if(wglGetCurrentContext() == ghrc)
     {

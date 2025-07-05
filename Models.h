@@ -2,6 +2,7 @@
 #define MODELS_H
 
 #include "globalHeaders.h"
+#include "Texture.h"
 
 typedef enum
 {
@@ -16,6 +17,8 @@ typedef struct
 {
 	ModelType modeltype;
 
+	GLint numberOfFaces;//for models with no fixed faces give negative value
+
 	vec3 translate;
 	vec3 scale;
 	vec3 rotationAngle;
@@ -28,6 +31,7 @@ typedef struct
 
     GLfloat *texcoords;
 	GLint texcoordsSize;
+	GLuint *textureVariables;
 
     GLfloat *normals;
 	GLint normalsSize;
@@ -53,11 +57,9 @@ void drawCube(Model *model);
 
 void drawModel();
 
+//Grid
 void drawGridAroundSelectedModel(Model *model);
 void drawGridForEntireScene(void);
-
-
-
 
 #endif
 
