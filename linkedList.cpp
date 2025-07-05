@@ -26,6 +26,10 @@ void createModel(ModelType modelType)
         case PYRAMID:
         createPyramid(&ptr->model);
         break;
+
+        case CUBE:
+        createCube(&ptr->model);
+        break;
     }
 
     ptr->next = NULL;

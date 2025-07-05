@@ -57,20 +57,29 @@ void generateUI()
 				createModel(TRIANGLE);
 				scaleAllOffSet = 0.0f;
 			}
+
 			ImGui::SameLine();
 			if (ImGui::Button("Quad")) 
 			{                   
 				createModel(RECTANGLE);
 				scaleAllOffSet = 0.0f;
 			}
+
 			ImGui::SameLine();
 			if (ImGui::Button("Pyramid")) 
 			{                   
 				createModel(PYRAMID);
 				scaleAllOffSet = 0.0f;
 			}
-			ImGui::SameLine();
 
+			ImGui::SameLine();
+			if (ImGui::Button("Cube")) 
+			{                   
+				createModel(CUBE);
+				scaleAllOffSet = 0.0f;
+			}
+
+			ImGui::SameLine();
 			if (ImGui::Button("TEXT"))
 			{
 				ImGui::OpenPopup("MyPopup");
