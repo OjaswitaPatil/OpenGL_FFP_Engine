@@ -211,6 +211,30 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
         break;
         
         case WM_KEYDOWN:
+        //Check for multikey press
+        if(GetAsyncKeyState(VK_CONTROL) & 0x8000)//ctrl is pressed
+        {
+            switch(wParam)
+            {
+                case 'F':
+                case 'f':
+                if(gbFullScreen == FALSE)
+                {
+                    toggleFullScreen();
+                    gbFullScreen = TRUE;
+                }
+                else
+                {
+                    toggleFullScreen();
+                    gbFullScreen = FALSE;
+                }
+                break;
+
+                default:
+                break;
+            }
+        }
+
         switch(wParam)
         {
             case VK_ESCAPE:
@@ -225,19 +249,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
         case WM_CHAR:
         switch(wParam)
         {
-            case 'F':
-            case 'f':
-            if(gbFullScreen == FALSE)
-            {
-                toggleFullScreen();
-                gbFullScreen = TRUE;
-            }
-            else
-            {
-                toggleFullScreen();
-                gbFullScreen = FALSE;
-            }
-            break;
+            //Add keys here
 
             default:
             break;
