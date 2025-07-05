@@ -3,18 +3,13 @@
 
 #include "globalHeaders.h"
 
-typedef struct
-{
-	GLfloat x;
-	GLfloat y;
-	GLfloat z;
-}vec3;
-
 typedef enum
 {
 	TRIANGLE = 0,
 	RECTANGLE,
-    TEXT
+    TEXT,
+	PYRAMID,
+	CUBE,
 }ModelType;
 
 typedef struct
@@ -50,7 +45,19 @@ void drawQuad(Model *model);
 void createText(Model *model);
 void drawText(Model *model);
 
+void createPyramid(Model *model);
+void drawPyramid(Model *model);
+
+void createCube(Model *model);
+void drawCube(Model *model);
+
 void drawModel();
+
+void drawGridAroundSelectedModel(Model *model);
+void drawGridForEntireScene(void);
+
+
+
 
 #endif
 

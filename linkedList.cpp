@@ -22,6 +22,14 @@ void createModel(ModelType modelType)
         case TEXT:
         createText(&(ptr->model));
         break;
+
+        case PYRAMID:
+        createPyramid(&ptr->model);
+        break;
+
+        case CUBE:
+        createCube(&ptr->model);
+        break;
     }
 
     ptr->next = NULL;
@@ -100,6 +108,9 @@ void drawAllModels(void)
 
         ptr= ptr->next;   
     }
+
+    if(selectedmodel!= NULL)
+        drawGridAroundSelectedModel(&(selectedmodel->model));
 }
 
 

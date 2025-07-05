@@ -13,6 +13,8 @@
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
 
+struct ScreenRotate screenRotate;
+
 // global function declarations
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -367,6 +369,11 @@ int initialize(void)
     // tell opengl to choose the color to clear the screen
     glClearColor(0.0f, 0.0f, 0.0f,1.0f);
 
+    // scrennRotate 
+    screenRotate.rotate.x = 9.0f;
+    screenRotate.rotate.y = 12.0f;
+    screenRotate.rotate.z = 0.0f;
+
     // warm up resize
     resize(WIN_WIDTH, WIN_HEIGHT);
 
@@ -429,9 +436,15 @@ void display(void)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
- 
-    drawAllModels();
 
+    glPushMatrix();
+    {
+        drawGridForEntireScene();
+    
+        drawAllModels();
+    }
+    glPopMatrix();
+    
     //Render/display Generated UI 
     renderGeneratedUI();
 
