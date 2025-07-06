@@ -21,14 +21,11 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 
 // global variable declrations
 // variables realted with fulll screen
-BOOL gbFullScreen = FALSE;   
+BOOL gbFullScreen = FALSE;
 DWORD dwStyle;
 WINDOWPLACEMENT wpPrev;
 HWND ghwnd = NULL;
 
-// variables realated with file I/O
-char gszLogFileName[] = "Log.txt";
-FILE *gpFile = NULL;
 
 // active window related varibale
 BOOL gbActiveWindow = FALSE;
@@ -63,23 +60,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
     // code
     // create log file
-    gpFile = fopen(gszLogFileName, "w");
-    if(gpFile == NULL)
+    int logResult = init_logging(gszLogFileName);
+    if(logResult <= 0)
     {
-        fprintf(gpFile, "Winmain() -> ERROR: Log file creation failed\n");
         exit(0);
     }
     else
     {
-        fprintf(gpFile, "*************Winmain() started ***********\n");
-        fprintf(gpFile, "Winmain() -> Log file created successfully !!!\n");
-        fflush(gpFile);
+        LOG_DEBUG("*************Winmain() started ***********");
+        LOG_INFO("Winmain() -> Log file created successfully !!!");
     }
 
 
 
     // window class initialization
-    wndclass.cbSize = sizeof(WNDCLASSEX); 
+    wndclass.cbSize = sizeof(WNDCLASSEX);
     wndclass.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
     wndclass.cbClsExtra = 0;
     wndclass.cbWndExtra = 0;
@@ -114,7 +109,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
     //show window
     ShowWindow(hwnd, iCmdShow);
- 
+
     // paint the background of window
     UpdateWindow(hwnd);
 
@@ -122,19 +117,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     int result = initialize();
     if(result != 0)
     {
-        fprintf(gpFile, "Winmain() -> Initialize () failed\n");
+        LOG_ERROR("Winmain() -> Initialize () failed");
         DestroyWindow(hwnd);
         hwnd = NULL;
     }
     else
     {
-        fprintf(gpFile, "Winmain() -> initialize() completed successfully \n");
+        LOG_INFO("Winmain() -> initialize() completed successfully ");
     }
 
     // SET THIS WINDOW AS FORGROUND AND ACTIVE WINDOW
     SetForegroundWindow(hwnd);
     SetFocus(hwnd);
-    
+
     // set ImGUI context
     setupImGUIContext();
 
@@ -167,7 +162,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
                 // update
                 update();
             }
-            
+
         }
     }
 
@@ -211,7 +206,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
         case WM_SIZE:
         resize(LOWORD(lParam), HIWORD(lParam));
         break;
-        
+
         case WM_KEYDOWN:
         //Check for multikey press
         if(GetAsyncKeyState(VK_CONTROL) & 0x8000)//ctrl is pressed
@@ -267,7 +262,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
             break;
 
         default:
-            break;    
+            break;
     }
     return(DefWindowProc(hwnd, iMsg, wParam, lParam));
 }
@@ -307,14 +302,14 @@ int initialize(void)
     // function declarations
     void printGLInfo(void);
     void resize(int, int);
-    
+
 
     // variable declartions
     PIXELFORMATDESCRIPTOR pfd;
     int iPixelFormatIndex = 0;
 
     //code
-    fprintf(gpFile, "\n\n*************initialize() started ***********\n");
+    LOG_DEBUG("*************initialize() started ***********");
 
     // pixel format decription initialization
     ZeroMemory((void*)&pfd, sizeof(PIXELFORMATDESCRIPTOR));
@@ -333,42 +328,63 @@ int initialize(void)
     ghdc = GetDC(ghwnd);
     if(ghdc == NULL)
     {
-        fprintf(gpFile, "initialize() -> GetDC() failed\n");
+        LOG_ERROR("initialize() -> GetDC() failed");
         return(-1);
     }
-  
+    else
+    {
+        LOG_DEBUG("initialize() -> GetDC() succeeded");
+    }
+
     //get matching pixel foremat idex using hdc and pfd
     iPixelFormatIndex = ChoosePixelFormat(ghdc, &pfd);
     if(iPixelFormatIndex == 0)
     {
-        fprintf(gpFile, "initialize() -> ChoosePixelFormat() failed\n");
+        LOG_ERROR("initialize() -> ChoosePixelFormat() failed");
         return -2;
+    }
+    else
+    {
+        LOG_DEBUG("initialize() -> ChoosePixelFormat() succeeded");
     }
 
     // select the pixel format of found index
     if(SetPixelFormat(ghdc, iPixelFormatIndex, &pfd) == FALSE)
     {
-        fprintf(gpFile, "initialize() -> SetPixelFormat() failed\n");
+        LOG_ERROR("initialize() -> SetPixelFormat() failed");
         return -3;
+    }
+    else
+    {
+        LOG_DEBUG("initialize() -> SetPixelFormat() succeeded");
     }
 
     //create rendering context using hdc ,pfd, and chosen pixel format inedx
     ghrc = wglCreateContext(ghdc);
     if(ghrc == NULL)
     {
-        fprintf(gpFile, "initialize() -> wglCreateContext() failed\n");
+        LOG_ERROR("initialize() -> wglCreateContext() failed");
         return -4;
+    }
+    else
+    {
+        LOG_DEBUG("initialize() -> wglCreateContext() succeeded");
     }
 
     // make this rendering contex as current contex
     if(wglMakeCurrent(ghdc, ghrc) == FALSE)
     {
-        fprintf(gpFile, "initialize() -> wglMakeCurrent() failed\n");
+        LOG_ERROR("initialize() -> wglMakeCurrent() failed");
         return -5;
+    }
+    else
+    {
+        LOG_DEBUG("initialize() -> wglMakeCurrent() succeeded");
     }
 
     // print gl info
     printGLInfo();
+
     // depth realted function call
     glShadeModel(GL_SMOOTH);
     glClearDepth(1.0f);                                                         // go in my depth buffer and set 1.0
@@ -383,7 +399,7 @@ int initialize(void)
     // tell opengl to choose the color to clear the screen
     glClearColor(0.0f, 0.0f, 0.0f,1.0f);
 
-    // scrennRotate 
+    // scrennRotate
     screenRotate.rotate.x = 9.0f;
     screenRotate.rotate.y = 12.0f;
     screenRotate.rotate.z = 0.0f;
@@ -397,7 +413,7 @@ int initialize(void)
     //enable texturing
     glEnable(GL_TEXTURE_2D);
 
-    fprintf(gpFile, "\n\n*************initialize() Completed ***********\n");
+    LOG_DEBUG("*************initialize() Completed ***********");
 
     // createModel(TRIANGLE);
     // createModel(RECTANGLE);
@@ -411,15 +427,15 @@ int initialize(void)
 void printGLInfo(void)
 {
     // code
-    fprintf(gpFile, "\n\n*************printGLInfo() Started ***********\n");
+    LOG_DEBUG("*************printGLInfo() Started ***********");
     // print opengl information
-    fprintf(gpFile,"OpenGL Information\n");
-    fprintf(gpFile,"--------------------------\n");
-    fprintf(gpFile,"OpenGL Vender : %s\n", glGetString(GL_VENDOR));
-    fprintf(gpFile,"OpenGL Renderer : %s\n", glGetString(GL_RENDERER));
-    fprintf(gpFile,"OpenGL Version : %s\n", glGetString(GL_VERSION));
-    fprintf(gpFile,"--------------------------\n");
-    fprintf(gpFile, "\n\n*************printGLInfo() Completed ***********\n");
+    LOG_INFO("       OpenGL Information");
+    LOG_INFO("       --------------------------");
+    LOG_INFO("       OpenGL Vender : %s", glGetString(GL_VENDOR));
+    LOG_INFO("       OpenGL Renderer : %s", glGetString(GL_RENDERER));
+    LOG_INFO("       OpenGL Version : %s", glGetString(GL_VERSION));
+    LOG_INFO("       --------------------------");
+    LOG_DEBUG( "*************printGLInfo() Completed ***********");
 }
 
 void resize(int width, int height)
@@ -463,12 +479,12 @@ void display(void)
     glPushMatrix();
     {
         drawGridForEntireScene();
-    
+
         drawAllModels();
     }
     glPopMatrix();
-    
-    //Render/display Generated UI 
+
+    //Render/display Generated UI
     renderGeneratedUI();
 
     SwapBuffers(ghdc);
@@ -485,7 +501,7 @@ void uninitialize(void)
     void togglFullScreen(void);
 
     //code
-    fprintf(gpFile, "\n\n*************uninitialize() Started ***********\n");
+    LOG_DEBUG("*************uninitialize() Started ***********");
 
     // uninitialize ImGUI
     uninitializeImGUI();
@@ -540,12 +556,11 @@ void uninitialize(void)
     // close the file
     if(gpFile)
     {
-        fprintf(gpFile,"uninitialize() -> Program terminated successfully\n");
-        fprintf(gpFile, "\n\n*************uninitialize() completed ***********\n");
-        fprintf(gpFile, "\n\n*************Winmain() completed ***********\n");
+        LOG_INFO("uninitialize() -> Program terminated successfully");
+        LOG_DEBUG("*************uninitialize() completed ***********");
+        LOG_DEBUG("*************Winmain() completed ***********");
 
-        fclose(gpFile);
-        gpFile = NULL;
+        close_logging();
     }
 }
 

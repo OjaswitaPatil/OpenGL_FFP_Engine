@@ -9,7 +9,7 @@ void createTriangle(Model *model)
         -1.0f, -1.0f, 0.0f,
         1.0f, -1.0f, 0.0f
         };
-    
+
     GLfloat modelColors[] = {
         //FACE 1
         1.0f, 0.0f, 0.0f, 1.0f,
@@ -23,6 +23,8 @@ void createTriangle(Model *model)
         0.0f, 0.0f, 
         1.0f, 0.0f
         };
+
+    LOG_DEBUG("*************createTriangle() started ***********");
     
     model->modeltype = TRIANGLE;
 
@@ -32,6 +34,11 @@ void createTriangle(Model *model)
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
+    if(model->vertices == NULL)
+    {
+        LOG_ERROR("createTriangle() -> Memory allocation failed for vertices of triangle model");
+        return;
+    }
     for(GLint i = 0; i < model->verticesSize; i++)
     {
         model->vertices[i] = modelVertices[i];
@@ -41,6 +48,13 @@ void createTriangle(Model *model)
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
     model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createTriangle() -> Memory allocation failed for colors of triangle model");
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     for(GLint i = 0; i < model->colorsSize; i++)
     {
         model->colors[i] = modelColors[i];
@@ -79,10 +93,19 @@ void createTriangle(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+
+    LOG_DEBUG("*************createTriangle() completed ***********");
 }
 
 void drawTriangle(Model *model)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************createTriangle() started ***********");
+    if(model->vertices == NULL || model->colors == NULL)
+    {
+        LOG_ERROR("drawTriangle() -> Model vertices or colors are NULL");
+        return;
+    }
+
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
@@ -108,11 +131,11 @@ void drawTriangle(Model *model)
         
         glBegin(GL_TRIANGLES);
         {
-            fprintf(gpFile, "[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            fprintf(gpFile, "[DEBUG]Printing primitive details :\n");
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
+            
             //Vertex1
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -121,9 +144,8 @@ void drawTriangle(Model *model)
             glVertex3f(model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
 
             //Vertex2
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
             else
@@ -132,10 +154,10 @@ void drawTriangle(Model *model)
 
 
             //Vertex3
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
-            fprintf(gpFile, "[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
             else    
@@ -155,6 +177,7 @@ void drawTriangle(Model *model)
     }
 
     glPopMatrix();
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************createTriangle() completed ***********");
 }
 
 void createQuad(Model *model)
@@ -167,7 +190,7 @@ void createQuad(Model *model)
         -1.0f, -1.0f, 0.0f,
         1.0f, -1.0f, 0.0f
         };
-    
+
     GLfloat modelColors[] = {
         1.0f, 1.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -177,10 +200,18 @@ void createQuad(Model *model)
         1.0f, 0.0f, 1.0f, 1.0f
         };
 
+    LOG_DEBUG("*************createQuad() started ***********");
+
+    model->modeltype = RECTANGLE;
+
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
-    
+    if(model->vertices == NULL)
+    {
+        LOG_ERROR("createQuad() -> Memory allocation failed for vertices of Quad model");
+        return;
+    }
     for(GLint i = 0; i < model->verticesSize; i++)
     {
         model->vertices[i] = modelVertices[i];
@@ -189,13 +220,25 @@ void createQuad(Model *model)
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
     model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
-
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createQuad() -> Memory allocation failed for colors of Quad model");
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     for(GLint i = 0; i < model->colorsSize; i++)
     {
         model->colors[i] = modelColors[i];
     }
 
-    model->modeltype = RECTANGLE;
+    //texcoords
+    model->texcoords = NULL;
+    model->texcoordsSize = 0;
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
@@ -205,24 +248,24 @@ void createQuad(Model *model)
     model->scale.y = 1.0f;
     model->scale.z = 1.0f;
 
-
     model->rotationAngle.x = 0.0f;
     model->rotationAngle.y = 0.0f;
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
 
-    //texcoords
-    model->texcoords = NULL;
-    model->texcoordsSize = 0;
-
-    //normals
-    model->normals = NULL;
-    model->normalsSize = 0;
+    LOG_DEBUG("*************createQuad() completed ***********");
 }
 
 void drawQuad(Model *model)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawQuad() started ***********");
+    if(model->vertices == NULL || model->colors == NULL)
+    {
+        LOG_ERROR("drawQuad() -> Model vertices or colors are NULL");
+        return;
+    }
+
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
@@ -234,6 +277,9 @@ void drawQuad(Model *model)
 
     for(GLint v = 0, c = 0; v < model->verticesSize; v+=3, c+=4)
     {
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawQuad() -> color: { %f, %f, %f }", model->colors[c], model->colors[c+1], model->colors[c+2], model->colors[c+3]);
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawQuad() -> Vertex: { %f, %f, %f }", model->vertices[v], model->vertices[v+1], model->vertices[v+2]);
+
         glColor4f(model->colors[c], model->colors[c+1], model->colors[c+2], model->colors[c+3]);
         glVertex3f(model->vertices[v], model->vertices[v+1], model->vertices[v+2]);
     }
@@ -241,11 +287,13 @@ void drawQuad(Model *model)
     glEnd();
 
     glPopMatrix();
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawQuad() completed ***********");
 }
 
 void createText(Model *model)
 {
-    
+
     GLfloat modelColors[] = {
         1.0f, 0.0f, 0.0f, 1.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -253,18 +301,32 @@ void createText(Model *model)
         1.0f, 1.0f, 1.0f, 1.0f
         };
 
+    LOG_DEBUG("*************createText() started ***********");
+
+    model->modeltype = TEXT;
+
     model->vertices = NULL;
 
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
     model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
-
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createText() -> Memory allocation failed for colors of TEXT model");
+        return;
+    }
     for(GLint i = 0; i < model->colorsSize; i++)
     {
         model->colors[i] = modelColors[i];
     }
 
-    model->modeltype = TEXT;
+    //texcoords
+    model->texcoords = NULL;
+    model->texcoordsSize = 0;
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
@@ -280,23 +342,31 @@ void createText(Model *model)
 
     model->customModelAttributes = NULL;
 
-    //texcoords
-    model->texcoords = NULL;
-    model->texcoordsSize = 0;
-
-    //normals
-    model->normals = NULL;
-    model->normalsSize = 0;
-
     //get Text
     model->text = (char*)malloc(sizeof(textString));
-    strcpy(model->text, textString);
+    if(model->text == NULL)
+    {
+        LOG_ERROR("createText() -> Memory allocation failed for text of TEXT model");
+        free(model->colors);
+        model->colors = NULL;
+        return;
+    }
+    strncpy(model->text, textString, strlen(model->text));
 
     BuildFont();
+
+    LOG_DEBUG("*************createText() completed ***********");
 }
 
 void drawText(Model *model)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawText() started ***********");
+    if(model->text == NULL || model->colors == NULL)
+    {
+        LOG_ERROR("drawText() -> Text Model text or colors are NULL");
+        return;
+    }
+
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
@@ -342,7 +412,7 @@ void drawText(Model *model)
             textColorIndex = (textColorIndex+1) % 4;
             textAnimationTimerCounter = 0;
         }
-        break;    
+        break;
     default:
         break;
     }
@@ -351,6 +421,8 @@ void drawText(Model *model)
     showText(model->text);
 
     glPopMatrix();
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawText() completed ***********");
 }
 
 void createPyramid(Model *model)
@@ -372,7 +444,7 @@ void createPyramid(Model *model)
         -1.0f, -1.0f, -1.0f,
         -1.0f, -1.0f, 1.0f
         };
-    
+
     GLfloat modelColors[] = {
         1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
@@ -413,6 +485,8 @@ void createPyramid(Model *model)
         1.0f, 0.0f
         };
 
+    LOG_DEBUG("*************createPyramid() started ***********");
+
     model->modeltype = PYRAMID;
 
     model->numberOfFaces = 4;
@@ -422,6 +496,11 @@ void createPyramid(Model *model)
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
+    if(model->vertices == NULL)
+    {
+        LOG_ERROR("createPyramid() -> Memory allocation failed for vertices of PYRAMID model");
+        return;
+    }
     for(GLint i = 0; i < model->verticesSize; i++)
     {
         model->vertices[i] = modelVertices[i];
@@ -431,6 +510,13 @@ void createPyramid(Model *model)
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
     model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createPyramid() -> Memory allocation failed for colors of PYRAMID model");
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     for(GLint i = 0; i < model->colorsSize; i++)
     {
         model->colors[i] = modelColors[i];
@@ -470,10 +556,20 @@ void createPyramid(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+
+    LOG_DEBUG("*************createPyramid() completed ***********");
 }
 
 void drawPyramid(Model *model)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawPyramid() started ***********");
+
+    if(model->vertices == NULL || model->colors == NULL)
+    {
+        LOG_ERROR("drawPyramid() -> Model vertices or colors are NULL");
+        return;
+    }
+
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
@@ -498,11 +594,10 @@ void drawPyramid(Model *model)
         
         glBegin(GL_TRIANGLES);
         {
-            fprintf(gpFile, "[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            fprintf(gpFile, "[DEBUG]Printing primitive details :\n");
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
             //Vertex1
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -511,9 +606,8 @@ void drawPyramid(Model *model)
             glVertex3f(model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
 
             //Vertex2
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
             else
@@ -522,10 +616,9 @@ void drawPyramid(Model *model)
 
 
             //Vertex3
-            fprintf(gpFile, "[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            fprintf(gpFile, "[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
-            fprintf(gpFile, "[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            fflush(gpFile);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
             else    
@@ -545,6 +638,8 @@ void drawPyramid(Model *model)
     }
 
     glPopMatrix();
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawPyramid() completed ***********");
 }
 
 void createCube(Model *model)
@@ -604,7 +699,7 @@ void createCube(Model *model)
         1.0f, -1.0f, -1.0f, // bottom-right of bottom
         1.0f, -1.0f,  1.0f, // top-right of bottom
         };
-    
+
     GLfloat modelColors[] = {
         // front
         0.0f, 1.0f, 0.0f, 1.0f,
@@ -628,7 +723,7 @@ void createCube(Model *model)
         1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
-        
+
         1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 0.0f, 1.0f,
@@ -663,10 +758,19 @@ void createCube(Model *model)
 
         };
 
+
+    LOG_DEBUG("*************createCube() started ***********");
+
+    model->modeltype = CUBE;
+
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
-    
+    if(model->vertices == NULL)
+    {
+        LOG_ERROR("createCube() -> Memory allocation failed for vertices of CUBE model");
+        return;
+    }
     for(GLint i = 0; i < model->verticesSize; i++)
     {
         model->vertices[i] = modelVertices[i];
@@ -675,13 +779,25 @@ void createCube(Model *model)
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
     model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
-
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createCube() -> Memory allocation failed for colors of CUBE model");
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     for(GLint i = 0; i < model->colorsSize; i++)
     {
         model->colors[i] = modelColors[i];
     }
 
-    model->modeltype = CUBE;
+    //texcoords
+    model->texcoords = NULL;
+    model->texcoordsSize = 0;
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
 
     model->translate.x = 0.0f;
     model->translate.y = 0.0f;
@@ -697,17 +813,19 @@ void createCube(Model *model)
 
     model->customModelAttributes = NULL;
 
-    //texcoords
-    model->texcoords = NULL;
-    model->texcoordsSize = 0;
-
-    //normals
-    model->normals = NULL;
-    model->normalsSize = 0;
+    LOG_DEBUG("*************createCube() completed ***********");
 }
 
 void drawCube(Model *model)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCube() started ***********");
+
+    if(model->vertices == NULL || model->colors == NULL)
+    {
+        LOG_ERROR("drawCube() -> Model vertices or colors are NULL");
+        return;
+    }
+
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
@@ -719,6 +837,9 @@ void drawCube(Model *model)
 
     for(GLint v = 0, c = 0; v < model->verticesSize; v+=3, c+=4)
     {
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawCube() -> color: { %f, %f, %f }", model->colors[c], model->colors[c+1], model->colors[c+2], model->colors[c+3]);
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawCube() -> Vertex: { %f, %f, %f }", model->vertices[v], model->vertices[v+1], model->vertices[v+2]);
+
         glColor4f(model->colors[c], model->colors[c+1], model->colors[c+2], model->colors[c+3]);
         glVertex3f(model->vertices[v], model->vertices[v+1], model->vertices[v+2]);
     }
@@ -726,6 +847,8 @@ void drawCube(Model *model)
     glEnd();
 
     glPopMatrix();
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCube() completed ***********");
 }
 
 void drawModel(Model *model)
