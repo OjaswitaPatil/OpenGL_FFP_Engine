@@ -31,7 +31,7 @@ typedef struct
 
     GLfloat *texcoords;
 	GLint texcoordsSize;
-	GLuint *textureVariables;
+	GLint *textureVariables;
 
     GLfloat *normals;
 	GLint normalsSize;

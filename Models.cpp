@@ -68,9 +68,29 @@ void createTriangle(Model *model)
     {
         model->texcoords[i] = modelTexCoord[i];
     }
+    if(model->texcoords == NULL)
+    {
+        LOG_ERROR("createTriangle() -> Memory allocation failed for texcoords of triangle model");
+        free(model->colors);
+        model->colors = NULL;
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     //allocate memory for textureVariables in a model struct and fill default values in it 
     model->textureVariables = NULL;
-    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
+    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
+    if(model->textureVariables == NULL)
+    {
+        LOG_ERROR("createTriangle() -> Memory allocation failed for textureVariables of triangle model");
+        free(model->textureVariables);
+        model->textureVariables = NULL;
+        free(model->colors);
+        model->colors = NULL;
+        free(model->vertices);
+        model->vertices = NULL;
+        return;
+    }
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
         model->textureVariables[i] = -1;
@@ -99,7 +119,7 @@ void createTriangle(Model *model)
 
 void drawTriangle(Model *model)
 {
-    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************createTriangle() started ***********");
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawTriangle() started ***********");
     if(model->vertices == NULL || model->colors == NULL)
     {
         LOG_ERROR("drawTriangle() -> Model vertices or colors are NULL");
@@ -117,24 +137,25 @@ void drawTriangle(Model *model)
     GLint vertexIndex = 0, colorIndex = 0, texCoordIndex = 0;
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
     {
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawTriangle()-> face %d ITERATION STARTED", faceIndex);
+
         BOOL EnableTexture = FALSE;
-        if( (model->textureVariables[faceIndex]) >= 0)
+
+        if(model->textureVariables[faceIndex] >= 0)
         {
             EnableTexture = TRUE;
-
             //bind texture
             glBindTexture(GL_TEXTURE_2D, allLoadedTextureIdentifiers_Array[model->textureVariables[faceIndex]]);
-
             //reset color
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        
+
         glBegin(GL_TRIANGLES);
         {
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :\n");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
             
             //Vertex1
             if(EnableTexture)
@@ -144,8 +165,8 @@ void drawTriangle(Model *model)
             glVertex3f(model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
 
             //Vertex2
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
             else
@@ -154,8 +175,8 @@ void drawTriangle(Model *model)
 
 
             //Vertex3
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
             
             if(EnableTexture)
@@ -177,7 +198,7 @@ void drawTriangle(Model *model)
     }
 
     glPopMatrix();
-    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************createTriangle() completed ***********");
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawTriangle() completed ***********");
 }
 
 void createQuad(Model *model)
@@ -532,7 +553,7 @@ void createPyramid(Model *model)
     }
     //allocate memory for textureVariables in a model struct and fill default values in it 
     model->textureVariables = NULL;
-    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
+    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
         model->textureVariables[i] = -1;
@@ -594,10 +615,10 @@ void drawPyramid(Model *model)
         
         glBegin(GL_TRIANGLES);
         {
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :\n");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Printing primitive details :");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
             //Vertex1
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -606,8 +627,8 @@ void drawPyramid(Model *model)
             glVertex3f(model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
 
             //Vertex2
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
             else
@@ -616,9 +637,9 @@ void drawPyramid(Model *model)
 
 
             //Vertex3
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}\n",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}\n",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG]Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("[DEBUG] &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
             else    
