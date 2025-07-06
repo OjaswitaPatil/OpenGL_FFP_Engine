@@ -24,7 +24,7 @@ pause
 REM ==========================
 REM COMPILATION CONFIGURATION
 REM ==========================
-set LOG_LEVEL_DEFINE=/DLOG_LEVEL=5
+set LOG_LEVEL_DEFINE=/DLOG_LEVEL=3
 set INCLUDE_DIR=/I "C:\\glew-2.1.0\\include"
 
 REM ====================

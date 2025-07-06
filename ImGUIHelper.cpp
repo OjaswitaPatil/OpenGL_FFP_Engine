@@ -234,9 +234,58 @@ void generateUI()
                     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("generateUI() -> Model rotation updated.");
 					ImGui::TreePop();
 				}
-				//--- COlor -----
-				if(ImGui::TreeNode("Shape's Color"))
+
+				//--- Color and texture -----
+				// if(ImGui::TreeNode("Shape's Color"))
+				// {
+				// 	ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Individual model vertex Color");
+				// 	int numberOfColorVertices = selectedmodel->model.colorsSize / 4.0f;
+				// 	for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)
+				// 	{
+				// 		char color[] = "color";
+				// 		char index[2];
+				// 		sprintf(index, "%d", i);
+				// 		strcat(color, index);
+				// 		ImGui::ColorEdit3(color, (float*)(&selectedmodel->model.colors[j]));
+				// 	}
+				// 	ImGui::NewLine();
+
+				// 	ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Entire model's Color");
+				// 	static GLfloat colorsForAllVertices[] = {1.0f, 1.0f, 1.0f, 1.0f};
+				// 	GLfloat beforeChangeColor[] = {colorsForAllVertices[0],colorsForAllVertices[1],colorsForAllVertices[2],colorsForAllVertices[3]};
+				// 	ImGui::ColorEdit3("colorAll", (float*)colorsForAllVertices);
+
+				// 	if(colorsForAllVertices[0]!=beforeChangeColor[0] || colorsForAllVertices[1]!=beforeChangeColor[1] || colorsForAllVertices[2]!=beforeChangeColor[2])
+				// 	{
+				// 		for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)
+				// 		{
+				// 			selectedmodel->model.colors[j+0] = colorsForAllVertices[0];
+				// 			selectedmodel->model.colors[j+1] = colorsForAllVertices[1];
+				// 			selectedmodel->model.colors[j+2] = colorsForAllVertices[2];
+				// 			selectedmodel->model.colors[j+3] = colorsForAllVertices[3];
+				// 		}
+                //         LOG_DEBUG("generateUI() -> Model color changed to RGB(%.2f, %.2f, %.2f)",colorsForAllVertices[0], colorsForAllVertices[1], colorsForAllVertices[2]);
+				// 	}
+				// 	ImGui::TreePop();
+		        // }
+
+				if(ImGui::TreeNode("Shape's Colors and textures"))
 				{
+					
+					//Dropdown Logic
+					// const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK" };
+					// static int item_current = 0;
+					// ImGui::Combo("combo drowndown", &item_current, items, IM_ARRAYSIZE(items));
+					// ImGui::Text("Currently selected: %s", items[item_current]);
+
+					// for(int i = 0; i < selectedmodel->model.numberOfFaces; i++)
+					// {
+					// 	static int selectedTextureIndex = 0;
+					// 	ImGui::Combo("Select Texture", &selectedTextureIndex, allTextureNames_Array, numberOfTextureAvailablesinallTexturesArray);
+					// 	ImGui::Text("Currently selected Texture: %s", allTextureNames_Array[selectedTextureIndex]);
+					// }
+
+
 					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Individual model vertex Color");
 					int numberOfColorVertices = selectedmodel->model.colorsSize / 4.0f;
 					for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)

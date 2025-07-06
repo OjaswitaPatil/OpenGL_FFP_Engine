@@ -12,7 +12,7 @@ int addTextureNameToallTexturesArray(char *newFileName)
     int fileNameLength = strlen(newFileName);
     char *fileNameTemp = (char*)malloc(sizeof(char) * fileNameLength);
     strcpy(fileNameTemp, newFileName);
-    fprintf(gpFile, "[DEBUG]texture fileNameTemp =  %s\n", fileNameTemp);
+    fprintf(gpFile, "texture fileNameTemp =  %s\n", fileNameTemp);
 
     //Allocate memory for new allTextureNames_Array of existing size+1 and fill existing textureNames in it and then fill new textureName
     numberOfTextureAvailablesinallTexturesArray += 1;
@@ -33,7 +33,7 @@ int addTextureNameToallTexturesArray(char *newFileName)
     allTextureNames_ArrayTemp = NULL;
     for(int i= 0; i < numberOfTextureAvailablesinallTexturesArray; i++)
     {
-        fprintf(gpFile, "[DEBUG]allTextureNamesArray[%d] = %s\n", numberOfTextureAvailablesinallTexturesArray,fileNameTemp);
+        fprintf(gpFile, "allTextureNamesArray[%d] = %s\n", i,allTextureNames_Array[i]);
     }
 
     //Allocate memory for new allLoadedTextureIdentifiers_Array of existing size+1 and fill existing textureIdentifiers in it and then fill new textureIdentifiers
@@ -53,12 +53,12 @@ int addTextureNameToallTexturesArray(char *newFileName)
 
     if(loadGLTexture(&allLoadedTextureIdentifiers_Array[numberOfTextureAvailablesinallTexturesArray-1], filePath) == FALSE)
     {
-        fprintf(gpFile,"[DEBUG]Loading textureFilePath:%s at index: %d failed\n",filePath, numberOfTextureAvailablesinallTexturesArray-1);
+        fprintf(gpFile,"Loading textureFilePath:%s at index: %d failed\n",filePath, numberOfTextureAvailablesinallTexturesArray-1);
         return -1;
     }
     else
     {
-        fprintf(gpFile,"[DEBUG]Loading textureFilePath:%s at index: %d Succedded\n",filePath, numberOfTextureAvailablesinallTexturesArray-1);
+        fprintf(gpFile,"Loading textureFilePath:%s at index: %d Succedded\n",filePath, numberOfTextureAvailablesinallTexturesArray-1);
     }
 
     fprintf(gpFile, "\n\n*************addTextureNameToallTexturesArray() Completed ***********\n");
