@@ -18,6 +18,7 @@ typedef struct
 	ModelType modeltype;
 
 	GLint numberOfFaces;//for models with no fixed faces give negative value
+    GLint numberOfVerticesPerFace;
 
 	vec3 translate;
 	vec3 scale;
@@ -31,11 +32,11 @@ typedef struct
 
     GLfloat *texcoords;
 	GLint texcoordsSize;
-	GLint *textureVariables;
+	GLuint *textureVariables;
 
     GLfloat *normals;
 	GLint normalsSize;
-	
+
 	GLfloat *customModelAttributes;
 	char *text;
 }Model;

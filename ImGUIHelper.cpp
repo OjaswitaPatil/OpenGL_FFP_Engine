@@ -2,9 +2,12 @@
 #include "TextRendering.h"
 
 //Global variables for imgui UI controls
-static float triangleColor[3] = { 1.0f, 0.0f, 0.0f }; // Default red color
-bool show_demo_window = true;
-bool show_another_window = false;
+// static float triangleColor[3] = { 1.0f, 0.0f, 0.0f }; // Default red color
+// bool show_demo_window = true;
+// bool show_another_window = false;
+
+int *selectedTextureIndex = NULL;
+bool *isTextureEnabled = NULL;
 
 void setupImGUIContext()
 {
@@ -236,67 +239,94 @@ void generateUI()
 				}
 
 				//--- Color and texture -----
-				// if(ImGui::TreeNode("Shape's Color"))
-				// {
-				// 	ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Individual model vertex Color");
-				// 	int numberOfColorVertices = selectedmodel->model.colorsSize / 4.0f;
-				// 	for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)
-				// 	{
-				// 		char color[] = "color";
-				// 		char index[2];
-				// 		sprintf(index, "%d", i);
-				// 		strcat(color, index);
-				// 		ImGui::ColorEdit3(color, (float*)(&selectedmodel->model.colors[j]));
-				// 	}
-				// 	ImGui::NewLine();
-
-				// 	ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Entire model's Color");
-				// 	static GLfloat colorsForAllVertices[] = {1.0f, 1.0f, 1.0f, 1.0f};
-				// 	GLfloat beforeChangeColor[] = {colorsForAllVertices[0],colorsForAllVertices[1],colorsForAllVertices[2],colorsForAllVertices[3]};
-				// 	ImGui::ColorEdit3("colorAll", (float*)colorsForAllVertices);
-
-				// 	if(colorsForAllVertices[0]!=beforeChangeColor[0] || colorsForAllVertices[1]!=beforeChangeColor[1] || colorsForAllVertices[2]!=beforeChangeColor[2])
-				// 	{
-				// 		for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)
-				// 		{
-				// 			selectedmodel->model.colors[j+0] = colorsForAllVertices[0];
-				// 			selectedmodel->model.colors[j+1] = colorsForAllVertices[1];
-				// 			selectedmodel->model.colors[j+2] = colorsForAllVertices[2];
-				// 			selectedmodel->model.colors[j+3] = colorsForAllVertices[3];
-				// 		}
-                //         LOG_DEBUG("generateUI() -> Model color changed to RGB(%.2f, %.2f, %.2f)",colorsForAllVertices[0], colorsForAllVertices[1], colorsForAllVertices[2]);
-				// 	}
-				// 	ImGui::TreePop();
-		        // }
-
 				if(ImGui::TreeNode("Shape's Colors and textures"))
 				{
-					
-					//Dropdown Logic
-					// const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIIIIII", "JJJJ", "KKKKKKK" };
-					// static int item_current = 0;
-					// ImGui::Combo("combo drowndown", &item_current, items, IM_ARRAYSIZE(items));
-					// ImGui::Text("Currently selected: %s", items[item_current]);
+                    //initialzed needed array for fuirst time when program starts
+                    if(selectedTextureIndex == NULL || isTextureEnabled == NULL)
+                    {
+                        isTextureEnabled = (bool*)malloc(sizeof(bool) * MAX_NUMBER_OF_LOADED_TEXTURES);
 
-					// for(int i = 0; i < selectedmodel->model.numberOfFaces; i++)
-					// {
-					// 	static int selectedTextureIndex = 0;
-					// 	ImGui::Combo("Select Texture", &selectedTextureIndex, allTextureNames_Array, numberOfTextureAvailablesinallTexturesArray);
-					// 	ImGui::Text("Currently selected Texture: %s", allTextureNames_Array[selectedTextureIndex]);
-					// }
+                        selectedTextureIndex = (int*)malloc(sizeof(int) * MAX_NUMBER_OF_LOADED_TEXTURES);
 
+                        if(selectedTextureIndex == NULL || isTextureEnabled == NULL)
+                        {
+                            LOG_ERROR("generateUI() -> Memory allocation failed for isTextureEnabled or selectedTextureIndex.");
+                            return;
+                        }
+                    }
 
-					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Individual model vertex Color");
-					int numberOfColorVertices = selectedmodel->model.colorsSize / 4.0f;
-					for(int i=0, j=0; i<numberOfColorVertices; i++, j+=4)
+					for(int i = 0; i < selectedmodel->model.numberOfFaces; i++)
 					{
-						char color[] = "color";
-						char index[2];
-						sprintf(index, "%d", i);
-						strcat(color, index);
-						ImGui::ColorEdit3(color, (float*)(&selectedmodel->model.colors[j]));
+                        // Initialize texture enabled state based on existing textureVariables values of selectedModel
+                        if(selectedmodel->model.textureVariables[i] && selectedmodel->model.textureVariables[i] > 0)
+                        {
+                            isTextureEnabled[i] = true;
+
+                            //search already applied texture index in Global names texture array and set selectedTextureIndex[i] to that index
+                            selectedTextureIndex[i] = 0;//initialize to first texture index
+                            for(int j = 0; j < numberOfTextureAvailablesinallTexturesArray; j++)
+                            {
+                                if(allLoadedTextureIdentifiers_Array[j] == selectedmodel->model.textureVariables[i])
+                                {
+                                    selectedTextureIndex[i] = j; // Find the index of the currently selected texture
+                                    break;
+                                }
+                            }
+
+                        }
+                        else
+                        {
+                            isTextureEnabled[i] = false;
+                            selectedTextureIndex[i] = 0;//initialize to first texture index
+                        }
+
+                        //texture checkbox
+                        char TextureEnableForFace[64];
+                        sprintf(TextureEnableForFace, "EnableTexture%d", i+1); // Format label per Face
+                        ImGui::Text("Face: %d", i+1); // Format label per Face
+                        ImGui::Checkbox(TextureEnableForFace, &isTextureEnabled[i]);
+
+                        //if texture checkbox is enabled then show texture selection combo box and apply selected texture in per model textureVariables array
+                        if(isTextureEnabled[i] == true)
+                        {
+                            char TextureForFace[64];
+                            sprintf(TextureForFace, "Texture%d", i+1); // Format label per Face
+                            ImGui::Combo(TextureForFace, &selectedTextureIndex[i], allTextureNames_Array, numberOfTextureAvailablesinallTexturesArray);
+                            ImGui::Text("Currently selected Texture: %s", allTextureNames_Array[selectedTextureIndex[i]]);
+
+                            selectedmodel->model.textureVariables[i] = allLoadedTextureIdentifiers_Array[selectedTextureIndex[i]];//added texture id from global texture array to per model textureVariables array
+                        }
+                        //Do not show combobox as texture checkbox is unchecked. In this case color UI per face should be shown
+                        else
+                        {
+                            if(selectedmodel->model.textureVariables[i])
+                                selectedmodel->model.textureVariables[i]= 0;//apply 0 on disabling texture checkbox
+
+                            //per face color logic
+                            ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Per face vertex Color");
+                            for(int j=0, k=i*selectedmodel->model.numberOfVerticesPerFace*4; j<selectedmodel->model.numberOfVerticesPerFace; j++, k+=4)
+                            {
+                                char faceColor[] = "Face";
+                                char index[3];//2 digit index support(max number of vertex per face 999 and max faces 999)
+                                sprintf(index, "%d", i+1);
+                                strcat(faceColor, index);
+                                char color[] = "-Color";
+                                sprintf(index, "%d", j+1);
+                                strcat(color, index);
+                                strcat(faceColor, color);
+
+
+                                ImGui::ColorEdit3(faceColor, (float*)(&selectedmodel->model.colors[k]));
+                            }
+
+
+                        }
 					}
-					ImGui::NewLine();
+
+                    ImGui::NewLine();
+
+                    // changing entire model color at once
+					int numberOfColorVertices = selectedmodel->model.colorsSize / 4.0f;
 
 					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Entire model's Color");
 					static GLfloat colorsForAllVertices[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -349,10 +379,18 @@ void renderGeneratedUI()
 void uninitializeImGUI()
 {
     LOG_DEBUG("*************uninitializeImGUI() started ***********");
+
+    //free up allocated memory
+    free(selectedTextureIndex);
+    selectedTextureIndex = NULL;
+    free(isTextureEnabled);
+    isTextureEnabled = NULL;
+
     // Cleanup ImGui
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
+
     LOG_DEBUG("*************uninitializeImGUI() Completed ***********");
 }
 

@@ -20,17 +20,18 @@ void createTriangle(Model *model)
     GLfloat modelTexCoord[] = {
         //FACE 1
         0.5f, 1.0f,
-        0.0f, 0.0f, 
+        0.0f, 0.0f,
         1.0f, 0.0f
         };
 
     LOG_DEBUG("*************createTriangle() started ***********");
-    
+
     model->modeltype = TRIANGLE;
 
     model->numberOfFaces = 1;
+    model->numberOfVerticesPerFace = 3;
 
-    //allocate memory for vertices in a model struct and fill the vertices 
+    //allocate memory for vertices in a model struct and fill the vertices
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
@@ -77,9 +78,9 @@ void createTriangle(Model *model)
         model->vertices = NULL;
         return;
     }
-    //allocate memory for textureVariables in a model struct and fill default values in it 
+    //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
-    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
     if(model->textureVariables == NULL)
     {
         LOG_ERROR("createTriangle() -> Memory allocation failed for textureVariables of triangle model");
@@ -93,7 +94,7 @@ void createTriangle(Model *model)
     }
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
-        model->textureVariables[i] = -1;
+        model->textureVariables[i] = 0;
     }
 
     //normals
@@ -141,11 +142,11 @@ void drawTriangle(Model *model)
 
         BOOL EnableTexture = FALSE;
 
-        if(model->textureVariables[faceIndex] >= 0)
+        if(model->textureVariables[faceIndex] > 0)
         {
             EnableTexture = TRUE;
             //bind texture
-            glBindTexture(GL_TEXTURE_2D, allLoadedTextureIdentifiers_Array[model->textureVariables[faceIndex]]);
+            glBindTexture(GL_TEXTURE_2D, model->textureVariables[faceIndex]);
             //reset color
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -180,10 +181,10 @@ void drawTriangle(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
-            
+
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             glVertex3f(model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
         }
@@ -243,6 +244,7 @@ void createQuad(Model *model)
     model->modeltype = RECTANGLE;
 
     model->numberOfFaces = 1;
+    model->numberOfVerticesPerFace = 6;
 
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
@@ -289,9 +291,9 @@ void createQuad(Model *model)
         model->vertices = NULL;
         return;
     }
-    //allocate memory for textureVariables in a model struct and fill default values in it 
+    //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
-    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
     if(model->textureVariables == NULL)
     {
         LOG_ERROR("createQuad() -> Memory allocation failed for textureVariables of quad model");
@@ -305,7 +307,7 @@ void createQuad(Model *model)
     }
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
-        model->textureVariables[i] = 2;
+        model->textureVariables[i] = 0;
     }
 
     //normals
@@ -352,11 +354,11 @@ void drawQuad(Model *model)
 
         BOOL EnableTexture = FALSE;
 
-        if(model->textureVariables[faceIndex] >= 0)
+        if(model->textureVariables[faceIndex] > 0)
         {
             EnableTexture = TRUE;
             //bind texture
-            glBindTexture(GL_TEXTURE_2D, allLoadedTextureIdentifiers_Array[model->textureVariables[faceIndex]]);
+            glBindTexture(GL_TEXTURE_2D, model->textureVariables[faceIndex]);
             //reset color
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -368,7 +370,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("colors: {%lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
-            
+
             //Vertex1
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -393,7 +395,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             glVertex3f(model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
 
@@ -403,7 +405,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+9], model->vertices[vertexIndex+10], model->vertices[vertexIndex+11]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+6], model->texcoords[texCoordIndex+7]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+12], model->colors[colorIndex+13], model->colors[colorIndex+14], model->colors[colorIndex+15]);
             glVertex3f(model->vertices[vertexIndex+9], model->vertices[vertexIndex+10], model->vertices[vertexIndex+11]);
 
@@ -413,7 +415,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+13], model->vertices[vertexIndex+14]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+8], model->texcoords[texCoordIndex+9]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+16], model->colors[colorIndex+17], model->colors[colorIndex+18], model->colors[colorIndex+19]);
             glVertex3f(model->vertices[vertexIndex+12], model->vertices[vertexIndex+13], model->vertices[vertexIndex+14]);
 
@@ -424,7 +426,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+20], model->colors[colorIndex+21], model->colors[colorIndex+22], model->colors[colorIndex+23]);
             glVertex3f(model->vertices[vertexIndex+15], model->vertices[vertexIndex+16], model->vertices[vertexIndex+17]);
 
@@ -460,6 +462,9 @@ void createText(Model *model)
     LOG_DEBUG("*************createText() started ***********");
 
     model->modeltype = TEXT;
+
+    model->numberOfFaces = 0;
+    model->numberOfVerticesPerFace = 0;
 
     model->vertices = NULL;
 
@@ -622,22 +627,22 @@ void createPyramid(Model *model)
      GLfloat modelTexCoord[] = {
         //FACE 1
         0.5f, 1.0f,
-        0.0f, 0.0f, 
+        0.0f, 0.0f,
         1.0f, 0.0f,
 
         //FACE 2
         0.5f, 1.0f,
-        0.0f, 0.0f, 
+        0.0f, 0.0f,
         1.0f, 0.0f,
 
         //FACE 3
         0.5f, 1.0f,
-        0.0f, 0.0f, 
+        0.0f, 0.0f,
         1.0f, 0.0f,
 
         //FACE 4
         0.5f, 1.0f,
-        0.0f, 0.0f, 
+        0.0f, 0.0f,
         1.0f, 0.0f
         };
 
@@ -646,9 +651,10 @@ void createPyramid(Model *model)
     model->modeltype = PYRAMID;
 
     model->numberOfFaces = 4;
+    model->numberOfVerticesPerFace = 3;
 
 
-    //allocate memory for vertices in a model struct and fill the vertices 
+    //allocate memory for vertices in a model struct and fill the vertices
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
     model->vertices = (GLfloat*)malloc(sizeof(GLfloat) * model->verticesSize);
@@ -686,12 +692,12 @@ void createPyramid(Model *model)
     {
         model->texcoords[i] = modelTexCoord[i];
     }
-    //allocate memory for textureVariables in a model struct and fill default values in it 
+    //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
-    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
-        model->textureVariables[i] = -1;
+        model->textureVariables[i] = 0;
     }
 
 
@@ -737,17 +743,17 @@ void drawPyramid(Model *model)
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
     {
         BOOL EnableTexture = FALSE;
-        if( (model->textureVariables[faceIndex]) >= 0)
+        if( (model->textureVariables[faceIndex]) > 0)
         {
             EnableTexture = TRUE;
 
             //bind texture
-            glBindTexture(GL_TEXTURE_2D, allLoadedTextureIdentifiers_Array[model->textureVariables[faceIndex]]);
+            glBindTexture(GL_TEXTURE_2D, model->textureVariables[faceIndex]);
 
             //reset color
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        
+
         glBegin(GL_TRIANGLES);
         {
             //Vertex1
@@ -778,10 +784,10 @@ void drawPyramid(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
-            
+
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             glVertex3f(model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
         }
@@ -980,6 +986,7 @@ void createCube(Model *model)
     model->modeltype = CUBE;
 
     model->numberOfFaces = 6;
+    model->numberOfVerticesPerFace = 6;
 
     model->vertices = NULL;
     model->verticesSize = sizeof(modelVertices) / sizeof(modelVertices[0]);
@@ -1026,9 +1033,9 @@ void createCube(Model *model)
         model->vertices = NULL;
         return;
     }
-    //allocate memory for textureVariables in a model struct and fill default values in it 
+    //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
-    model->textureVariables = (GLint*)malloc(sizeof(GLint) * model->numberOfFaces);
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
     if(model->textureVariables == NULL)
     {
         LOG_ERROR("createQuad() -> Memory allocation failed for textureVariables of quad model");
@@ -1042,7 +1049,7 @@ void createCube(Model *model)
     }
     for(GLint i = 0; i < model->numberOfFaces; i++)
     {
-        model->textureVariables[i] = 2;
+        model->textureVariables[i] = 0;
     }
 
     //normals
@@ -1090,11 +1097,11 @@ void drawCube(Model *model)
 
         BOOL EnableTexture = FALSE;
 
-        if(model->textureVariables[faceIndex] >= 0)
+        if(model->textureVariables[faceIndex] > 0)
         {
             EnableTexture = TRUE;
             //bind texture
-            glBindTexture(GL_TEXTURE_2D, allLoadedTextureIdentifiers_Array[model->textureVariables[faceIndex]]);
+            glBindTexture(GL_TEXTURE_2D, model->textureVariables[faceIndex]);
             //reset color
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
@@ -1106,7 +1113,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("colors: {%lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
-            
+
             //Vertex1
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -1131,7 +1138,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             glVertex3f(model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
 
@@ -1141,7 +1148,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+9], model->vertices[vertexIndex+10], model->vertices[vertexIndex+11]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+6], model->texcoords[texCoordIndex+7]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+12], model->colors[colorIndex+13], model->colors[colorIndex+14], model->colors[colorIndex+15]);
             glVertex3f(model->vertices[vertexIndex+9], model->vertices[vertexIndex+10], model->vertices[vertexIndex+11]);
 
@@ -1151,7 +1158,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+13], model->vertices[vertexIndex+14]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+8], model->texcoords[texCoordIndex+9]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+16], model->colors[colorIndex+17], model->colors[colorIndex+18], model->colors[colorIndex+19]);
             glVertex3f(model->vertices[vertexIndex+12], model->vertices[vertexIndex+13], model->vertices[vertexIndex+14]);
 
@@ -1162,7 +1169,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
-            else    
+            else
                 glColor4f(model->colors[colorIndex+20], model->colors[colorIndex+21], model->colors[colorIndex+22], model->colors[colorIndex+23]);
             glVertex3f(model->vertices[vertexIndex+15], model->vertices[vertexIndex+16], model->vertices[vertexIndex+17]);
 

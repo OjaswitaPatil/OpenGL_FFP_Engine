@@ -405,7 +405,7 @@ int initialize(void)
     screenRotate.rotate.z = 0.0f;
 
     //load texture test
-    addTextureNameToallTexturesArray("Stone.bmp"); 
+    addTextureNameToallTexturesArray("Stone.bmp");
     addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
     addTextureNameToallTexturesArray("Smiley.bmp");
     addTextureNameToallTexturesArray("marble.bmp");
@@ -521,7 +521,7 @@ void uninitialize(void)
             glDeleteTextures(1, &allLoadedTextureIdentifiers_Array[0]);
             allLoadedTextureIdentifiers_Array[0] = 0;
         }
-        free(allTextureNames_Array[i]); 
+        free(allTextureNames_Array[i]);
     }
     free(allLoadedTextureIdentifiers_Array);
     free(allTextureNames_Array);
