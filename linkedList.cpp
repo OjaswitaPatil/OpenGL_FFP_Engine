@@ -37,6 +37,18 @@ void createModel(ModelType modelType)
         case CUBE:
         createCube(&ptr->model);
         break;
+
+        case SPHERE:
+        createSphere(&ptr->model);
+        break;
+
+        case CYLINDER:
+        createCylinder(&ptr->model);
+        break;
+
+        case DISK:
+        createDisk(&ptr->model);
+        break;
     }
 
     ptr->next = NULL;

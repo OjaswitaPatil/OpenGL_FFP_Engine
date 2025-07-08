@@ -37,6 +37,8 @@ BOOL gbEscapeKeyIsPress = FALSE;
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
 
+GLUquadric *quadric = NULL;
+
 //###imgui###
 // Forward declare message handler from imgui_impl_win32.cpp
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -409,9 +411,17 @@ int initialize(void)
     addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
     addTextureNameToallTexturesArray("Smiley.bmp");
     addTextureNameToallTexturesArray("marble.bmp");
+    addTextureNameToallTexturesArray("lamp1.png");
+    addTextureNameToallTexturesArray("flowers.png");
+    addTextureNameToallTexturesArray("kangaru3.png");
+    addTextureNameToallTexturesArray("rightTree.png");
+    addTextureNameToallTexturesArray("tree1.png");
 
     //enable texturing
     glEnable(GL_TEXTURE_2D);
+
+    quadric = gluNewQuadric();
+    gluQuadricTexture(quadric, GL_TRUE);
 
     LOG_DEBUG("*************initialize() Completed ***********");
 
@@ -551,6 +561,11 @@ void uninitialize(void)
     {
         DestroyWindow(ghwnd);
         ghwnd = NULL;
+    }
+    if(quadric)
+    {
+        gluDeleteQuadric(quadric);
+        quadric = NULL;
     }
 
     // close the file

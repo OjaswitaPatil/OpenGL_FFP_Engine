@@ -3,9 +3,7 @@
 
 // win32 headers
 #include<windows.h>
-
 #include<math.h>
-
 #include "Logging.h"
 
 // openGl related header files
@@ -32,5 +30,7 @@ extern struct ScreenRotate screenRotate;
 extern HDC ghdc;
 
 extern HWND ghwnd;
+
+extern GLUquadric *quadric;
 
 #endif

@@ -136,6 +136,29 @@ void generateUI()
                 LOG_DEBUG("generateUI() -> TEXT popup opened.");
 			}
 
+			if (ImGui::Button("CYLINDER"))
+			{
+				createModel(CYLINDER);
+				scaleAllOffSet = 0.0f;
+                LOG_DEBUG("generateUI() -> CYALINDER model created.");
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("SPHERE"))
+			{
+				createModel(SPHERE);
+				scaleAllOffSet = 0.0f;
+                LOG_DEBUG("generateUI() -> Sphere model created.");
+			}
+
+			ImGui::SameLine();
+			if (ImGui::Button("DISK"))
+			{
+				createModel(DISK);
+				scaleAllOffSet = 0.0f;
+                LOG_DEBUG("generateUI() -> disk model created.");
+			}
+
 			if (ImGui::BeginPopup("MyPopup"))
 			{
 				static char inputText[128] = "";
@@ -346,6 +369,46 @@ void generateUI()
 					}
 					ImGui::TreePop();
 		        }
+
+				//custom attributes
+				if(selectedmodel->model.customModelAttributes != NULL)
+				{
+					if(ImGui::TreeNode("Shape's Custom attributes"))
+					{
+						static bool enableWireframe = false;
+						ImGui::Checkbox("Enable Wireframe", &enableWireframe);
+						if(enableWireframe == true)
+							selectedmodel->model.customModelAttributes[0]= 0.0f;
+						else
+							selectedmodel->model.customModelAttributes[0]= 1.0f;
+
+						//SPHERE
+						if(selectedmodel->model.modeltype == SPHERE)
+						{
+							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[1]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[2]), 1.0f, 60.0f);
+						}
+						//CYLINDER
+						if(selectedmodel->model.modeltype == CYLINDER)
+						{
+							ImGui::SliderFloat("1st opening radius", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
+							ImGui::SliderFloat("2nd opening radius", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Length", &(selectedmodel->model.customModelAttributes[3]), 0.0f, 20.0f);
+							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[5]), 1.0f, 60.0f);
+						}
+						//DISK
+						if(selectedmodel->model.modeltype == DISK)
+						{
+							ImGui::SliderFloat("Inner radius", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Outer radius", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[3]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
+						}
+						ImGui::Text("currently selected shape= %d", selectedmodel->model.modeltype);
+						ImGui::TreePop();
+					}
+				}
 
 				if (ImGui::TreeNode("Blending"))
 				{

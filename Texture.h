@@ -10,5 +10,7 @@ extern GLint numberOfTextureAvailablesinallTexturesArray;
 
 int addTextureNameToallTexturesArray(char *);
 BOOL loadGLTexture(GLuint *texture, char* imageFilePath);
+BOOL loadGLBMPTexture(GLuint *texture, char* imageFilePath);
+BOOL loadGLPNGTexture(GLuint *texture, char* imageFilePath);
 
 #endif

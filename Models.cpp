@@ -1191,6 +1191,362 @@ void drawCube(Model *model)
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCube() completed ***********");
 }
 
+void createSphere(Model *model)
+{
+    GLfloat modelColor[] = {
+        //FACE 1
+        1.0f, 0.0f, 0.0f, 1.0f,
+        };
+
+    //allocate memory for colors in a model struct and fill the colrs
+    model->colors = NULL;
+    model->colorsSize = sizeof(modelColor) / sizeof(modelColor[0]);
+    model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createSphere() -> Memory allocation failed for colors of sphere model");
+        return;
+    }
+    for(GLint i = 0; i < model->colorsSize; i++)
+    {
+        model->colors[i] = modelColor[i];
+    }
+
+    model->modeltype = SPHERE;
+
+    model->numberOfFaces = 1;
+    model->numberOfVerticesPerFace = 1;
+
+    //allocate memory for textureVariables in a model struct and fill default values in it
+    model->textureVariables = NULL;
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
+    if(model->textureVariables == NULL)
+    {
+        LOG_ERROR("createSphere() -> Memory allocation failed for textureVariables of sphere model");
+        free(model->textureVariables);
+        model->textureVariables = NULL;
+        free(model->colors);
+        model->colors = NULL;
+        return;
+    }
+    for(GLint i = 0; i < model->numberOfFaces; i++)
+    {
+        model->textureVariables[i] = 0;
+    }
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
+
+    model->translate.x = 0.0f;
+    model->translate.y = 0.0f;
+    model->translate.z = 0.0f;
+
+    model->scale.x = 1.0f;
+    model->scale.y = 1.0f;
+    model->scale.z = 1.0f;
+
+    model->rotationAngle.x = 0.0f;
+    model->rotationAngle.y = 0.0f;
+    model->rotationAngle.z = 0.0f;
+
+    model->customModelAttributesCount = 3;
+
+    model->customModelAttributes = (float*)malloc(sizeof(float) * model->customModelAttributesCount);
+    model->customModelAttributes[0] = 1.0f;   //glu fill
+    model->customModelAttributes[1] = 20.0f;  //slices
+    model->customModelAttributes[2] = 20.0f;  //stacks
+
+    LOG_DEBUG("*************createSphere() completed ***********");
+}
+
+void drawSphere(Model *model)
+{
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("drawSphere() -> Model colors are NULL");
+        return;
+    }
+
+    glPushMatrix();
+
+    glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(model->scale.x, model->scale.y, model->scale.z);
+
+    BOOL EnableTexture = FALSE;
+
+    if((int)model->customModelAttributes[0] == 1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+
+    gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
+
+    if(model->textureVariables[0] > 0)
+    {
+        EnableTexture = TRUE;
+        //bind texture
+        glBindTexture(GL_TEXTURE_2D, model->textureVariables[0]);
+        //reset color
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    else
+    {
+        glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
+    }
+
+    gluSphere(quadric, 0.75f, model->customModelAttributes[1], model->customModelAttributes[2]);
+
+    if(EnableTexture)
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    glPopMatrix();
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() completed ***********");
+}
+
+void createCylinder(Model *model)
+{
+    GLfloat modelColor[] = {
+        //FACE 1
+        1.0f, 0.0f, 0.0f, 1.0f,
+        };
+
+    //allocate memory for colors in a model struct and fill the colrs
+    model->colors = NULL;
+    model->colorsSize = sizeof(modelColor) / sizeof(modelColor[0]);
+    model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createCylinder() -> Memory allocation failed for colors of cylinder model");
+        return;
+    }
+    for(GLint i = 0; i < model->colorsSize; i++)
+    {
+        model->colors[i] = modelColor[i];
+    }
+
+    model->modeltype = CYLINDER;
+
+    model->numberOfFaces = 1;
+    model->numberOfVerticesPerFace = 1;
+
+    //allocate memory for textureVariables in a model struct and fill default values in it
+    model->textureVariables = NULL;
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
+    if(model->textureVariables == NULL)
+    {
+        LOG_ERROR("createCylinder() -> Memory allocation failed for textureVariables of cylinder model");
+        free(model->textureVariables);
+        model->textureVariables = NULL;
+        free(model->colors);
+        model->colors = NULL;
+        return;
+    }
+    for(GLint i = 0; i < model->numberOfFaces; i++)
+    {
+        model->textureVariables[i] = 0;
+    }
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
+
+    model->translate.x = 0.0f;
+    model->translate.y = 0.0f;
+    model->translate.z = 0.0f;
+
+    model->scale.x = 1.0f;
+    model->scale.y = 1.0f;
+    model->scale.z = 1.0f;
+
+    model->rotationAngle.x = 0.0f;
+    model->rotationAngle.y = 0.0f;
+    model->rotationAngle.z = 0.0f;
+
+    model->customModelAttributesCount = 6;
+
+    model->customModelAttributes = (float*)malloc(sizeof(float) * model->customModelAttributesCount);
+    model->customModelAttributes[0] = 1.0f;   //glu fill
+    model->customModelAttributes[1] = 0.5f;  //1st opening
+    model->customModelAttributes[2] = 0.5f;  //2nd opening
+    model->customModelAttributes[3] = 4.0f;  //length
+    model->customModelAttributes[4] = 20.0f;  //slices
+    model->customModelAttributes[5] = 20.0f;  //stacks
+
+    LOG_DEBUG("*************createcylinder() completed ***********");
+}
+
+void drawCylinder(Model *model)
+{
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("drawcylinder() -> Model colors are NULL");
+        return;
+    }
+
+    glPushMatrix();
+
+    glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(model->scale.x, model->scale.y, model->scale.z);
+
+    BOOL EnableTexture = FALSE;
+
+    if((int)model->customModelAttributes[0] == 1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+
+    gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
+
+    if(model->textureVariables[0] > 0)
+    {
+        EnableTexture = TRUE;
+        //bind texture
+        glBindTexture(GL_TEXTURE_2D, model->textureVariables[0]);
+        //reset color
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    else
+    {
+        glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
+    }
+
+    gluCylinder(quadric, model->customModelAttributes[1], model->customModelAttributes[2],model->customModelAttributes[3], model->customModelAttributes[4], model->customModelAttributes[5]);
+
+    if(EnableTexture)
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    glPopMatrix();
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawcylinder() completed ***********");
+}
+
+void createDisk(Model *model)
+{
+    GLfloat modelColor[] = {
+        //FACE 1
+        1.0f, 0.0f, 0.0f, 1.0f,
+        };
+
+    //allocate memory for colors in a model struct and fill the colrs
+    model->colors = NULL;
+    model->colorsSize = sizeof(modelColor) / sizeof(modelColor[0]);
+    model->colors = (GLfloat*)malloc(sizeof(GLfloat) * model->colorsSize);
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("createdisk() -> Memory allocation failed for colors of disk model");
+        return;
+    }
+    for(GLint i = 0; i < model->colorsSize; i++)
+    {
+        model->colors[i] = modelColor[i];
+    }
+
+    model->modeltype = DISK;
+
+    model->numberOfFaces = 1;
+    model->numberOfVerticesPerFace = 1;
+
+    //allocate memory for textureVariables in a model struct and fill default values in it
+    model->textureVariables = NULL;
+    model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
+    if(model->textureVariables == NULL)
+    {
+        LOG_ERROR("createdisk() -> Memory allocation failed for textureVariables of disk model");
+        free(model->textureVariables);
+        model->textureVariables = NULL;
+        free(model->colors);
+        model->colors = NULL;
+        return;
+    }
+    for(GLint i = 0; i < model->numberOfFaces; i++)
+    {
+        model->textureVariables[i] = 0;
+    }
+
+    //normals
+    model->normals = NULL;
+    model->normalsSize = 0;
+
+    model->translate.x = 0.0f;
+    model->translate.y = 0.0f;
+    model->translate.z = 0.0f;
+
+    model->scale.x = 1.0f;
+    model->scale.y = 1.0f;
+    model->scale.z = 1.0f;
+
+    model->rotationAngle.x = 0.0f;
+    model->rotationAngle.y = 0.0f;
+    model->rotationAngle.z = 0.0f;
+
+    model->customModelAttributesCount = 5;
+
+    model->customModelAttributes = (float*)malloc(sizeof(float) * model->customModelAttributesCount);
+    model->customModelAttributes[0] = 1.0f;   //glu fill
+    model->customModelAttributes[1] = 0.5f;  //inner radius
+    model->customModelAttributes[2] = 2.0f;  //outer radius
+    model->customModelAttributes[3] = 20.0f;  //slices
+    model->customModelAttributes[4] = 20.0f;  //stack
+
+    LOG_DEBUG("*************createdisk() completed ***********");
+}
+
+void drawDisk(Model *model)
+{
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
+    if(model->colors == NULL)
+    {
+        LOG_ERROR("drawdisk() -> Model colors are NULL");
+        return;
+    }
+
+    glPushMatrix();
+
+    glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(model->scale.x, model->scale.y, model->scale.z);
+
+    BOOL EnableTexture = FALSE;
+
+    if((int)model->customModelAttributes[0] == 1)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
+    else
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+
+    gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
+
+    if(model->textureVariables[0] > 0)
+    {
+        EnableTexture = TRUE;
+        //bind texture
+        glBindTexture(GL_TEXTURE_2D, model->textureVariables[0]);
+        //reset color
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    }
+    else
+    {
+        glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
+    }
+
+    gluDisk(quadric, model->customModelAttributes[1], model->customModelAttributes[2],model->customModelAttributes[3], model->customModelAttributes[4]);
+
+    if(EnableTexture)
+        glBindTexture(GL_TEXTURE_2D, 0);
+
+    glPopMatrix();
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawDisk() completed ***********");
+}
+
 void drawModel(Model *model)
 {
     switch(model->modeltype)
@@ -1213,6 +1569,18 @@ void drawModel(Model *model)
 
         case CUBE:
         drawCube(model);
+        break;
+
+        case SPHERE:
+        drawSphere(model);
+        break;
+
+        case CYLINDER:
+        drawCylinder(model);
+        break;
+
+        case DISK:
+        drawDisk(model);
         break;
     }
 }

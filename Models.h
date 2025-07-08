@@ -11,6 +11,9 @@ typedef enum
     TEXT,
 	PYRAMID,
 	CUBE,
+	SPHERE,
+	CYLINDER,
+	DISK,
 }ModelType;
 
 typedef struct
@@ -37,7 +40,9 @@ typedef struct
     GLfloat *normals;
 	GLint normalsSize;
 
+	GLint customModelAttributesCount;
 	GLfloat *customModelAttributes;
+
 	char *text;
 }Model;
 
@@ -55,6 +60,15 @@ void drawPyramid(Model *model);
 
 void createCube(Model *model);
 void drawCube(Model *model);
+
+void createSphere(Model *model);
+void drawSphere(Model *model);
+
+void createCylinder(Model *model);
+void drawCylinder(Model *model);
+
+void createDisk(Model *model);
+void drawDisk(Model *model);
 
 void drawModel();
 

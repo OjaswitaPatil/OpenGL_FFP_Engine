@@ -1,5 +1,9 @@
 #include "Texture.h"
 
+//to avoid multiple linking keep this in  .cpp file
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 char **allTextureNames_Array = NULL;
 GLuint *allLoadedTextureIdentifiers_Array = NULL;
 GLint numberOfTextureAvailablesinallTexturesArray = 0;
@@ -55,7 +59,7 @@ int addTextureNameToallTexturesArray(char *newFileName)
 
 
     //Create textureIdentifier for new texture and add that textureIdentifier into allLoadedTextureIdentifiers_Array
-    char filePath[MAX_FILE_PATH_LENGTH]="resources/bmp_textures/\0";
+    char filePath[MAX_FILE_PATH_LENGTH]="resources/textures/\0";
     strcat(filePath,allTextureNames_Array[numberOfTextureAvailablesinallTexturesArray-1]);
 
     if(loadGLTexture(&allLoadedTextureIdentifiers_Array[numberOfTextureAvailablesinallTexturesArray-1], filePath) == FALSE)
@@ -78,6 +82,36 @@ int addTextureNameToallTexturesArray(char *newFileName)
 }
 
 BOOL loadGLTexture(GLuint *texture, char* imageFilePath)
+{
+    // VARIABLE DECLARATIONS
+    BOOL bResult = FALSE;
+
+    if (strstr(imageFilePath, ".bmp") != NULL)
+    {
+        bResult = loadGLBMPTexture(texture, imageFilePath);
+        if(bResult)
+            LOG_DEBUG("Loaded bmp texture successfully : %s", imageFilePath);
+        else
+            LOG_ERROR("Loading bmp texture failed!! : %s", imageFilePath);
+    }
+    else if(strstr(imageFilePath, ".png") != NULL)
+    {
+        bResult = loadGLPNGTexture(texture, imageFilePath);
+        if(bResult)
+            LOG_DEBUG("Loaded png texture successfully : %s", imageFilePath);
+        else
+            LOG_ERROR("Loading png texture failed!! : %s", imageFilePath);
+    }
+    else
+    {
+        LOG_ERROR("file extension is not compatible for texture loading %s", imageFilePath);
+        bResult = FALSE;
+    }
+    
+    return bResult;
+}
+
+BOOL loadGLBMPTexture(GLuint *texture, char* imageFilePath)
 {
     // VARIABLE DECLARATIONS
     HBITMAP hBitmap = NULL;
@@ -114,5 +148,41 @@ BOOL loadGLTexture(GLuint *texture, char* imageFilePath)
 
 }
 
+BOOL loadGLPNGTexture(GLuint *texture, char* imageFilePath)
+{
+	// variable declaraions
+	int w = 0;
+	int h = 0;
+	int comp = 0;
 
+	unsigned char *image = stbi_load(imageFilePath, &w, &h, &comp, STBI_rgb_alpha);
+	BOOL bResult = FALSE;
+
+	if(image)
+	{
+		bResult = TRUE;
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+		glGenTextures(1, texture);
+		glBindTexture(GL_TEXTURE_2D, *texture);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+		if (comp == 3)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+		}
+		else if(comp == 4)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+		}
+		
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+
+		stbi_image_free(image);
+	}
+
+	return(bResult);
+
+}
 
