@@ -7,3 +7,4 @@ wchar_t* CharToWideChar(const char* ansiStr)
     return wideStr;
 }
 
+

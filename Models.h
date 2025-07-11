@@ -8,11 +8,11 @@ typedef enum
 {
 	TRIANGLE = 0,
 	RECTANGLE,
-    TEXT,
 	PYRAMID,
 	CUBE,
-	SPHERE,
+    TEXT,
 	CYLINDER,
+	SPHERE,
 	DISK,
 }ModelType;
 
@@ -75,6 +75,8 @@ void drawModel();
 //Grid
 void drawGridAroundSelectedModel(Model *model);
 void drawGridForEntireScene(void);
+
+char* getModelNameFromModelType(ModelType modelType);
 
 #endif
 

@@ -416,6 +416,10 @@ int initialize(void)
     addTextureNameToallTexturesArray("kangaru3.png");
     addTextureNameToallTexturesArray("rightTree.png");
     addTextureNameToallTexturesArray("tree1.png");
+    addTextureNameToallTexturesArray("stoneWall.png");
+    addTextureNameToallTexturesArray("students1.png");
+    addTextureNameToallTexturesArray("tree2.png");
+    addTextureNameToallTexturesArray("folwer.png");
 
     //enable texturing
     glEnable(GL_TEXTURE_2D);

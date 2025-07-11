@@ -1,5 +1,6 @@
 #include "ImGUIHelper.h"
 #include "TextRendering.h"
+#include "SaveAndLoadModels.h"
 
 //Global variables for imgui UI controls
 // static float triangleColor[3] = { 1.0f, 0.0f, 0.0f }; // Default red color
@@ -193,6 +194,16 @@ void generateUI()
                 {
                     LOG_WARN("generateUI() -> Attempted to delete model, but none is selected.");
                 }
+			}
+
+			ImGui::NewLine();
+			if (ImGui::Button("Savemodel"))
+			{
+				BOOL resultSaveMode = saveModel();
+				if(resultSaveMode == TRUE)
+                	LOG_INFO("generateUI() -> model Saved succesfully.");
+				else
+					LOG_ERROR("generateUI() -> model Saving failed.");
 			}
 		}
 

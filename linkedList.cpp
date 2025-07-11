@@ -3,6 +3,7 @@
 struct Node *head = NULL;
 struct Node *last = NULL;
 struct Node *selectedmodel = head;
+struct Node *saveAndLoadModelPtr = head;
 
 void createModel(ModelType modelType)
 {

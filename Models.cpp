@@ -114,6 +114,8 @@ void createTriangle(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+    model->text = NULL;
 
     LOG_DEBUG("*************createTriangle() completed ***********");
 }
@@ -327,6 +329,8 @@ void createQuad(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+    model->text = NULL;
 
     LOG_DEBUG("*************createQuad() completed ***********");
 }
@@ -467,6 +471,7 @@ void createText(Model *model)
     model->numberOfVerticesPerFace = 0;
 
     model->vertices = NULL;
+    model->verticesSize = 0;
 
     model->colors = NULL;
     model->colorsSize = sizeof(modelColors) / sizeof(modelColors[0]);
@@ -480,6 +485,10 @@ void createText(Model *model)
     {
         model->colors[i] = modelColors[i];
     }
+
+    model->texcoords = 0;
+    model->texcoordsSize = 0;
+    model->textureVariables = 0;
 
     //texcoords
     model->texcoords = NULL;
@@ -502,9 +511,10 @@ void createText(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+    model->customModelAttributesCount = NULL;
 
     //get Text
-    model->text = (char*)malloc(sizeof(textString));
+    model->text = (char*)malloc(strlen(textString) + 1);
     if(model->text == NULL)
     {
         LOG_ERROR("createText() -> Memory allocation failed for text of TEXT model");
@@ -512,7 +522,8 @@ void createText(Model *model)
         model->colors = NULL;
         return;
     }
-    strncpy(model->text, textString, strlen(model->text));
+    strncpy(model->text, textString, strlen(textString));
+    model->text[strlen(textString)] = '\0';  // manually null-terminate
 
     BuildFont();
 
@@ -578,6 +589,7 @@ void drawText(Model *model)
         break;
     }
     textAnimationTimerCounter++;
+    //LOG_INFO("text is -> %s", model->text);
 
     showText(model->text);
 
@@ -718,6 +730,9 @@ void createPyramid(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+
+    model->text = NULL;
 
     LOG_DEBUG("*************createPyramid() completed ***********");
 }
@@ -1069,6 +1084,9 @@ void createCube(Model *model)
     model->rotationAngle.z = 0.0f;
 
     model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+
+    model->text = NULL;
 
     LOG_DEBUG("*************createCube() completed ***********");
 }
@@ -1086,6 +1104,7 @@ void drawCube(Model *model)
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
     glScalef(model->scale.x, model->scale.y, model->scale.z);
@@ -1217,6 +1236,12 @@ void createSphere(Model *model)
     model->numberOfFaces = 1;
     model->numberOfVerticesPerFace = 1;
 
+    model->vertices = NULL;
+    model->verticesSize = 0;
+
+    model->texcoords = 0;
+    model->texcoordsSize = 0;
+ 
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
     model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
@@ -1256,6 +1281,8 @@ void createSphere(Model *model)
     model->customModelAttributes[0] = 1.0f;   //glu fill
     model->customModelAttributes[1] = 20.0f;  //slices
     model->customModelAttributes[2] = 20.0f;  //stacks
+
+    model->text = NULL;
 
     LOG_DEBUG("*************createSphere() completed ***********");
 }
@@ -1305,6 +1332,8 @@ void drawSphere(Model *model)
         glBindTexture(GL_TEXTURE_2D, 0);
 
     glPopMatrix();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() completed ***********");
 }
 
@@ -1333,6 +1362,12 @@ void createCylinder(Model *model)
 
     model->numberOfFaces = 1;
     model->numberOfVerticesPerFace = 1;
+
+    model->vertices = NULL;
+    model->verticesSize = 0;
+
+    model->texcoords = 0;
+    model->texcoordsSize = 0;
 
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
@@ -1376,6 +1411,8 @@ void createCylinder(Model *model)
     model->customModelAttributes[3] = 4.0f;  //length
     model->customModelAttributes[4] = 20.0f;  //slices
     model->customModelAttributes[5] = 20.0f;  //stacks
+
+    model->text = NULL;
 
     LOG_DEBUG("*************createcylinder() completed ***********");
 }
@@ -1425,6 +1462,7 @@ void drawCylinder(Model *model)
         glBindTexture(GL_TEXTURE_2D, 0);
 
     glPopMatrix();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawcylinder() completed ***********");
 }
 
@@ -1453,6 +1491,12 @@ void createDisk(Model *model)
 
     model->numberOfFaces = 1;
     model->numberOfVerticesPerFace = 1;
+
+    model->vertices = NULL;
+    model->verticesSize = 0;
+
+    model->texcoords = 0;
+    model->texcoordsSize = 0;
 
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
@@ -1495,6 +1539,8 @@ void createDisk(Model *model)
     model->customModelAttributes[2] = 2.0f;  //outer radius
     model->customModelAttributes[3] = 20.0f;  //slices
     model->customModelAttributes[4] = 20.0f;  //stack
+
+    model->text = NULL;
 
     LOG_DEBUG("*************createdisk() completed ***********");
 }
@@ -1544,6 +1590,7 @@ void drawDisk(Model *model)
         glBindTexture(GL_TEXTURE_2D, 0);
 
     glPopMatrix();
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawDisk() completed ***********");
 }
 
@@ -1678,4 +1725,55 @@ void drawGridForEntireScene(void)
 }
 
 
+char* getModelNameFromModelType(ModelType modelType)
+{
+    char* modelIDname = NULL;
+    switch(modelType)
+    {
+        case TRIANGLE:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("TRIANGLE"));
+            strcpy(modelIDname, "TRIANGLE");
+        break; 
+
+        case RECTANGLE:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("RECTANGLE"));
+            strcpy(modelIDname, "RECTANGLE");
+        break; 
+
+        case TEXT:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("TEXT"));
+            strcpy(modelIDname, "TEXT");
+        break; 
+
+        case PYRAMID:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("PYRAMID"));
+            strcpy(modelIDname, "PYRAMID");
+        break; 
+
+        case CUBE:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("CUBE"));
+            strcpy(modelIDname, "CUBE");
+        break; 
+
+        case SPHERE:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("SPHERE"));
+            strcpy(modelIDname, "SPHERE");
+        break; 
+
+        case CYLINDER:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("CYLINDER"));
+            strcpy(modelIDname, "CYLINDER");
+        break; 
+
+        case DISK:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("DISK"));
+            strcpy(modelIDname, "DISK");
+        break; 
+
+        default:
+        LOG_DEBUG("getModelType() -> cannot get modelType %d", model);
+        break;
+    }
+    return modelIDname;
+}
 

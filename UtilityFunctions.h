@@ -3,6 +3,7 @@
 
 #include "globalHeaders.h"
 
+
 wchar_t* CharToWideChar(const char* ansiStr);
 
 

@@ -14,6 +14,7 @@ struct Node
 extern struct Node *head;
 extern struct Node *last;
 extern struct Node *selectedmodel;
+extern struct Node *saveAndLoadModelPtr;
 
 void createModel(ModelType modelType);
 
