@@ -2,19 +2,26 @@
 #define MODELS_H
 
 #include "globalHeaders.h"
+#include "Texture.h"
 
 typedef enum
 {
 	TRIANGLE = 0,
 	RECTANGLE,
-    TEXT,
 	PYRAMID,
 	CUBE,
+    TEXT,
+	CYLINDER,
+	SPHERE,
+	DISK,
 }ModelType;
 
 typedef struct
 {
 	ModelType modeltype;
+
+	GLint numberOfFaces;//for models with no fixed faces give negative value
+    GLint numberOfVerticesPerFace;
 
 	vec3 translate;
 	vec3 scale;
@@ -28,11 +35,14 @@ typedef struct
 
     GLfloat *texcoords;
 	GLint texcoordsSize;
+	GLuint *textureVariables;
 
     GLfloat *normals;
 	GLint normalsSize;
-	
+
+	GLint customModelAttributesCount;
 	GLfloat *customModelAttributes;
+
 	char *text;
 }Model;
 
@@ -51,13 +61,22 @@ void drawPyramid(Model *model);
 void createCube(Model *model);
 void drawCube(Model *model);
 
+void createSphere(Model *model);
+void drawSphere(Model *model);
+
+void createCylinder(Model *model);
+void drawCylinder(Model *model);
+
+void createDisk(Model *model);
+void drawDisk(Model *model);
+
 void drawModel();
 
+//Grid
 void drawGridAroundSelectedModel(Model *model);
 void drawGridForEntireScene(void);
 
-
-
+char* getModelNameFromModelType(ModelType modelType);
 
 #endif
 

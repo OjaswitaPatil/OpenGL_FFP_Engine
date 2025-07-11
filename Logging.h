@@ -24,12 +24,7 @@ int init_logging(const char* filename);
 void close_logging();
 void log_print(const char* level, const char* fmt, ...);
 
-// // === Log Macros ===
-// #define LOG_ERROR(fmt, ...)  do { if (LOG_LEVEL >= LOG_LEVEL_ERROR)  log_print("ERROR", fmt, __VA_ARGS__); } while(0)
-// #define LOG_WARN(fmt, ...)   do { if (LOG_LEVEL >= LOG_LEVEL_WARN)   log_print("WARN", fmt, __VA_ARGS__); } while(0)
-// #define LOG_INFO(fmt, ...)   do { if (LOG_LEVEL >= LOG_LEVEL_INFO)   log_print("INFO", fmt, __VA_ARGS__); } while(0)
-// #define LOG_DEBUG(fmt, ...)  do { if (LOG_LEVEL >= LOG_LEVEL_DEBUG)  log_print("DEBUG", fmt, __VA_ARGS__); } while(0)
-
+// === Log Macros ===
 #if LOG_LEVEL >= LOG_LEVEL_ERROR
 #define LOG_ERROR(fmt, ...)  log_print("ERROR", fmt, __VA_ARGS__)
 #else
@@ -56,15 +51,14 @@ void log_print(const char* level, const char* fmt, ...);
 #endif
 
 #if LOG_LEVEL >= LOG_LEVEL_DEBUG_DISPLAY_LOOP_ITERATIONS
-#define LOG_DEBUG(fmt, ...)  log_print("DEBUG", fmt, __VA_ARGS__)
+#define LOG_DEBUG_DISPLAY_LOOP_ITERATIONS(fmt, ...)  log_print("DEBUG", fmt, __VA_ARGS__)
 #else
 #define LOG_DEBUG_DISPLAY_LOOP_ITERATIONS(fmt, ...)  ((void)0)
 #endif
-
-
 
 // variables realated with file I/O
 extern char gszLogFileName[];
 extern FILE *gpFile;
 
 #endif // LOGGING_H
+

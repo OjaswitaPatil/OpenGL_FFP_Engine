@@ -4,6 +4,7 @@
 #include "linkedList.h"
 #include "ImGUIHelper.h"
 #include "TextRendering.h"
+#include "Texture.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
@@ -35,6 +36,8 @@ BOOL gbEscapeKeyIsPress = FALSE;
 // opengl related global variables
 HDC ghdc = NULL;
 HGLRC ghrc = NULL;
+
+GLUquadric *quadric = NULL;
 
 //###imgui###
 // Forward declare message handler from imgui_impl_win32.cpp
@@ -403,13 +406,34 @@ int initialize(void)
     screenRotate.rotate.y = 12.0f;
     screenRotate.rotate.z = 0.0f;
 
-    // warm up resize
-    resize(WIN_WIDTH, WIN_HEIGHT);
+    //load texture test
+    addTextureNameToallTexturesArray("Stone.bmp");
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+    addTextureNameToallTexturesArray("lamp1.png");
+    addTextureNameToallTexturesArray("flowers.png");
+    addTextureNameToallTexturesArray("kangaru3.png");
+    addTextureNameToallTexturesArray("rightTree.png");
+    addTextureNameToallTexturesArray("tree1.png");
+    addTextureNameToallTexturesArray("stoneWall.png");
+    addTextureNameToallTexturesArray("students1.png");
+    addTextureNameToallTexturesArray("tree2.png");
+    addTextureNameToallTexturesArray("folwer.png");
+
+    //enable texturing
+    glEnable(GL_TEXTURE_2D);
+
+    quadric = gluNewQuadric();
+    gluQuadricTexture(quadric, GL_TRUE);
 
     LOG_DEBUG("*************initialize() Completed ***********");
 
     // createModel(TRIANGLE);
     // createModel(RECTANGLE);
+
+    // warm up resize
+    resize(WIN_WIDTH, WIN_HEIGHT);
 
     return(0);
 }
@@ -502,6 +526,20 @@ void uninitialize(void)
         toggleFullScreen();
         gbFullScreen = FALSE;
     }
+
+    //delete allLoadedTextureArray
+    for(int i = 0; i<numberOfTextureAvailablesinallTexturesArray; i++)
+    {
+        if(allLoadedTextureIdentifiers_Array[0])
+        {
+            glDeleteTextures(1, &allLoadedTextureIdentifiers_Array[0]);
+            allLoadedTextureIdentifiers_Array[0] = 0;
+        }
+        free(allTextureNames_Array[i]);
+    }
+    free(allLoadedTextureIdentifiers_Array);
+    free(allTextureNames_Array);
+
     // make hdc as current context by releasing rendering contex as current contex
     if(wglGetCurrentContext() == ghrc)
     {
@@ -527,6 +565,11 @@ void uninitialize(void)
     {
         DestroyWindow(ghwnd);
         ghwnd = NULL;
+    }
+    if(quadric)
+    {
+        gluDeleteQuadric(quadric);
+        quadric = NULL;
     }
 
     // close the file

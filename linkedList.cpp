@@ -3,6 +3,7 @@
 struct Node *head = NULL;
 struct Node *last = NULL;
 struct Node *selectedmodel = head;
+struct Node *saveAndLoadModelPtr = head;
 
 void createModel(ModelType modelType)
 {
@@ -37,6 +38,18 @@ void createModel(ModelType modelType)
         case CUBE:
         createCube(&ptr->model);
         break;
+
+        case SPHERE:
+        createSphere(&ptr->model);
+        break;
+
+        case CYLINDER:
+        createCylinder(&ptr->model);
+        break;
+
+        case DISK:
+        createDisk(&ptr->model);
+        break;
     }
 
     ptr->next = NULL;
@@ -68,13 +81,27 @@ void createModel(ModelType modelType)
 void deleteModel(struct Node *ptr)
 {
     LOG_DEBUG("*************deleteModel() started ***********");
-
     if(ptr == NULL)
     {
         LOG_WARN("deleteModel() -> Pointer to Node is NULL");
         return;
     }
 
+    // //free heap memory assigned for struct memberss
+    // if(ptr->model.vertices)
+    //     free(ptr->model.vertices);
+    // if(ptr->model.colors)
+    //     free(ptr->model.colors);
+    // if(ptr->model.texcoords)
+    //     free(ptr->model.texcoords);
+    // if(ptr->model.textureVariables)
+    //     free(ptr->model.textureVariables);
+    // if(ptr->model.normals)
+    //     free(ptr->model.normals);
+    // if(ptr->model.customModelAttributes)
+    //     free(ptr->model.customModelAttributes);
+    // if(ptr->model.text)
+    //     free(ptr->model.text);
 
     if(head == last)
     {
@@ -107,7 +134,6 @@ void deleteModel(struct Node *ptr)
         selectedmodel = selectedmodel->pre;
     else
         selectedmodel = NULL;
-
 
     //free structre shape heap memory
     free(ptr);

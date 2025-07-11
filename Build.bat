@@ -1,28 +1,3 @@
-@REM ::clean
-@REM cls
-@REM del *.obj
-@REM del "imgui\\*.obj"
-@REM del *.exe
-@REM del *.res
-
-@REM ::compililation: to create obj files
-@REM cl.exe /c /EHsc EngineMain.cpp Models.cpp linkedList.cpp imGUIHelper.cpp
-
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui.cpp" /Fo"imgui\\imgui.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_demo.cpp" /Fo"imgui\\imgui_demo.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_draw.cpp" /Fo"imgui\\imgui_draw.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_widgets.cpp" /Fo"imgui\\imgui_widgets.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_tables.cpp" /Fo"imgui\\imgui_tables.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_impl_win32.cpp" /Fo"imgui\\imgui_impl_win32.obj"
-@REM cl.exe /c /EHsc /I "C:\\glew-2.1.0\\include" "imgui\\imgui_impl_opengl3.cpp" /Fo"imgui\\imgui_impl_opengl3.obj"
-
-@REM ::compiling resource file
-@REM rc.exe EngineMain.rc
-
-@REM ::Linking: To create exe file
-@REM ::link.exe EngineMain.obj Models.obj linkedList.obj EngineMain.res User32.lib GDI32.LIB /SUBSYSTEM:WINDOWS
-@REM link.exe "EngineMain.obj" "Models.obj" "linkedList.obj" "imGUIHelper.obj" "imgui\\imgui.obj" "imgui\\imgui_demo.obj" "imgui\\imgui_draw.obj" "imgui\\imgui_widgets.obj" "imgui\\imgui_tables.obj" "imgui\\imgui_impl_win32.obj" "imgui\\imgui_impl_opengl3.obj" EngineMain.res User32.lib GDI32.lib /LIBPATH:"C:\\glew-2.1.0\\lib\\Release\\x64" /SUBSYSTEM:WINDOWS
-
 @echo off
 cls
 
@@ -58,7 +33,7 @@ REM ====================
 echo ====================================================================================================
 echo Starting compilation...
 
-cl.exe /c /EHsc %LOG_LEVEL_DEFINE% %INCLUDE_DIR% EngineMain.cpp Models.cpp linkedList.cpp imGUIHelper.cpp TextRendering.cpp Logging.cpp
+cl.exe /c /EHsc %LOG_LEVEL_DEFINE% %INCLUDE_DIR% EngineMain.cpp Models.cpp linkedList.cpp imGUIHelper.cpp TextRendering.cpp Logging.cpp UtilityFunctions.cpp Texture.cpp SaveAndLoadModels.cpp
 cl.exe /c /EHsc %INCLUDE_DIR% "imgui\\imgui.cpp" /Fo"imgui\\imgui.obj"
 cl.exe /c /EHsc %INCLUDE_DIR% "imgui\\imgui_demo.cpp" /Fo"imgui\\imgui_demo.obj"
 cl.exe /c /EHsc %INCLUDE_DIR% "imgui\\imgui_draw.cpp" /Fo"imgui\\imgui_draw.obj"
@@ -82,7 +57,7 @@ echo Starting linking...
 
 rc.exe EngineMain.rc
 
-link.exe "EngineMain.obj" "Models.obj" "TextRendering.obj" "linkedList.obj" "imGUIHelper.obj" "Logging.obj" "imgui\\imgui.obj" "imgui\\imgui_demo.obj" "imgui\\imgui_draw.obj" "imgui\\imgui_widgets.obj" "imgui\\imgui_tables.obj" "imgui\\imgui_impl_win32.obj" "imgui\\imgui_impl_opengl3.obj" EngineMain.res User32.lib GDI32.lib /LIBPATH:"C:\\glew-2.1.0\\lib\\Release\\x64" /SUBSYSTEM:WINDOWS
+link.exe "EngineMain.obj" "Models.obj" "TextRendering.obj" "linkedList.obj" "imGUIHelper.obj" "Logging.obj" "UtilityFunctions.obj" "Texture.obj" "SaveAndLoadModels.obj" "imgui\\imgui.obj" "imgui\\imgui_demo.obj" "imgui\\imgui_draw.obj" "imgui\\imgui_widgets.obj" "imgui\\imgui_tables.obj" "imgui\\imgui_impl_win32.obj" "imgui\\imgui_impl_opengl3.obj" EngineMain.res User32.lib GDI32.lib /LIBPATH:"C:\\glew-2.1.0\\lib\\Release\\x64" /SUBSYSTEM:WINDOWS
 
 echo.
 echo Linking complete!
