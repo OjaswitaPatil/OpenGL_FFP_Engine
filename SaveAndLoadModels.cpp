@@ -308,7 +308,7 @@ int splitStringBaseOnToken(const char* source, void* destination, int type)
     return count;
 }
 
-void loadCSVModel(const char *filename) 
+BOOL loadCSVModel(const char *filename) 
 {
     LOG_DEBUG("*************loadCSVModel() started ***********");
 
@@ -316,7 +316,7 @@ void loadCSVModel(const char *filename)
     if (fp == NULL) 
     {
         LOG_ERROR("loadCSVModel() -> Error opening file for reading!");
-        return;
+        return FALSE;
     }
     else
     {
@@ -573,6 +573,8 @@ void loadCSVModel(const char *filename)
     fclose(fp);
 
     LOG_DEBUG("*************loadCSVModel() Completed ***********");
+
+    return TRUE;
 }
 
 

@@ -196,6 +196,7 @@ void generateUI()
                 }
 			}
 
+			//save model
 			ImGui::NewLine();
 			if (ImGui::Button("SaveModel"))
 			{
@@ -221,6 +222,7 @@ void generateUI()
 					}
 					else
 					{
+						ImGui::Text("Model save with file: %s.csv failed", saveModelFileName);
 						LOG_INFO("generateUI() -> model saving with file name failed: %s", saveModelFileName);
 					}
 					ImGui::CloseCurrentPopup();
@@ -230,6 +232,44 @@ void generateUI()
 				{
 					ImGui::CloseCurrentPopup();
                     LOG_DEBUG("generateUI() ->  model saving canceled.");
+				}
+
+				ImGui::EndPopup();
+			}
+
+			//load model
+			if (ImGui::Button("LoadModel"))
+			{
+				ImGui::OpenPopup("LoadModelPopUp");
+                LOG_DEBUG("generateUI() -> LoadModelPopUp popup opened.");
+			}
+			if (ImGui::BeginPopup("LoadModelPopUp"))
+			{
+				static char inputText[128] = "";
+				ImGui::InputText(".csv", inputText, IM_ARRAYSIZE(inputText));
+
+				if (ImGui::Button("OK"))
+				{
+					char *loadModelFileName = (char*)malloc((strlen("resources/CsvModels/") + IM_ARRAYSIZE(inputText) + strlen(".csv")) * sizeof(char));
+					strcpy(loadModelFileName,"resources/CsvModels/");
+					strcat(loadModelFileName, inputText);
+					strcat(loadModelFileName, ".csv");
+					
+					if(loadCSVModel(loadModelFileName) == TRUE)
+					{
+						LOG_INFO("generateUI() -> model loaded with file name: %s", loadModelFileName);
+					}
+					else
+					{
+						LOG_INFO("generateUI() -> model loading with file name failed: %s", loadModelFileName);
+					}
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel"))
+				{
+					ImGui::CloseCurrentPopup();
+                    LOG_DEBUG("generateUI() ->  model loading canceled.");
 				}
 
 				ImGui::EndPopup();

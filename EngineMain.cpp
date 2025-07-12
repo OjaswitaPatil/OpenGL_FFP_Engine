@@ -423,8 +423,7 @@ int initialize(void)
     addTextureNameToallTexturesArray("folwer.png");
 
     //load model
-    loadCSVModel("TestFinal.csv");
-    loadCSVModel("TestFinal.csv");
+    // loadCSVModel("TestFinal.csv");
 
     //enable texturing
     glEnable(GL_TEXTURE_2D);
