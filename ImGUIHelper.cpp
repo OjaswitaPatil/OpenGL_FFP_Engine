@@ -225,6 +225,11 @@ void generateUI()
 						ImGui::Text("Model save with file: %s.csv failed", saveModelFileName);
 						LOG_INFO("generateUI() -> model saving with file name failed: %s", saveModelFileName);
 					}
+					if(saveModelFileName)
+					{
+						free(saveModelFileName);
+						saveModelFileName = NULL;
+					}
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
@@ -262,6 +267,11 @@ void generateUI()
 					else
 					{
 						LOG_INFO("generateUI() -> model loading with file name failed: %s", loadModelFileName);
+					}
+					if(loadModelFileName)
+					{
+						free(loadModelFileName);
+						loadModelFileName = NULL;
 					}
 					ImGui::CloseCurrentPopup();
 				}
