@@ -137,6 +137,28 @@ void generateUI()
                 LOG_DEBUG("generateUI() -> TEXT popup opened.");
 			}
 
+			if (ImGui::BeginPopup("MyPopup"))
+			{
+				static char inputText[128] = "";
+				ImGui::InputText("Enter Text", inputText, IM_ARRAYSIZE(inputText));
+
+				if (ImGui::Button("OK"))
+				{
+                    strncpy(textString, inputText, sizeof(textString));
+					LOG_INFO("generateUI() -> Text model created with input: %s", textString);
+					createModel(TEXT);
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel"))
+				{
+					ImGui::CloseCurrentPopup();
+                    LOG_DEBUG("generateUI() -> Text model creation canceled.");
+				}
+
+				ImGui::EndPopup();
+			}
+
 			if (ImGui::Button("CYLINDER"))
 			{
 				createModel(CYLINDER);
@@ -158,28 +180,6 @@ void generateUI()
 				createModel(DISK);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> disk model created.");
-			}
-
-			if (ImGui::BeginPopup("MyPopup"))
-			{
-				static char inputText[128] = "";
-				ImGui::InputText("Enter Text", inputText, IM_ARRAYSIZE(inputText));
-
-				if (ImGui::Button("OK"))
-				{
-                    strncpy(textString, inputText, sizeof(textString));
-					LOG_INFO("generateUI() -> Text model created with input: %s", textString);
-					createModel(TEXT);
-					ImGui::CloseCurrentPopup();
-				}
-				ImGui::SameLine();
-				if (ImGui::Button("Cancel"))
-				{
-					ImGui::CloseCurrentPopup();
-                    LOG_DEBUG("generateUI() -> Text model creation canceled.");
-				}
-
-				ImGui::EndPopup();
 			}
 
 			ImGui::NewLine();

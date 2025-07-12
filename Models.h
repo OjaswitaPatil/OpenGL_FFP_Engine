@@ -14,6 +14,7 @@ typedef enum
 	CYLINDER,
 	SPHERE,
 	DISK,
+	INVALIDSHAPE,
 }ModelType;
 
 typedef struct
@@ -77,6 +78,7 @@ void drawGridAroundSelectedModel(Model *model);
 void drawGridForEntireScene(void);
 
 char* getModelNameFromModelType(ModelType modelType);
+ModelType getModelTypeFromModelName(char *modelName);
 
 #endif
 

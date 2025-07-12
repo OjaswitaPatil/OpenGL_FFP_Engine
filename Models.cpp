@@ -347,6 +347,7 @@ void drawQuad(Model *model)
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
     glScalef(model->scale.x, model->scale.y, model->scale.z);
@@ -750,6 +751,7 @@ void drawPyramid(Model *model)
     glPushMatrix();
 
     glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
     glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
     glScalef(model->scale.x, model->scale.y, model->scale.z);
@@ -1771,9 +1773,33 @@ char* getModelNameFromModelType(ModelType modelType)
         break; 
 
         default:
-        LOG_DEBUG("getModelType() -> cannot get modelType %d", model);
+        LOG_DEBUG("getModelType() -> cannot get modelType %d", modelType);
         break;
     }
     return modelIDname;
+}
+
+ModelType getModelTypeFromModelName(char *modelName)
+{
+    if(strcmp(modelName, "TRIANGLE") == 0)
+        return TRIANGLE;
+    else if(strcmp(modelName, "RECTANGLE") == 0)
+        return RECTANGLE;
+    else if(strcmp(modelName, "PYRAMID") == 0)
+        return PYRAMID;
+    else if(strcmp(modelName, "CUBE") == 0)
+        return CUBE;
+    else if(strcmp(modelName, "TEXT") == 0)
+        return TEXT;
+    else if(strcmp(modelName, "CYLINDER") == 0)
+        return CYLINDER;
+    else if(strcmp(modelName, "SPHERE") == 0)
+        return SPHERE;
+    else if(strcmp(modelName, "DISK") == 0)
+        return DISK;
+    else
+        return INVALIDSHAPE;
+    
+
 }
 

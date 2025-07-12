@@ -5,6 +5,7 @@
 #include "ImGUIHelper.h"
 #include "TextRendering.h"
 #include "Texture.h"
+#include "SaveAndLoadModels.h"
 
 //opengl related libraries
 #pragma comment(lib,"opengl32.lib")
@@ -420,6 +421,10 @@ int initialize(void)
     addTextureNameToallTexturesArray("students1.png");
     addTextureNameToallTexturesArray("tree2.png");
     addTextureNameToallTexturesArray("folwer.png");
+
+    //load model
+    loadCSVModel("TestFinal.csv");
+    loadCSVModel("TestFinal.csv");
 
     //enable texturing
     glEnable(GL_TEXTURE_2D);
