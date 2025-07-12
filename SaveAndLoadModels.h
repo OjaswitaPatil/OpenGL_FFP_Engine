@@ -14,7 +14,7 @@ extern FILE *modelFile;
 
 int createFile(const char* filename, const char *fileMode);
 void closeFile(FILE *modelFile);
-BOOL saveModel();
+BOOL saveModel(const char *fileName);
 int splitStringBaseOnToken(const char* source, void* destination, int type);
 void loadCSVModel(const char *filename) ;
 

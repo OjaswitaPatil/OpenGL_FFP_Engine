@@ -30,9 +30,9 @@ void closeFile(FILE *modelFile)
     }
 }
 
-BOOL saveModel()
+BOOL saveModel(const char *fileName)
 {
-    int result = createFile("model.csv", "w");
+    int result = createFile(fileName, "w");
     if(result != 0)
     {
         return FALSE;
