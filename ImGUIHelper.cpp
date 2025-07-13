@@ -79,6 +79,11 @@ void generateUI()
     if(ImGui::Begin("Engine's Controls"));
     {
         //LOG_DEBUG("generateUI() -> ImGui UI opened: Engine's Controls");
+		if (ImGui::Button("Exit"))
+			{
+				gbEscapeKeyIsPress = TRUE;
+                LOG_INFO("generateUI() -> Triangle model created.");
+			}
 
 		if(ImGui::CollapsingHeader("ScreenRotation"))
 		{

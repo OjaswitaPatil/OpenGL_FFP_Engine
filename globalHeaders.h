@@ -33,4 +33,6 @@ extern HWND ghwnd;
 
 extern GLUquadric *quadric;
 
+extern BOOL gbEscapeKeyIsPress;
+
 #endif

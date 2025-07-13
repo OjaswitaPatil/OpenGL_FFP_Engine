@@ -237,9 +237,9 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT iMsg, WPARAM wParam, LPARAM lParam)
 
         switch(wParam)
         {
-            case VK_ESCAPE:
-            gbEscapeKeyIsPress = TRUE;
-            break;
+            // case VK_ESCAPE:
+           
+            // break;
 
             default:
             break;
