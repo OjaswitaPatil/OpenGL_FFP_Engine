@@ -30,7 +30,7 @@ void closeFile(FILE *modelFile)
     }
 }
 
-BOOL saveModel(const char *fileName)
+BOOL saveModel(struct CircularDoublyLinkedList *pCDLL, const char *fileName)
 {
     int result = createFile(fileName, "w");
     if(result != 0)
@@ -51,7 +51,7 @@ BOOL saveModel(const char *fileName)
     );
 
     int flag = 0;
-    struct Node *saveAndLoadModelPtr = masterLinkedList->head;
+    struct Node *saveAndLoadModelPtr = pCDLL->head;
 
     while(saveAndLoadModelPtr != NULL && flag == 0)
     {
@@ -246,7 +246,7 @@ BOOL saveModel(const char *fileName)
         fprintf(modelFile, "\n");
 
 
-        if(saveAndLoadModelPtr->next == masterLinkedList->head)
+        if(saveAndLoadModelPtr->next == pCDLL->head)
            flag = 1;
 
         saveAndLoadModelPtr = saveAndLoadModelPtr->next;
@@ -305,7 +305,7 @@ int splitStringBaseOnToken(const char* source, void* destination, int type)
     return count;
 }
 
-BOOL loadCSVModel(const char *filename) 
+BOOL loadCSVModel(struct CircularDoublyLinkedList *pCDLL, const char *filename) 
 {
     LOG_DEBUG("*************loadCSVModel() started ***********");
 
@@ -347,7 +347,7 @@ BOOL loadCSVModel(const char *filename)
 
         int columnIndex = 0;
         //ModelType
-        createModel(masterLinkedList, getModelTypeFromModelName(csvRow[columnIndex++]));
+        createModel(pCDLL, getModelTypeFromModelName(csvRow[columnIndex++]));
 
         //numberOfFaces
         selectedmodel->model.numberOfFaces = atoi(csvRow[columnIndex++]);

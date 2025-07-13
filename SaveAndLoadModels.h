@@ -14,9 +14,9 @@ extern FILE *modelFile;
 
 int createFile(const char* filename, const char *fileMode);
 void closeFile(FILE *modelFile);
-BOOL saveModel(const char *fileName);
+BOOL saveModel(struct CircularDoublyLinkedList *pCDLL, const char *fileName);
 int splitStringBaseOnToken(const char* source, void* destination, int type);
-BOOL loadCSVModel(const char *filename) ;
+BOOL loadCSVModel(struct CircularDoublyLinkedList *pCDLL, const char *filename) ;
 
 
 #endif

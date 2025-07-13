@@ -221,7 +221,7 @@ void generateUI()
 					strcat(saveModelFileName, inputText);
 					strcat(saveModelFileName, ".csv");
 					
-					if(saveModel(saveModelFileName) == TRUE)
+					if(saveModel(masterLinkedList, saveModelFileName) == TRUE)
 					{
 						LOG_INFO("generateUI() -> model saved with file name: %s", saveModelFileName);
 					}
@@ -265,7 +265,7 @@ void generateUI()
 					strcat(loadModelFileName, inputText);
 					strcat(loadModelFileName, ".csv");
 					
-					if(loadCSVModel(loadModelFileName) == TRUE)
+					if(loadCSVModel(masterLinkedList, loadModelFileName) == TRUE)
 					{
 						LOG_INFO("generateUI() -> model loaded with file name: %s", loadModelFileName);
 					}
