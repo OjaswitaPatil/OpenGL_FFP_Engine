@@ -11,15 +11,24 @@ struct Node
     struct Node *next;
 };
 
-extern struct Node *head;
-extern struct Node *last;
+struct CircularDoublyLinkedList
+{
+    struct Node *head;
+    struct Node *last;
+};
+
+// extern struct Node *head;
+// extern struct Node *last;
 extern struct Node *selectedmodel;
-extern struct Node *saveAndLoadModelPtr;
+// extern struct Node *saveAndLoadModelPtr;
+extern struct CircularDoublyLinkedList *masterLinkedList;
 
-void createModel(ModelType modelType);
+struct CircularDoublyLinkedList* createLinkedList();
 
-void drawAllModels(void);
+void createModel(struct CircularDoublyLinkedList *pCDLL, ModelType modelType);
 
-void deleteModel(struct Node *ptr);
+void drawAllModels(struct CircularDoublyLinkedList *pCDLL);
+
+void deleteModel(struct CircularDoublyLinkedList *pCDLL, struct Node *ptr);
 
 #endif

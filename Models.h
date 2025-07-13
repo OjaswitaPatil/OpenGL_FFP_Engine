@@ -14,6 +14,7 @@ typedef enum
 	CYLINDER,
 	SPHERE,
 	DISK,
+	READYMODEL,
 	INVALIDSHAPE,
 }ModelType;
 
@@ -45,7 +46,13 @@ typedef struct
 	GLfloat *customModelAttributes;
 
 	char *text;
+
+	char *readyModelFileName;
+	struct Node* readyModelLLHeadPtr;
+
 }Model;
+
+void initializeModelStructureToDefaultValues(Model *model);
 
 void createTriangle(Model *model);
 void drawTriangle(Model *model);

@@ -1,11 +1,28 @@
 #include "linkedList.h"
 
-struct Node *head = NULL;
-struct Node *last = NULL;
-struct Node *selectedmodel = head;
-struct Node *saveAndLoadModelPtr = head;
+// struct Node *head = NULL;
+// struct Node *last = NULL;
+struct Node *selectedmodel;
+// struct Node *saveAndLoadModelPtr = head;
 
-void createModel(ModelType modelType)
+struct CircularDoublyLinkedList *masterLinkedList = NULL;
+
+struct CircularDoublyLinkedList* createLinkedList()
+{
+    struct CircularDoublyLinkedList *cDLL = (struct CircularDoublyLinkedList*)malloc(sizeof(struct CircularDoublyLinkedList));
+    if(cDLL == NULL)
+    {
+        LOG_ERROR("createModel() -> Memory allocation failed for Node");
+        return cDLL;
+    }
+
+    cDLL->head = NULL;
+    cDLL->last = NULL;
+
+    return cDLL;
+}
+
+void createModel(struct CircularDoublyLinkedList *pCDLL, ModelType modelType)
 {
     LOG_DEBUG("*************createModel() started ***********");
 
@@ -15,6 +32,9 @@ void createModel(ModelType modelType)
         LOG_ERROR("createModel() -> Memory allocation failed for Node");
         return;
     }
+
+    initializeModelStructureToDefaultValues(&(ptr->model));
+
     ptr->model.modeltype = modelType;
 
     switch(modelType)
@@ -50,35 +70,47 @@ void createModel(ModelType modelType)
         case DISK:
         createDisk(&ptr->model);
         break;
+
+        case READYMODEL:
+        //neet to add recursive call to draw model
+        break;
+
+        default:
+        LOG_DEBUG("createModel() -> invalid modeltype %s. linkedlist node not created",modelType);
+        return;
+        break;
     }
 
     ptr->next = NULL;
     ptr->pre = NULL;
 
-    if(head == NULL)
+    if(pCDLL->head == NULL)
     {
         LOG_DEBUG("createModel() -> First Node in LL created");
         ptr->next = ptr;
         ptr->pre = ptr;
-        head = ptr;
-        last = ptr;
+        pCDLL->head = ptr;
+        pCDLL->last = ptr;
     }
     else
     {
         LOG_DEBUG("createModel() -> second and + Node in LL created");
-        last->next = ptr;
-        ptr->pre = last;
-        ptr->next = head;
-        head->pre = ptr;
-        last = ptr;
+        pCDLL->last->next = ptr;
+        ptr->pre = pCDLL->last;
+        ptr->next = pCDLL->head;
+        pCDLL->head->pre = ptr;
+        pCDLL->last = ptr;
     }
 
-    selectedmodel = ptr;
+    if(pCDLL == masterLinkedList)
+    {
+        selectedmodel = ptr;
+    }
 
     LOG_DEBUG("*************createModel() completed ***********");
 }
 
-void deleteModel(struct Node *ptr)
+void deleteModel(struct CircularDoublyLinkedList *pCDLL, struct Node *ptr)
 {
     LOG_DEBUG("*************deleteModel() started ***********");
     if(ptr == NULL)
@@ -102,26 +134,33 @@ void deleteModel(struct Node *ptr)
         free(ptr->model.customModelAttributes);
     if(ptr->model.text)
         free(ptr->model.text);
-
-    if(head == last)
+    if(ptr->model.readyModelFileName)
+        free(ptr->model.readyModelFileName);
+    if(ptr->model.readyModelLLHeadPtr)
     {
-        head = NULL;
-        last = NULL;
+        //need to add code here to free child LL
+        free(ptr->model.readyModelLLHeadPtr);
+    }
+
+    if(pCDLL->head == pCDLL->last)
+    {
+        pCDLL->head = NULL;
+        pCDLL->last = NULL;
         LOG_DEBUG("deleteModel() -> No Node avaialble in LL for deletion");
     }
-    else if(ptr == head)
+    else if(ptr == pCDLL->head)
     {
-        ptr->next->pre = last;
-        last->next = ptr->next;
-        head = ptr->next;
-        LOG_DEBUG("deleteModel() -> Head Node deleted");
+        ptr->next->pre = pCDLL->last;
+        pCDLL->last->next = ptr->next;
+        pCDLL->head = ptr->next;
+        LOG_DEBUG("deleteModel() -> head Node deleted");
     }
-    else if(ptr == last)
+    else if(ptr == pCDLL->last)
     {
-        head->pre = last->pre;
-        last->pre->next = head;
-        last = last->pre;
-        LOG_DEBUG("deleteModel() -> LAST Node deleted");
+        pCDLL->head->pre = pCDLL->last->pre;
+        pCDLL->last->pre->next = pCDLL->head;
+        pCDLL->last = pCDLL->last->pre;
+        LOG_DEBUG("deleteModel() -> last Node deleted");
     }
     else
     {
@@ -130,10 +169,13 @@ void deleteModel(struct Node *ptr)
         LOG_DEBUG("deleteModel() -> Middle Node deleted");
     }
 
-    if(head != NULL)
-        selectedmodel = selectedmodel->pre;
-    else
-        selectedmodel = NULL;
+    if(pCDLL == masterLinkedList)
+    {
+        if(pCDLL->head != NULL)
+            selectedmodel = selectedmodel->pre;
+        else
+            selectedmodel = NULL;
+    }
 
     //free structre shape heap memory
     free(ptr);
@@ -141,30 +183,33 @@ void deleteModel(struct Node *ptr)
     LOG_DEBUG("*************deleteModel() completed ***********");
 }
 
-void drawAllModels(void)
+void drawAllModels(struct CircularDoublyLinkedList *pCDLL)
 {
     void drawModel(Model *model);
 
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawAllModels() started ***********");
 
     int flag = 0;
-    struct Node *ptr = head;
+    struct Node *ptr = pCDLL->head;
 
     while(ptr != NULL && flag == 0)
     {
         drawModel(&(ptr->model));
 
-        if(ptr->next == head)
+        if(ptr->next == pCDLL->head)
            flag = 1;
 
         ptr= ptr->next;
     }
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawAllModels() -> All model drawn in 1 iteration");
 
-    if(selectedmodel!= NULL)
+    if(pCDLL == masterLinkedList)
     {
-        drawGridAroundSelectedModel(&(selectedmodel->model));
-        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawAllModels() -> Grid drawn around selected model");
+        if(selectedmodel!= NULL)
+        {
+            drawGridAroundSelectedModel(&(selectedmodel->model));
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawAllModels() -> Grid drawn around selected model");
+        }
     }
 
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawAllModels() completed ***********");

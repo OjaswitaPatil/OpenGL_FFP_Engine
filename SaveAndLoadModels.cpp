@@ -51,7 +51,7 @@ BOOL saveModel(const char *fileName)
     );
 
     int flag = 0;
-    struct Node *saveAndLoadModelPtr = head;
+    struct Node *saveAndLoadModelPtr = masterLinkedList->head;
 
     while(saveAndLoadModelPtr != NULL && flag == 0)
     {
@@ -246,7 +246,7 @@ BOOL saveModel(const char *fileName)
         fprintf(modelFile, "\n");
 
 
-        if(saveAndLoadModelPtr->next == head)
+        if(saveAndLoadModelPtr->next == masterLinkedList->head)
            flag = 1;
 
         saveAndLoadModelPtr = saveAndLoadModelPtr->next;
@@ -347,7 +347,7 @@ BOOL loadCSVModel(const char *filename)
 
         int columnIndex = 0;
         //ModelType
-        createModel(getModelTypeFromModelName(csvRow[columnIndex++]));
+        createModel(masterLinkedList, getModelTypeFromModelName(csvRow[columnIndex++]));
 
         //numberOfFaces
         selectedmodel->model.numberOfFaces = atoi(csvRow[columnIndex++]);

@@ -106,7 +106,7 @@ void generateUI()
 		{
 			if (ImGui::Button("Triangle"))
 			{
-				createModel(TRIANGLE);
+				createModel(masterLinkedList, TRIANGLE);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Triangle model created.");
 			}
@@ -114,7 +114,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Quad"))
 			{
-				createModel(RECTANGLE);
+				createModel(masterLinkedList, RECTANGLE);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Rectangle model created.");
 			}
@@ -122,7 +122,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Pyramid"))
 			{
-				createModel(PYRAMID);
+				createModel(masterLinkedList, PYRAMID);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Pyramid model created.");
 			}
@@ -130,7 +130,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Cube"))
 			{
-				createModel(CUBE);
+				createModel(masterLinkedList, CUBE);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Cube model created.");
 			}
@@ -151,7 +151,7 @@ void generateUI()
 				{
                     strncpy(textString, inputText, sizeof(textString));
 					LOG_INFO("generateUI() -> Text model created with input: %s", textString);
-					createModel(TEXT);
+					createModel(masterLinkedList, TEXT);
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
@@ -166,7 +166,7 @@ void generateUI()
 
 			if (ImGui::Button("CYLINDER"))
 			{
-				createModel(CYLINDER);
+				createModel(masterLinkedList, CYLINDER);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> CYALINDER model created.");
 			}
@@ -174,7 +174,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("SPHERE"))
 			{
-				createModel(SPHERE);
+				createModel(masterLinkedList, SPHERE);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> Sphere model created.");
 			}
@@ -182,7 +182,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("DISK"))
 			{
-				createModel(DISK);
+				createModel(masterLinkedList, DISK);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> disk model created.");
 			}
@@ -193,7 +193,7 @@ void generateUI()
                 if (selectedmodel != NULL)
                 {
                     LOG_INFO("generateUI() -> Deleting model: modeltype=%d", selectedmodel->model.modeltype);
-                    deleteModel(selectedmodel);
+                    deleteModel(masterLinkedList, selectedmodel);
                 }
                 else
                 {

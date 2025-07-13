@@ -1,6 +1,48 @@
 #include "Models.h"
 #include "TextRendering.h"
 
+void initializeModelStructureToDefaultValues(Model *model)
+{
+    model->modeltype = INVALIDSHAPE;
+
+    model->numberOfFaces = 0;
+
+    model->numberOfVerticesPerFace = 0;
+
+    model->translate.x = 0.0f;
+    model->translate.y = 0.0f;
+    model->translate.z = 0.0f;
+
+    model->scale.x = 1.0f;
+    model->scale.y = 1.0f;
+    model->scale.z = 1.0f;
+
+    model->rotationAngle.x = 0.0f;
+    model->rotationAngle.y = 0.0f;
+    model->rotationAngle.z = 0.0f;
+
+    model->vertices = NULL;
+    model->verticesSize = 0;
+
+    model->colors = NULL;
+    model->colorsSize = 0;
+
+    model->texcoords = NULL;
+    model->texcoordsSize = 0;
+    model->textureVariables = NULL;
+
+    model->normals = NULL;
+    model->normalsSize = 0;
+
+    model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+
+    model->text = NULL;
+
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
+}
+
 void createTriangle(Model *model)
 {
     GLfloat modelVertices[] = {
@@ -115,7 +157,11 @@ void createTriangle(Model *model)
 
     model->customModelAttributes = NULL;
     model->customModelAttributesCount = 0;
+
     model->text = NULL;
+    
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
 
     LOG_DEBUG("*************createTriangle() completed ***********");
 }
@@ -331,6 +377,8 @@ void createQuad(Model *model)
     model->customModelAttributes = NULL;
     model->customModelAttributesCount = 0;
     model->text = NULL;
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
 
     LOG_DEBUG("*************createQuad() completed ***********");
 }
@@ -527,6 +575,9 @@ void createText(Model *model)
     model->text[strlen(textString)] = '\0';  // manually null-terminate
 
     BuildFont();
+
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
 
     LOG_DEBUG("*************createText() completed ***********");
 }
@@ -734,6 +785,9 @@ void createPyramid(Model *model)
     model->customModelAttributesCount = 0;
 
     model->text = NULL;
+
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
 
     LOG_DEBUG("*************createPyramid() completed ***********");
 }
@@ -1090,6 +1144,9 @@ void createCube(Model *model)
 
     model->text = NULL;
 
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
+
     LOG_DEBUG("*************createCube() completed ***********");
 }
 
@@ -1286,6 +1343,9 @@ void createSphere(Model *model)
 
     model->text = NULL;
 
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
+
     LOG_DEBUG("*************createSphere() completed ***********");
 }
 
@@ -1416,6 +1476,9 @@ void createCylinder(Model *model)
 
     model->text = NULL;
 
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
+
     LOG_DEBUG("*************createcylinder() completed ***********");
 }
 
@@ -1544,6 +1607,9 @@ void createDisk(Model *model)
 
     model->text = NULL;
 
+    model->readyModelFileName = NULL;
+    model->readyModelLLHeadPtr = NULL;
+
     LOG_DEBUG("*************createdisk() completed ***********");
 }
 
@@ -1630,6 +1696,10 @@ void drawModel(Model *model)
 
         case DISK:
         drawDisk(model);
+        break;
+
+        case READYMODEL:
+        //neet to add recursive call to draw model
         break;
     }
 }

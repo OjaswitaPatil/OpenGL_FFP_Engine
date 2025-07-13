@@ -35,4 +35,7 @@ extern GLUquadric *quadric;
 
 extern BOOL gbEscapeKeyIsPress;
 
+extern struct CircularDoublyLinkedList *masterLinkedList;
+extern struct Node *selectedmodel;
+
 #endif

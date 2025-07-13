@@ -402,6 +402,10 @@ int initialize(void)
     // tell opengl to choose the color to clear the screen
     glClearColor(0.0f, 0.0f, 0.0f,1.0f);
 
+    //create masterLL
+    masterLinkedList = createLinkedList();
+    selectedmodel = masterLinkedList->head;
+
     // scrennRotate
     screenRotate.rotate.x = 9.0f;
     screenRotate.rotate.y = 12.0f;
@@ -498,7 +502,7 @@ void display(void)
     {
         drawGridForEntireScene();
 
-        drawAllModels();
+        drawAllModels(masterLinkedList);
     }
     glPopMatrix();
 
