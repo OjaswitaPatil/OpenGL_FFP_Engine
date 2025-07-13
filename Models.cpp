@@ -182,7 +182,7 @@ void drawTriangle(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
 
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
@@ -428,7 +428,7 @@ void drawQuad(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("colors: {%lf, %lf}",model->colors[colorIndex+20], model->colors[colorIndex+21], model->colors[colorIndex+22], model->colors[colorIndex+23]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+16], model->vertices[vertexIndex+17]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
             else
@@ -800,7 +800,7 @@ void drawPyramid(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
 
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
@@ -1187,7 +1187,7 @@ void drawCube(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("colors: {%lf, %lf}",model->colors[colorIndex+20], model->colors[colorIndex+21], model->colors[colorIndex+22], model->colors[colorIndex+23]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+16], model->vertices[vertexIndex+17]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------\n");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+10], model->texcoords[texCoordIndex+11]);
             else

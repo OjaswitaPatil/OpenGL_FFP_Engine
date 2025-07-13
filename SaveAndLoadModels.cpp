@@ -51,12 +51,10 @@ BOOL saveModel(const char *fileName)
     );
 
     int flag = 0;
-    struct Node *ptr = head;
+    struct Node *saveAndLoadModelPtr = head;
 
-    while(ptr != NULL && flag == 0)
+    while(saveAndLoadModelPtr != NULL && flag == 0)
     {
-        saveAndLoadModelPtr = ptr;
-
         //Model indentfiers
         fprintf(
             modelFile, 
@@ -248,12 +246,11 @@ BOOL saveModel(const char *fileName)
         fprintf(modelFile, "\n");
 
 
-        if(ptr->next == head)
+        if(saveAndLoadModelPtr->next == head)
            flag = 1;
 
-        ptr= ptr->next;
+        saveAndLoadModelPtr = saveAndLoadModelPtr->next;
     }
-
 
     closeFile(modelFile);
 
