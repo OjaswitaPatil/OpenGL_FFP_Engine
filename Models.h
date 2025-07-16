@@ -48,7 +48,7 @@ typedef struct
 	char *text;
 
 	char *readyModelFileName;
-	struct Node* readyModelLLHeadPtr;
+	struct CircularDoublyLinkedList* readyModelLLPtr;
 
 }Model;
 
@@ -78,6 +78,8 @@ void drawCylinder(Model *model);
 void createDisk(Model *model);
 void drawDisk(Model *model);
 
+void createReadyModel(Model* model, const char* fileName);
+
 void drawModel();
 
 //Grid
@@ -88,4 +90,11 @@ char* getModelNameFromModelType(ModelType modelType);
 ModelType getModelTypeFromModelName(char *modelName);
 
 #endif
+
+
+
+
+
+
+
 

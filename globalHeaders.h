@@ -38,4 +38,8 @@ extern BOOL gbEscapeKeyIsPress;
 extern struct CircularDoublyLinkedList *masterLinkedList;
 extern struct Node *selectedmodel;
 
+
+//Debug variables
+extern int NumOfActiveLLNodesInMemory;
+
 #endif

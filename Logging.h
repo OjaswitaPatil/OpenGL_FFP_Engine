@@ -51,7 +51,7 @@ void log_print(const char* level, const char* fmt, ...);
 #endif
 
 #if LOG_LEVEL >= LOG_LEVEL_DEBUG_DISPLAY_LOOP_ITERATIONS
-#define LOG_DEBUG_DISPLAY_LOOP_ITERATIONS(fmt, ...)  log_print("DEBUG", fmt, __VA_ARGS__)
+#define LOG_DEBUG_DISPLAY_LOOP_ITERATIONS(fmt, ...)  log_print("DEBUG DISPLAY", fmt, __VA_ARGS__)
 #else
 #define LOG_DEBUG_DISPLAY_LOOP_ITERATIONS(fmt, ...)  ((void)0)
 #endif

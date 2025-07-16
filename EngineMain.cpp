@@ -1,4 +1,4 @@
-#include "globalHeaders.h"
+//#include "globalHeaders.h"
 #include "EngineMain.h"
 #include "Models.h"
 #include "linkedList.h"
@@ -416,15 +416,20 @@ int initialize(void)
     addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
     addTextureNameToallTexturesArray("Smiley.bmp");
     addTextureNameToallTexturesArray("marble.bmp");
-    addTextureNameToallTexturesArray("lamp1.png");
-    addTextureNameToallTexturesArray("flowers.png");
-    addTextureNameToallTexturesArray("kangaru3.png");
-    addTextureNameToallTexturesArray("rightTree.png");
-    addTextureNameToallTexturesArray("tree1.png");
-    addTextureNameToallTexturesArray("stoneWall.png");
     addTextureNameToallTexturesArray("students1.png");
-    addTextureNameToallTexturesArray("tree2.png");
-    addTextureNameToallTexturesArray("folwer.png");
+    addTextureNameToallTexturesArray("Piller.png");
+    addTextureNameToallTexturesArray("SchoolWall.png");
+    addTextureNameToallTexturesArray("Varanda.png");
+    addTextureNameToallTexturesArray("Window.png");
+    addTextureNameToallTexturesArray("Leaf.png");
+    addTextureNameToallTexturesArray("Khod.bmp");
+    addTextureNameToallTexturesArray("Brick.bmp");
+    addTextureNameToallTexturesArray("Boy.png");
+    addTextureNameToallTexturesArray("Girl.png");
+    // addTextureNameToallTexturesArray("Boy1.png");
+    // addTextureNameToallTexturesArray("SingleBoy2.png");
+    // addTextureNameToallTexturesArray("Boy2.png");
+    // addTextureNameToallTexturesArray("Boy3.png");
 
     //load model
     // loadCSVModel("TestFinal.csv");

@@ -21,14 +21,16 @@ struct CircularDoublyLinkedList
 // extern struct Node *last;
 extern struct Node *selectedmodel;
 // extern struct Node *saveAndLoadModelPtr;
+
 extern struct CircularDoublyLinkedList *masterLinkedList;
 
 struct CircularDoublyLinkedList* createLinkedList();
 
-void createModel(struct CircularDoublyLinkedList *pCDLL, ModelType modelType);
+struct Node* createModel(struct CircularDoublyLinkedList *pCDLL, ModelType modelType, const char* readyModelFileName);
 
 void drawAllModels(struct CircularDoublyLinkedList *pCDLL);
 
+void deleteAllChildLLModels(struct CircularDoublyLinkedList *pCDLL);
 void deleteModel(struct CircularDoublyLinkedList *pCDLL, struct Node *ptr);
 
 #endif

@@ -280,7 +280,7 @@ int splitStringBaseOnToken(const char* source, void* destination, int type)
 
     while (token != NULL)
     {
-        LOG_DEBUG("splitStringBaseOnTokenloadCSVModel() -> loop iteration");
+        //LOG_DEBUG("splitStringBaseOnTokenloadCSVModel() -> loop iteration");
 
         if (type == TYPE_INT) 
         {
@@ -293,7 +293,7 @@ int splitStringBaseOnToken(const char* source, void* destination, int type)
         else if (type == TYPE_STRING) 
         {
                 ((char**)destination)[count] = strdup(token);  // copy token to new string
-                LOG_DEBUG("splitStringBaseOnTokenloadCSVModel() -> strlen(token) > 0  -> TRUE");
+                //LOG_DEBUG("splitStringBaseOnTokenloadCSVModel() -> strlen(token) > 0  -> TRUE");
         }
 
         count++;
@@ -307,6 +307,7 @@ int splitStringBaseOnToken(const char* source, void* destination, int type)
 
 BOOL loadCSVModel(struct CircularDoublyLinkedList *pCDLL, const char *filename) 
 {
+    LOG_DEBUG("\n");
     LOG_DEBUG("*************loadCSVModel() started ***********");
 
     FILE *fp = fopen(filename, "r");
@@ -345,139 +346,158 @@ BOOL loadCSVModel(struct CircularDoublyLinkedList *pCDLL, const char *filename)
         }
 
 
+        struct Node* newModel = NULL;
+        char *modelTypeName;
+
         int columnIndex = 0;
+        
         //ModelType
-        createModel(pCDLL, getModelTypeFromModelName(csvRow[columnIndex++]));
+        newModel = createModel(pCDLL, getModelTypeFromModelName(csvRow[columnIndex++]), NULL);
+        if(newModel == NULL)
+        {
+            LOG_ERROR("loadCSVModel()->  newModel is NULL. loadCSVModel() failed");
+            return FALSE;
+        }
+        else
+        {
+            modelTypeName = (char*)malloc(strlen(getModelNameFromModelType(newModel->model.modeltype)+1) * sizeof(char));
+            strcpy(modelTypeName,getModelNameFromModelType(newModel->model.modeltype));
+            LOG_DEBUG("loadCSVModel()->  newModel->model.modelType = %s",  modelTypeName);
+        }
+
 
         //numberOfFaces
-        selectedmodel->model.numberOfFaces = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.numberOfFaces = %d",  selectedmodel->model.numberOfFaces);
+        newModel->model.numberOfFaces = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.numberOfFaces = %d", modelTypeName, newModel->model.numberOfFaces);
 
         //numberOfVerticesPerFace
-        selectedmodel->model.numberOfVerticesPerFace = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.numberOfVerticesPerFace = %d",  selectedmodel->model.numberOfVerticesPerFace);
+        newModel->model.numberOfVerticesPerFace = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.numberOfVerticesPerFace = %d", modelTypeName, newModel->model.numberOfVerticesPerFace);
 
         //translate
         float translateArray[3];
         splitStringBaseOnToken(csvRow[columnIndex++], translateArray, TYPE_FLOAT);
-        selectedmodel->model.translate.x = translateArray[0];
-        selectedmodel->model.translate.y = translateArray[1];
-        selectedmodel->model.translate.z = translateArray[2];
+        newModel->model.translate.x = translateArray[0];
+        newModel->model.translate.y = translateArray[1];
+        newModel->model.translate.z = translateArray[2];
 
         LOG_DEBUG(
-            "loadCSVModel()->  \n"                                              \
-            "selectedmodel->model.translate.x = %lf\n"                           \
-            "selectedmodel->model.translate.y = %lf\n"                          \
-            "selectedmodel->model.translate.z = %lf\n",
-            selectedmodel->model.translate.x,
-            selectedmodel->model.translate.y,
-            selectedmodel->model.translate.z
+            "loadCSVModel()-> %s \n"                                            \
+            "newModel->model.translate.x = %lf\n"                               \
+            "newModel->model.translate.y = %lf\n"                               \
+            "newModel->model.translate.z = %lf",
+            modelTypeName,
+            newModel->model.translate.x,
+            newModel->model.translate.y,
+            newModel->model.translate.z
         );
 
         //scale
         float scaleArray[3];
         splitStringBaseOnToken(csvRow[columnIndex++], scaleArray, TYPE_FLOAT);
-        selectedmodel->model.scale.x = scaleArray[0];
-        selectedmodel->model.scale.y = scaleArray[1];
-        selectedmodel->model.scale.z = scaleArray[2];
+        newModel->model.scale.x = scaleArray[0];
+        newModel->model.scale.y = scaleArray[1];
+        newModel->model.scale.z = scaleArray[2];
 
         LOG_DEBUG(
-            "loadCSVModel()->  \n"                                              \
-            "selectedmodel->model.scale.x = %lf\n"                              \
-            "selectedmodel->model.scale.y = %lf\n"                              \
-            "selectedmodel->model.scale.z = %lf\n",
-            selectedmodel->model.scale.x,
-            selectedmodel->model.scale.y,
-            selectedmodel->model.scale.z
+            "loadCSVModel()-> %s \n"                                            \
+            "newModel->model.scale.x = %lf\n"                                   \
+            "newModel->model.scale.y = %lf\n"                                   \
+            "newModel->model.scale.z = %lf",
+            modelTypeName,
+            newModel->model.scale.x,
+            newModel->model.scale.y,
+            newModel->model.scale.z
         );
 
         //rotation
         float rotationArray[3];
         splitStringBaseOnToken(csvRow[columnIndex++], rotationArray, TYPE_FLOAT);
-        selectedmodel->model.rotationAngle.x = rotationArray[0];
-        selectedmodel->model.rotationAngle.y = rotationArray[1];
-        selectedmodel->model.rotationAngle.z = rotationArray[2];
+        newModel->model.rotationAngle.x = rotationArray[0];
+        newModel->model.rotationAngle.y = rotationArray[1];
+        newModel->model.rotationAngle.z = rotationArray[2];
         
         LOG_DEBUG(
-            "loadCSVModel()->  \n"                                              \
-            "selectedmodel->model.rotationAngle.x = %lf\n"                      \
-            "selectedmodel->model.rotationAngle.y = %lf\n"                      \
-            "selectedmodel->model.rotationAngle.z = %lf\n",
-            selectedmodel->model.rotationAngle.x,
-            selectedmodel->model.rotationAngle.y,
-            selectedmodel->model.rotationAngle.z
+            "loadCSVModel()-> %s \n"                                            \
+            "newModel->model.rotationAngle.x = %lf\n"                           \
+            "newModel->model.rotationAngle.y = %lf\n"                           \
+            "newModel->model.rotationAngle.z = %lf",
+            modelTypeName,
+            newModel->model.rotationAngle.x,
+            newModel->model.rotationAngle.y,
+            newModel->model.rotationAngle.z
         );
 
         //verticesSize
-        selectedmodel->model.verticesSize = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.verticesSize = %d",  selectedmodel->model.verticesSize);
+        newModel->model.verticesSize = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.verticesSize = %d", modelTypeName, newModel->model.verticesSize);
 
         //vertices
-        if(selectedmodel->model.verticesSize > 0)
+        if(newModel->model.verticesSize > 0)
         {
-            splitStringBaseOnToken(csvRow[columnIndex], selectedmodel->model.vertices, TYPE_FLOAT);
+            splitStringBaseOnToken(csvRow[columnIndex], newModel->model.vertices, TYPE_FLOAT);
 
-            LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.verticesSize; i++)
+            LOG_DEBUG("loadCSVModel()->%s",modelTypeName); 
+            for(int i = 0; i<newModel->model.verticesSize; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.vertices[%d] = %lf", i, selectedmodel->model.vertices[i]); 
+                LOG_DEBUG("\t\t\t newModel->model.vertices[%d] = %lf", i, newModel->model.vertices[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.vertices is NULL"); 
+            LOG_DEBUG("\t\t\t newModel->model.vertices is NULL"); 
         }
         columnIndex++;
 
         //colorsSize
-        selectedmodel->model.colorsSize = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.colorsSize = %d",  selectedmodel->model.colorsSize);
+        newModel->model.colorsSize = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.colorsSize = %d", modelTypeName, newModel->model.colorsSize);
 
         //colors
-        if(selectedmodel->model.colorsSize > 0)
+        if(newModel->model.colorsSize > 0)
         {
-            splitStringBaseOnToken(csvRow[columnIndex], selectedmodel->model.colors, TYPE_FLOAT);
+            splitStringBaseOnToken(csvRow[columnIndex], newModel->model.colors, TYPE_FLOAT);
 
-            LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.colorsSize; i++)
+            LOG_DEBUG("loadCSVModel()->%s",modelTypeName); 
+            for(int i = 0; i<newModel->model.colorsSize; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.colors[%d] = %lf", i, selectedmodel->model.colors[i]); 
+                LOG_DEBUG("\t\t\t newModel->model.colors[%d] = %lf", i, newModel->model.colors[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.colors is NULL"); 
+            LOG_DEBUG("\t\t\t newModel->model.colors is NULL"); 
         }
         columnIndex++;
 
         //texCoordsize
-        selectedmodel->model.texcoordsSize = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.texCoordsize = %d",  selectedmodel->model.texcoordsSize);
+        newModel->model.texcoordsSize = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.texCoordsize = %d", modelTypeName, newModel->model.texcoordsSize);
 
         //texcord
-        if(selectedmodel->model.texcoordsSize > 0)
+        if(newModel->model.texcoordsSize > 0)
         {
-            splitStringBaseOnToken(csvRow[columnIndex], selectedmodel->model.texcoords, TYPE_FLOAT);
+            splitStringBaseOnToken(csvRow[columnIndex], newModel->model.texcoords, TYPE_FLOAT);
 
-            LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.texcoordsSize; i++)
+            LOG_DEBUG("loadCSVModel()->%s",modelTypeName); 
+            for(int i = 0; i<newModel->model.texcoordsSize; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.texcord[%d] = %lf", i, selectedmodel->model.texcoords[i]); 
+                LOG_DEBUG("\t\t\t newModel->model.texcord[%d] = %lf", i, newModel->model.texcoords[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.texcord is NULL"); 
+            LOG_DEBUG("\t\t\t newModel->model.texcord is NULL"); 
         }
         columnIndex++;
 
         //textureVariables
-        char** textureVariablesStringTemp = (char**)malloc(sizeof(char*) * (selectedmodel->model.numberOfFaces) );
-        if(selectedmodel->model.numberOfFaces > 0)
+        char** textureVariablesStringTemp = (char**)malloc(sizeof(char*) * (newModel->model.numberOfFaces) );
+        if(newModel->model.numberOfFaces > 0)
         {
             splitStringBaseOnToken(csvRow[columnIndex], textureVariablesStringTemp, TYPE_STRING);
 
-            for(int i = 0; i<selectedmodel->model.numberOfFaces; i++)
+            for(int i = 0; i<newModel->model.numberOfFaces; i++)
             {
                 bool isTexturefound = false;
                 if(strcmp(textureVariablesStringTemp[i], "NOFILE") != 0)
@@ -486,90 +506,90 @@ BOOL loadCSVModel(struct CircularDoublyLinkedList *pCDLL, const char *filename)
                     {
                         if(strcmp(allTextureNames_Array[j],textureVariablesStringTemp[i]) == 0)
                         {
-                            selectedmodel->model.textureVariables[i] = allLoadedTextureIdentifiers_Array[j];
+                            newModel->model.textureVariables[i] = allLoadedTextureIdentifiers_Array[j];
                             isTexturefound = true;
-                            LOG_DEBUG("loadCSVModel()-> textureVariables : found texture %s in allTextureNames_Array: %s ",textureVariablesStringTemp[i],  allTextureNames_Array[j]);
+                            LOG_DEBUG("loadCSVModel()-> %s: textureVariables : found texture %s in allTextureNames_Array: %s ",modelTypeName, textureVariablesStringTemp[i],  allTextureNames_Array[j]);
                             break;
                         }
                     }
                 }
                 if(isTexturefound == false)
                 {
-                    selectedmodel->model.textureVariables[i]= 0;
-                    LOG_DEBUG("loadCSVModel()-> textureVariables : not found texture %s in allTextureNames_Array:  ",textureVariablesStringTemp[i]);
+                    newModel->model.textureVariables[i]= 0;
+                    LOG_DEBUG("loadCSVModel()-> %s: textureVariables : not found texture %s in allTextureNames_Array", modelTypeName, textureVariablesStringTemp[i]);
                 }
             }
             LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.numberOfFaces; i++)
+            for(int i = 0; i<newModel->model.numberOfFaces; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.textureVariables[%d] = %d : %s", i, selectedmodel->model.textureVariables[i], textureVariablesStringTemp[i]); 
+                LOG_DEBUG("\t\t\t newModel(%s)->model.textureVariables[%d] = %d : %s",modelTypeName, i, newModel->model.textureVariables[i], textureVariablesStringTemp[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.textureVariables is NULL"); 
+            LOG_DEBUG("\t\t\t newModel->model.textureVariables is NULL"); 
         }
         columnIndex++;
 
 
         //normalSize
-        selectedmodel->model.normalsSize = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.normalSize = %d",  selectedmodel->model.normalsSize);
+        newModel->model.normalsSize = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.normalSize = %d", modelTypeName, newModel->model.normalsSize);
 
         //normals
-        if(selectedmodel->model.normalsSize > 0)
+        if(newModel->model.normalsSize > 0)
         {
-            splitStringBaseOnToken(csvRow[columnIndex], selectedmodel->model.normals, TYPE_FLOAT);
+            splitStringBaseOnToken(csvRow[columnIndex], newModel->model.normals, TYPE_FLOAT);
 
-            LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.normalsSize; i++)
+            LOG_DEBUG("loadCSVModel()->%s",modelTypeName); 
+            for(int i = 0; i<newModel->model.normalsSize; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.normals[%d] = %lf", i, selectedmodel->model.normals[i]); 
+                LOG_DEBUG("\t\t\t newModel->model.normals[%d] = %lf", i, newModel->model.normals[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.normals is NULL"); 
+            LOG_DEBUG("\t\t\t newModel(%s)->model.normals is NULL",modelTypeName); 
         }
         columnIndex++;
 
         //customAttributesCount
-        selectedmodel->model.customModelAttributesCount = atoi(csvRow[columnIndex++]);
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.customAttributesCount = %d",  selectedmodel->model.customModelAttributesCount);
+        newModel->model.customModelAttributesCount = atoi(csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.customAttributesCount = %d", modelTypeName, newModel->model.customModelAttributesCount);
 
         LOG_DEBUG("loadCSVModel()->  columnIndex = %d customAttributes",  columnIndex);
         //customAttributes
-        if(selectedmodel->model.customModelAttributesCount > 0)
+        if(newModel->model.customModelAttributesCount > 0)
         {
-            splitStringBaseOnToken(csvRow[columnIndex], selectedmodel->model.customModelAttributes, TYPE_FLOAT);
+            splitStringBaseOnToken(csvRow[columnIndex], newModel->model.customModelAttributes, TYPE_FLOAT);
 
-            LOG_DEBUG("loadCSVModel()->"); 
-            for(int i = 0; i<selectedmodel->model.customModelAttributesCount; i++)
+            LOG_DEBUG("loadCSVModel()->%s",modelTypeName); 
+            for(int i = 0; i<newModel->model.customModelAttributesCount; i++)
             {
-                LOG_DEBUG("\t\t\t selectedmodel->model.customAttributes[%d] = %lf", i, selectedmodel->model.customModelAttributes[i]); 
+                LOG_DEBUG("\t\t\t newModel->model.customAttributes[%d] = %lf", i, newModel->model.customModelAttributes[i]); 
             }
         }
         else
         {
-            LOG_DEBUG("\t\t\t selectedmodel->model.customAttributes is NULL"); 
+            LOG_DEBUG("\t\t\t newModel(%s)->model.customAttributes is NULL",modelTypeName); 
         }
         columnIndex++;
 
         //text
-        LOG_DEBUG("loadCSVModel()->  selectedmodel->model.text at index %d= %s",  columnIndex, csvRow[columnIndex]);
-        selectedmodel->model.text = (char*)malloc(sizeof(char) * (strlen(csvRow[columnIndex])+1) );
-        strcpy(selectedmodel->model.text, csvRow[columnIndex++]);
+        LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.text at index %d= %s", modelTypeName, columnIndex, csvRow[columnIndex]);
+        newModel->model.text = (char*)malloc(sizeof(char) * (strlen(csvRow[columnIndex])+1) );
+        strcpy(newModel->model.text, csvRow[columnIndex++]);
 
-        if(selectedmodel->model.text)
-            LOG_DEBUG("loadCSVModel()->  selectedmodel->model.text = %s",  selectedmodel->model.text);
+        if(newModel->model.text)
+            LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.text = %s", modelTypeName, newModel->model.text);
         else
-            LOG_DEBUG("loadCSVModel()->  selectedmodel->model.text is NULL");
+            LOG_DEBUG("loadCSVModel()->  newModel(%s)->model.text is NULL",modelTypeName);
         columnIndex++;
     }
 
     fclose(fp);
 
-    LOG_DEBUG("*************loadCSVModel() Completed ***********");
+    LOG_DEBUG("*************loadCSVModel() Completed ***********\n");
 
     return TRUE;
 }

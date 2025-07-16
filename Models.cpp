@@ -1,8 +1,15 @@
 #include "Models.h"
 #include "TextRendering.h"
+#include "SaveAndLoadModels.h"
 
 void initializeModelStructureToDefaultValues(Model *model)
 {
+    if (model == NULL)
+    {
+        LOG_ERROR("initializeModelStructureToDefaultValues() -> Model pointer is NULL");
+        return;
+    }
+
     model->modeltype = INVALIDSHAPE;
 
     model->numberOfFaces = 0;
@@ -40,11 +47,17 @@ void initializeModelStructureToDefaultValues(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 }
 
 void createTriangle(Model *model)
 {
+    if (model == NULL)
+    {
+        LOG_ERROR("createTriangle() -> Model pointer is NULL");
+        return;
+    }
+
     GLfloat modelVertices[] = {
         //FACE 1
         0.0f, 1.0f, 0.0f,
@@ -82,10 +95,11 @@ void createTriangle(Model *model)
         LOG_ERROR("createTriangle() -> Memory allocation failed for vertices of triangle model");
         return;
     }
-    for(GLint i = 0; i < model->verticesSize; i++)
-    {
-        model->vertices[i] = modelVertices[i];
-    }
+    // for(GLint i = 0; i < model->verticesSize; i++)
+    // {
+    //     model->vertices[i] = modelVertices[i];
+    // }
+    memcpy(model->vertices, modelVertices, sizeof(GLfloat) * model->verticesSize);
 
     //allocate memory for colors in a model struct and fill the colrs
     model->colors = NULL;
@@ -94,44 +108,65 @@ void createTriangle(Model *model)
     if(model->colors == NULL)
     {
         LOG_ERROR("createTriangle() -> Memory allocation failed for colors of triangle model");
-        free(model->vertices);
-        model->vertices = NULL;
+        if(model->vertices)
+        {
+            free(model->vertices);
+            model->vertices = NULL;
+        }
         return;
     }
-    for(GLint i = 0; i < model->colorsSize; i++)
-    {
-        model->colors[i] = modelColors[i];
-    }
+    // for(GLint i = 0; i < model->colorsSize; i++)
+    // {
+    //     model->colors[i] = modelColors[i];
+    // }
+    memcpy(model->colors, modelColors, sizeof(GLfloat) * model->colorsSize);
 
     //allocate memory for texcoords in a model struct and fill the texcords
     model->texcoords = NULL;
     model->texcoordsSize = sizeof(modelTexCoord) / sizeof(modelTexCoord[0]);
     model->texcoords = (GLfloat*)malloc(sizeof(GLfloat) * model->texcoordsSize);
-    for(GLint i = 0; i < model->texcoordsSize; i++)
-    {
-        model->texcoords[i] = modelTexCoord[i];
-    }
     if(model->texcoords == NULL)
     {
         LOG_ERROR("createTriangle() -> Memory allocation failed for texcoords of triangle model");
-        free(model->colors);
-        model->colors = NULL;
-        free(model->vertices);
-        model->vertices = NULL;
+        if(model->colors)
+        {
+            free(model->colors);
+            model->colors = NULL;
+        }
+        if(model->vertices)
+        {
+            free(model->vertices);
+            model->vertices = NULL;
+        }
         return;
     }
+    // for(GLint i = 0; i < model->texcoordsSize; i++)
+    // {
+    //     model->texcoords[i] = modelTexCoord[i];
+    // }
+    memcpy(model->texcoords, modelTexCoord, sizeof(GLfloat) * model->texcoordsSize);
+    
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
     model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
     if(model->textureVariables == NULL)
     {
         LOG_ERROR("createTriangle() -> Memory allocation failed for textureVariables of triangle model");
-        free(model->textureVariables);
-        model->textureVariables = NULL;
-        free(model->colors);
-        model->colors = NULL;
-        free(model->vertices);
-        model->vertices = NULL;
+        if(model->texcoords)
+        {
+            free(model->texcoords);
+            model->texcoords = NULL;
+        }
+        if(model->colors)
+        {
+            free(model->colors);
+            model->colors = NULL;
+        }
+        if(model->vertices)
+        {
+            free(model->vertices);
+            model->vertices = NULL;
+        }
         return;
     }
     for(GLint i = 0; i < model->numberOfFaces; i++)
@@ -161,7 +196,7 @@ void createTriangle(Model *model)
     model->text = NULL;
     
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createTriangle() completed ***********");
 }
@@ -169,9 +204,9 @@ void createTriangle(Model *model)
 void drawTriangle(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawTriangle() started ***********");
-    if(model->vertices == NULL || model->colors == NULL)
+    if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
-        LOG_ERROR("drawTriangle() -> Model vertices or colors are NULL");
+        LOG_ERROR("drawTriangle() -> Model vertices or colors or texcoords or texturevariables are NULL");
         return;
     }
 
@@ -205,7 +240,7 @@ void drawTriangle(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details :");
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -215,7 +250,7 @@ void drawTriangle(Model *model)
 
             //Vertex2
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+4], model->colors[colorIndex+5], model->colors[colorIndex+6], model->colors[colorIndex+7]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex+4], model->colors[colorIndex+5], model->colors[colorIndex+6], model->colors[colorIndex+7]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
@@ -226,7 +261,7 @@ void drawTriangle(Model *model)
 
             //Vertex3
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
 
@@ -326,19 +361,20 @@ void createQuad(Model *model)
     model->texcoords = NULL;
     model->texcoordsSize = sizeof(modelTexCoord) / sizeof(modelTexCoord[0]);
     model->texcoords = (GLfloat*)malloc(sizeof(GLfloat) * model->texcoordsSize);
-    for(GLint i = 0; i < model->texcoordsSize; i++)
-    {
-        model->texcoords[i] = modelTexCoord[i];
-    }
     if(model->texcoords == NULL)
     {
         LOG_ERROR("createQuad() -> Memory allocation failed for texcoords of Quad model");
         free(model->colors);
         model->colors = NULL;
         free(model->vertices);
-        model->vertices = NULL;
+        model->vertices = NULL;       
         return;
     }
+    for(GLint i = 0; i < model->texcoordsSize; i++)
+    {
+        model->texcoords[i] = modelTexCoord[i];
+    }
+
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
     model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
@@ -378,7 +414,7 @@ void createQuad(Model *model)
     model->customModelAttributesCount = 0;
     model->text = NULL;
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createQuad() completed ***********");
 }
@@ -386,9 +422,9 @@ void createQuad(Model *model)
 void drawQuad(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawQuad() started ***********");
-    if(model->vertices == NULL || model->colors == NULL)
+    if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
-        LOG_ERROR("drawQuad() -> Model vertices or colors are NULL");
+        LOG_ERROR("drawQuad() -> Model vertices or colors or texcoords or texturevariables are NULL");
         return;
     }
 
@@ -577,7 +613,7 @@ void createText(Model *model)
     BuildFont();
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createText() completed ***********");
 }
@@ -599,49 +635,52 @@ void drawText(Model *model)
     glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
     glScalef(model->scale.x, model->scale.y, model->scale.z);
 
-    static GLint textColorIndex = 0;
-    static GLint textAnimationTimerCounter = 0;
-    GLint textAnimationTimer = 500;
+    // static GLint textColorIndex = 0;
+    // static GLint textAnimationTimerCounter = 0;
+    // GLint textAnimationTimer = 500;
 
-    switch (textColorIndex)
-    {
-    case 0:
-        glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
-        if(textAnimationTimerCounter > textAnimationTimer)
-        {
-            textColorIndex = (textColorIndex+1) % 4;
-            textAnimationTimerCounter = 0;
-        }
-        break;
-    case 1:
-        glColor4f(model->colors[4], model->colors[5], model->colors[6], model->colors[7]);
-        if(textAnimationTimerCounter > textAnimationTimer)
-        {
-            textColorIndex = (textColorIndex+1) % 4;
-            textAnimationTimerCounter = 0;
-        }
-        break;
-    case 2:
-        glColor4f(model->colors[8], model->colors[9], model->colors[10], model->colors[11]);
-        if(textAnimationTimerCounter > textAnimationTimer)
-        {
-            textColorIndex = (textColorIndex+1) % 4;
-            textAnimationTimerCounter = 0;
-        }
-        break;
-    case 3:
-        glColor4f(model->colors[12], model->colors[13], model->colors[14], model->colors[15]);
-        if(textAnimationTimerCounter > textAnimationTimer)
-        {
-            textColorIndex = (textColorIndex+1) % 4;
-            textAnimationTimerCounter = 0;
-        }
-        break;
-    default:
-        break;
-    }
-    textAnimationTimerCounter++;
-    //LOG_INFO("text is -> %s", model->text);
+    // switch (textColorIndex)
+    // {
+    // case 0:
+    //     glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
+    //     if(textAnimationTimerCounter > textAnimationTimer)
+    //     {
+    //         textColorIndex = (textColorIndex+1) % 4;
+    //         textAnimationTimerCounter = 0;
+    //     }
+    //     break;
+    // case 1:
+    //     glColor4f(model->colors[4], model->colors[5], model->colors[6], model->colors[7]);
+    //     if(textAnimationTimerCounter > textAnimationTimer)
+    //     {
+    //         textColorIndex = (textColorIndex+1) % 4;
+    //         textAnimationTimerCounter = 0;
+    //     }
+    //     break;
+    // case 2:
+    //     glColor4f(model->colors[8], model->colors[9], model->colors[10], model->colors[11]);
+    //     if(textAnimationTimerCounter > textAnimationTimer)
+    //     {
+    //         textColorIndex = (textColorIndex+1) % 4;
+    //         textAnimationTimerCounter = 0;
+    //     }
+    //     break;
+    // case 3:
+    //     glColor4f(model->colors[12], model->colors[13], model->colors[14], model->colors[15]);
+    //     if(textAnimationTimerCounter > textAnimationTimer)
+    //     {
+    //         textColorIndex = (textColorIndex+1) % 4;
+    //         textAnimationTimerCounter = 0;
+    //     }
+    //     break;
+    // default:
+    //     break;
+    // }
+    // textAnimationTimerCounter++;
+    // //LOG_INFO("text is -> %s", model->text);
+
+
+    glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
 
     showText(model->text);
 
@@ -685,7 +724,7 @@ void createPyramid(Model *model)
 
         1.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f, 1.0f
         };
 
      GLfloat modelTexCoord[] = {
@@ -787,7 +826,7 @@ void createPyramid(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createPyramid() completed ***********");
 }
@@ -796,9 +835,9 @@ void drawPyramid(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawPyramid() started ***********");
 
-    if(model->vertices == NULL || model->colors == NULL)
+    if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
-        LOG_ERROR("drawPyramid() -> Model vertices or colors are NULL");
+        LOG_ERROR("drawPyramid() -> Model vertices or colors or texcoords or texturevariables are NULL");
         return;
     }
 
@@ -831,7 +870,7 @@ void drawPyramid(Model *model)
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details :");
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
@@ -841,7 +880,7 @@ void drawPyramid(Model *model)
 
             //Vertex2
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+4], model->colors[colorIndex+5], model->colors[colorIndex+6], model->colors[colorIndex+7]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex+4], model->colors[colorIndex+5], model->colors[colorIndex+6], model->colors[colorIndex+7]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+3], model->vertices[vertexIndex+4], model->vertices[vertexIndex+5]);
             if(EnableTexture)
                 glTexCoord2f(model->texcoords[texCoordIndex+2], model->texcoords[texCoordIndex+3]);
@@ -852,7 +891,7 @@ void drawPyramid(Model *model)
 
             //Vertex3
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex+4], model->texcoords[texCoordIndex+5]);
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex+8], model->colors[colorIndex+9], model->colors[colorIndex+10], model->colors[colorIndex+11]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex+6], model->vertices[vertexIndex+7], model->vertices[vertexIndex+8]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
 
@@ -1145,7 +1184,7 @@ void createCube(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createCube() completed ***********");
 }
@@ -1154,9 +1193,9 @@ void drawCube(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCube() started ***********");
 
-    if(model->vertices == NULL || model->colors == NULL)
+    if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
-        LOG_ERROR("drawCube() -> Model vertices or colors are NULL");
+        LOG_ERROR("drawCube() -> Model vertices or colors or texcoords or texturevariables are NULL");
         return;
     }
 
@@ -1344,7 +1383,7 @@ void createSphere(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createSphere() completed ***********");
 }
@@ -1352,9 +1391,9 @@ void createSphere(Model *model)
 void drawSphere(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
-    if(model->colors == NULL)
+    if(model->colors == NULL || model->textureVariables == NULL || model->customModelAttributes == NULL)
     {
-        LOG_ERROR("drawSphere() -> Model colors are NULL");
+        LOG_ERROR("drawSphere() -> Model colors or texturevariables or customattributes are NULL");
         return;
     }
 
@@ -1477,17 +1516,17 @@ void createCylinder(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createcylinder() completed ***********");
 }
 
 void drawCylinder(Model *model)
 {
-    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
-    if(model->colors == NULL)
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCylinder() started ***********");
+    if(model->colors == NULL || model->textureVariables == NULL || model->customModelAttributes == NULL)
     {
-        LOG_ERROR("drawcylinder() -> Model colors are NULL");
+        LOG_ERROR("drawCylinder() -> Model colors or texturevariables or customattributes are NULL");
         return;
     }
 
@@ -1533,6 +1572,7 @@ void drawCylinder(Model *model)
 
 void createDisk(Model *model)
 {
+    LOG_DEBUG("*************createDisk() started ***********");
     GLfloat modelColor[] = {
         //FACE 1
         1.0f, 0.0f, 0.0f, 1.0f,
@@ -1608,17 +1648,17 @@ void createDisk(Model *model)
     model->text = NULL;
 
     model->readyModelFileName = NULL;
-    model->readyModelLLHeadPtr = NULL;
+    model->readyModelLLPtr = NULL;
 
     LOG_DEBUG("*************createdisk() completed ***********");
 }
 
 void drawDisk(Model *model)
 {
-    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawSphere() started ***********");
-    if(model->colors == NULL)
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawDisk() started ***********");
+    if(model->colors == NULL || model->textureVariables == NULL || model->customModelAttributes == NULL)
     {
-        LOG_ERROR("drawdisk() -> Model colors are NULL");
+        LOG_ERROR("drawDisk() -> Model colors or texturevariables or customattributes are NULL");
         return;
     }
 
@@ -1662,6 +1702,102 @@ void drawDisk(Model *model)
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawDisk() completed ***********");
 }
 
+void createReadyModel(Model* model, const char* fileName)
+{
+    LOG_DEBUG("*************createReadyModel() started ***********");
+
+    model->modeltype = READYMODEL;
+
+    model->numberOfFaces = 0;
+
+    model->numberOfVerticesPerFace = 0;
+
+    model->translate.x = 0.0f;
+    model->translate.y = 0.0f;
+    model->translate.z = 0.0f;
+
+    model->scale.x = 1.0f;
+    model->scale.y = 1.0f;
+    model->scale.z = 1.0f;
+
+    model->rotationAngle.x = 0.0f;
+    model->rotationAngle.y = 0.0f;
+    model->rotationAngle.z = 0.0f;
+
+    model->vertices = NULL;
+    model->verticesSize = 0;
+
+    model->colors = NULL;
+    model->colorsSize = 0;
+
+    model->texcoords = NULL;
+    model->texcoordsSize = 0;
+    model->textureVariables = NULL;
+
+    model->normals = NULL;
+    model->normalsSize = 0;
+
+    model->customModelAttributes = NULL;
+    model->customModelAttributesCount = 0;
+
+    model->text = NULL;
+
+    LOG_DEBUG("createReadyModel() -> readymodel file %s name is getting copied model struct",fileName);
+    model->readyModelFileName = (char*)malloc( (strlen(fileName)+ 1) * sizeof(char));
+    strcpy(model->readyModelFileName, fileName);
+    LOG_DEBUG("createReadyModel() -> readymodel file name is %s",model->readyModelFileName);
+
+    struct CircularDoublyLinkedList *childLinkedList = NULL;
+    childLinkedList = createLinkedList();
+
+    if(childLinkedList == NULL)
+    {
+        LOG_ERROR("createReadyModel() -> childLinkedList is null could not create ready model");
+    }
+    else
+    {
+        BOOL loadResult = loadCSVModel(childLinkedList, model->readyModelFileName);
+        model->readyModelLLPtr = childLinkedList;
+
+        if(loadResult == FALSE)
+        {
+            LOG_ERROR("createReadyModel() -> readymodel loading failed");
+        }
+        else
+        {
+            LOG_INFO("createReadyModel() -> readymodel loading successfull");
+        }
+    }
+
+    LOG_DEBUG("*************createReadyModel() completed ***********");
+}
+
+void drawReadyModel(Model* model)
+{
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawReadyModel() started ***********");
+
+    glPushMatrix();
+
+    glTranslatef(model->translate.x, model->translate.y, model->translate.z);
+    glRotatef(model->rotationAngle.x, 1.0f, 0.0f, 0.0f);
+    glRotatef(model->rotationAngle.y, 0.0f, 1.0f, 0.0f);
+    glRotatef(model->rotationAngle.z, 0.0f, 0.0f, 1.0f);
+    glScalef(model->scale.x, model->scale.y, model->scale.z);
+
+
+    if(model->readyModelLLPtr == NULL)
+    {
+        LOG_ERROR("drawReadyModel() -> Model readyModelLLPtr is NULL");
+        return;
+    }
+
+    drawAllModels(model->readyModelLLPtr);
+
+    glPopMatrix();
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawReadyModel() completed ***********");
+}
+
 void drawModel(Model *model)
 {
     switch(model->modeltype)
@@ -1699,7 +1835,7 @@ void drawModel(Model *model)
         break;
 
         case READYMODEL:
-        //neet to add recursive call to draw model
+        drawReadyModel(model);
         break;
     }
 }
@@ -1842,8 +1978,20 @@ char* getModelNameFromModelType(ModelType modelType)
             strcpy(modelIDname, "DISK");
         break; 
 
+        case READYMODEL:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("READYMODEL"));
+            strcpy(modelIDname, "READYMODEL");
+        break;
+
+        case INVALIDSHAPE:
+            modelIDname = (char*)malloc(sizeof(char) * strlen("INVALIDSHAPE"));
+            strcpy(modelIDname, "INVALIDSHAPE");
+            LOG_ERROR("getModelNameFromModelType() -> INVALID SHAPE Model ID detected");
+        break;
+
+
         default:
-        LOG_DEBUG("getModelType() -> cannot get modelType %d", modelType);
+        LOG_ERROR("getModelNameFromModelType() -> cannot get modelType %d", modelType);
         break;
     }
     return modelIDname;
@@ -1867,9 +2015,11 @@ ModelType getModelTypeFromModelName(char *modelName)
         return SPHERE;
     else if(strcmp(modelName, "DISK") == 0)
         return DISK;
+    else if(strcmp(modelName, "READYMODEL") == 0)
+        return READYMODEL;
     else
         return INVALIDSHAPE;
-    
-
 }
+
+
 

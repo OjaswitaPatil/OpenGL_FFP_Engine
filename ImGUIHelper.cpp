@@ -79,6 +79,10 @@ void generateUI()
     if(ImGui::Begin("Engine's Controls"));
     {
         //LOG_DEBUG("generateUI() -> ImGui UI opened: Engine's Controls");
+
+		ImGui::Text("Number of active LL nodes: %d", NumOfActiveLLNodesInMemory);
+
+
 		if (ImGui::Button("Exit"))
 			{
 				gbEscapeKeyIsPress = TRUE;
@@ -106,7 +110,7 @@ void generateUI()
 		{
 			if (ImGui::Button("Triangle"))
 			{
-				createModel(masterLinkedList, TRIANGLE);
+				createModel(masterLinkedList, TRIANGLE, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Triangle model created.");
 			}
@@ -114,7 +118,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Quad"))
 			{
-				createModel(masterLinkedList, RECTANGLE);
+				createModel(masterLinkedList, RECTANGLE, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Rectangle model created.");
 			}
@@ -122,7 +126,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Pyramid"))
 			{
-				createModel(masterLinkedList, PYRAMID);
+				createModel(masterLinkedList, PYRAMID, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Pyramid model created.");
 			}
@@ -130,7 +134,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("Cube"))
 			{
-				createModel(masterLinkedList, CUBE);
+				createModel(masterLinkedList, CUBE, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_INFO("generateUI() -> Cube model created.");
 			}
@@ -151,7 +155,7 @@ void generateUI()
 				{
                     strncpy(textString, inputText, sizeof(textString));
 					LOG_INFO("generateUI() -> Text model created with input: %s", textString);
-					createModel(masterLinkedList, TEXT);
+					createModel(masterLinkedList, TEXT, NULL);
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
@@ -166,7 +170,7 @@ void generateUI()
 
 			if (ImGui::Button("CYLINDER"))
 			{
-				createModel(masterLinkedList, CYLINDER);
+				createModel(masterLinkedList, CYLINDER, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> CYALINDER model created.");
 			}
@@ -174,7 +178,7 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("SPHERE"))
 			{
-				createModel(masterLinkedList, SPHERE);
+				createModel(masterLinkedList, SPHERE, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> Sphere model created.");
 			}
@@ -182,10 +186,19 @@ void generateUI()
 			ImGui::SameLine();
 			if (ImGui::Button("DISK"))
 			{
-				createModel(masterLinkedList, DISK);
+				createModel(masterLinkedList, DISK, NULL);
 				scaleAllOffSet = 0.0f;
                 LOG_DEBUG("generateUI() -> disk model created.");
 			}
+
+			if (ImGui::Button("ReadyModel"))
+			{
+				LOG_DEBUG("generateUI() -> ReadyModel model creation started.");
+				createModel(masterLinkedList, READYMODEL, "testreadymodel.csv");
+				scaleAllOffSet = 0.0f;
+                LOG_DEBUG("generateUI() -> ReadyModel model created successfully.");
+			}
+
 
 			ImGui::NewLine();
 			if (ImGui::Button("Delete selected Shape"))
