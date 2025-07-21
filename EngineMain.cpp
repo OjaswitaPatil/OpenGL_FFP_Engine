@@ -416,20 +416,22 @@ int initialize(void)
     addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
     addTextureNameToallTexturesArray("Smiley.bmp");
     addTextureNameToallTexturesArray("marble.bmp");
+    addTextureNameToallTexturesArray("Brick.bmp");
+
     addTextureNameToallTexturesArray("students1.png");
     addTextureNameToallTexturesArray("Piller.png");
     addTextureNameToallTexturesArray("SchoolWall.png");
     addTextureNameToallTexturesArray("Varanda.png");
     addTextureNameToallTexturesArray("Window.png");
-    addTextureNameToallTexturesArray("Leaf.png");
-    addTextureNameToallTexturesArray("Khod.bmp");
-    addTextureNameToallTexturesArray("Brick.bmp");
-    addTextureNameToallTexturesArray("Boy.png");
-    addTextureNameToallTexturesArray("Girl.png");
-    // addTextureNameToallTexturesArray("Boy1.png");
-    // addTextureNameToallTexturesArray("SingleBoy2.png");
-    // addTextureNameToallTexturesArray("Boy2.png");
-    // addTextureNameToallTexturesArray("Boy3.png");
+     
+    //addTextureNameToallTexturesArray("Boy.png");            //problem
+    //addTextureNameToallTexturesArray("SingleBoy2.png");     //problem
+    //addTextureNameToallTexturesArray("Boy2.png");           //problem
+    //addTextureNameToallTexturesArray("Leaf.png");           //problem
+    //addTextureNameToallTexturesArray("Khod.bmp");          //problem
+    //addTextureNameToallTexturesArray("Girl.png");          //problem
+    // addTextureNameToallTexturesArray("Boy1.png");         //problem
+    //addTextureNameToallTexturesArray("Boy3.png");          //problem
 
     //load model
     // loadCSVModel("TestFinal.csv");

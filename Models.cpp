@@ -95,11 +95,11 @@ void createTriangle(Model *model)
         LOG_ERROR("createTriangle() -> Memory allocation failed for vertices of triangle model");
         return;
     }
-    // for(GLint i = 0; i < model->verticesSize; i++)
-    // {
-    //     model->vertices[i] = modelVertices[i];
-    // }
-    memcpy(model->vertices, modelVertices, sizeof(GLfloat) * model->verticesSize);
+    for(GLint i = 0; i < model->verticesSize; i++)
+    {
+        model->vertices[i] = modelVertices[i];
+    }
+    //memcpy(model->vertices, modelVertices, sizeof(GLfloat) * model->verticesSize);
 
     //allocate memory for colors in a model struct and fill the colrs
     model->colors = NULL;
@@ -115,11 +115,11 @@ void createTriangle(Model *model)
         }
         return;
     }
-    // for(GLint i = 0; i < model->colorsSize; i++)
-    // {
-    //     model->colors[i] = modelColors[i];
-    // }
-    memcpy(model->colors, modelColors, sizeof(GLfloat) * model->colorsSize);
+    for(GLint i = 0; i < model->colorsSize; i++)
+    {
+        model->colors[i] = modelColors[i];
+    }
+    //memcpy(model->colors, modelColors, sizeof(GLfloat) * model->colorsSize);
 
     //allocate memory for texcoords in a model struct and fill the texcords
     model->texcoords = NULL;
@@ -140,11 +140,11 @@ void createTriangle(Model *model)
         }
         return;
     }
-    // for(GLint i = 0; i < model->texcoordsSize; i++)
-    // {
-    //     model->texcoords[i] = modelTexCoord[i];
-    // }
-    memcpy(model->texcoords, modelTexCoord, sizeof(GLfloat) * model->texcoordsSize);
+    for(GLint i = 0; i < model->texcoordsSize; i++)
+    {
+        model->texcoords[i] = modelTexCoord[i];
+    }
+    //memcpy(model->texcoords, modelTexCoord, sizeof(GLfloat) * model->texcoordsSize);
     
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
@@ -204,6 +204,8 @@ void createTriangle(Model *model)
 void drawTriangle(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawTriangle() started ***********");
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawTriangle()-> TRIANGLE model struct pointer %p", model);
+    
     if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
         LOG_ERROR("drawTriangle() -> Model vertices or colors or texcoords or texturevariables are NULL");
@@ -234,11 +236,15 @@ void drawTriangle(Model *model)
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TRIANGLE: texture enabled? : %d and is texture?  %d",EnableTexture, glIsTexture(model->textureVariables[faceIndex]));
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TRIANGLE: texture enabled is having GLUINT index is : %d",model->textureVariables[faceIndex]);
+
+
         glBegin(GL_TRIANGLES);
         {
             //Vertex1
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details :");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details for face %d:", faceIndex);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Color: {%lf, %lf, %lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
@@ -275,7 +281,6 @@ void drawTriangle(Model *model)
 
         if(EnableTexture)
             glBindTexture(GL_TEXTURE_2D, 0);
-
 
         //offset jumps for array
         vertexIndex += 9;
@@ -422,6 +427,9 @@ void createQuad(Model *model)
 void drawQuad(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawQuad() started ***********");
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawQuad()-> Quad model struct pointer %p", model);
+
     if(model->vertices == NULL || model->colors == NULL || model->texcoords == NULL || model->textureVariables == NULL)
     {
         LOG_ERROR("drawQuad() -> Model vertices or colors or texcoords or texturevariables are NULL");
@@ -452,10 +460,13 @@ void drawQuad(Model *model)
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         }
 
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("QUAD: texture enabled  : %d",EnableTexture);
+        LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("QUAD: texture enabled is having GLUINT index is : %d",model->textureVariables[faceIndex]);
+
         glBegin(GL_TRIANGLES);
         {
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("------------");
-            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details :");
+            LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Printing primitive details for face %d:", faceIndex);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("TexCoord: {%lf, %lf}",model->texcoords[texCoordIndex], model->texcoords[texCoordIndex+1]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("colors: {%lf, %lf}",model->colors[colorIndex], model->colors[colorIndex+1], model->colors[colorIndex+2], model->colors[colorIndex+3]);
             LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("Vertices: {%lf, %lf, %lf}",model->vertices[vertexIndex], model->vertices[vertexIndex+1], model->vertices[vertexIndex+2]);
@@ -1524,6 +1535,8 @@ void createCylinder(Model *model)
 void drawCylinder(Model *model)
 {
     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************drawCylinder() started ***********");
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("drawCylinder()-> CYLINDER model struct pointer %p", model);
+
     if(model->colors == NULL || model->textureVariables == NULL || model->customModelAttributes == NULL)
     {
         LOG_ERROR("drawCylinder() -> Model colors or texturevariables or customattributes are NULL");
@@ -1559,6 +1572,9 @@ void drawCylinder(Model *model)
     {
         glColor4f(model->colors[0], model->colors[1], model->colors[2], model->colors[3]);
     }
+
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("CYLINDER: texture enabled  : %d",EnableTexture);
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("CYLINDER: texture enabled is having GLUINT index is : %d",model->textureVariables[0]);
 
     gluCylinder(quadric, model->customModelAttributes[1], model->customModelAttributes[2],model->customModelAttributes[3], model->customModelAttributes[4], model->customModelAttributes[5]);
 

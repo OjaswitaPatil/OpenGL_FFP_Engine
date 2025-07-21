@@ -86,7 +86,7 @@ void generateUI()
 		if (ImGui::Button("Exit"))
 			{
 				gbEscapeKeyIsPress = TRUE;
-                LOG_INFO("generateUI() -> Triangle model created.");
+                LOG_INFO("generateUI() -> Exit button triggered.");
 			}
 
 		if(ImGui::CollapsingHeader("ScreenRotation"))
@@ -378,13 +378,16 @@ void generateUI()
                         isTextureEnabled = (bool*)malloc(sizeof(bool) * MAX_NUMBER_OF_LOADED_TEXTURES);
 
                         selectedTextureIndex = (int*)malloc(sizeof(int) * MAX_NUMBER_OF_LOADED_TEXTURES);
-
-                        if(selectedTextureIndex == NULL || isTextureEnabled == NULL)
-                        {
-                            LOG_ERROR("generateUI() -> Memory allocation failed for isTextureEnabled or selectedTextureIndex.");
-                            return;
-                        }
                     }
+					if(selectedTextureIndex == NULL || isTextureEnabled == NULL)
+					{
+						LOG_ERROR("generateUI() -> Memory allocation failed for isTextureEnabled or selectedTextureIndex.");
+						return;
+					}
+					else
+					{
+						LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("generateUI() -> Memory allocation is available for isTextureEnabled or selectedTextureIndex.");
+					}
 
 					for(int i = 0; i < selectedmodel->model.numberOfFaces; i++)
 					{
