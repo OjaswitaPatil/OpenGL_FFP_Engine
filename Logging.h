@@ -7,6 +7,10 @@
 #include <time.h>
 #include <stdarg.h>
 
+#include<windows.h>
+#include<gl/GL.h>
+#include<gl/GLU.h>
+
 
 
 // === Log Level Defines ===
@@ -23,6 +27,8 @@
 int init_logging(const char* filename);
 void close_logging();
 void log_print(const char* level, const char* fmt, ...);
+void LogOpenGLError(const char* msg);
+void LogWin32Error(const char* msg);
 
 // === Log Macros ===
 #if LOG_LEVEL >= LOG_LEVEL_ERROR

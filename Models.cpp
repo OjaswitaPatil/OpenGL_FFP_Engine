@@ -1771,7 +1771,7 @@ char* getModelNameFromModelType(ModelType modelType)
         break; 
 
         default:
-        LOG_DEBUG("getModelType() -> cannot get modelType %d", model);
+        LOG_DEBUG("getModelType() -> cannot get modelType %d", modelType);
         break;
     }
     return modelIDname;

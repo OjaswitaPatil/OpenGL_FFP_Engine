@@ -7,7 +7,7 @@ FILE *gpFile = NULL;
 // Initialize and Cleanup Logging
 int init_logging(const char* filename)
 {
-    gpFile = fopen(filename, "a");
+    gpFile = fopen(filename, "w");
     if (gpFile == NULL)
     {
         fprintf(stderr, "Failed to open log file: %s\n", filename);
@@ -46,6 +46,21 @@ void log_print(const char* level, const char* fmt, ...)
     fflush(gpFile);  // Ensures it's written immediately
 
     va_end(args);
+}
+
+
+void LogOpenGLError(const char* msg)
+{
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR)
+        LOG_ERROR("[OpenGL ERROR] %s -> OpenGL Error: 0x%X", msg, err);
+}
+
+void LogWin32Error(const char* msg)
+{
+    DWORD err = GetLastError();
+    if (err != 0)
+        LOG_ERROR("[Win32 ERROR]%s -> Win32 Error: 0x%X", msg, err);
 }
 
 //Use below log statements fo rlogging

@@ -111,9 +111,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
 
     //show window
     ShowWindow(hwnd, iCmdShow);
+    LOG_INFO("Winmain() -> ShowWindow() completed successfully");
 
     // paint the background of window
     UpdateWindow(hwnd);
+    LOG_INFO("Winmain() -> UpdateWindow() completed successfully");
 
     // initialize
     int result = initialize();
@@ -125,7 +127,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     }
     else
     {
-        LOG_INFO("Winmain() -> initialize() completed successfully ");
+        LOG_INFO("Winmain() -> initialize() completed successfully");
     }
 
     // SET THIS WINDOW AS FORGROUND AND ACTIVE WINDOW
@@ -135,11 +137,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
     // set ImGUI context
     setupImGUIContext();
 
+    LOG_DEBUG("*********after setupImGUIContext() and before game loop*********");
+
     // game loop
     while(bDone == FALSE)
     {
+        LOG_DEBUG("********Enter in game loop************");
         if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
+            LOG_DEBUG("********after PeekMessage()********");
             if(msg.message == WM_QUIT)
             {
                 bDone = TRUE;
@@ -147,24 +153,31 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmdLi
             else
             {
                 TranslateMessage(&msg);
+                LOG_DEBUG("********after TranslateMessage()********");
                 DispatchMessage(&msg);
+                LOG_DEBUG("********after DispatchMessage()********");
             }
         }
         else
         {
             if(gbActiveWindow == TRUE)
             {
+                LOG_DEBUG("********when gbActiveWindow is true********");
                 if(gbEscapeKeyIsPress == TRUE)
                 {
+                    LOG_DEBUG("********when  gbEscapeKeyIsPress is true********");
                     bDone = TRUE;
                 }
                 //render
                 display();
+                LOG_DEBUG("********after display() in game loop********");
 
                 // update
                 update();
+                LOG_DEBUG("********after update() in game loop********");
             }
 
+            LOG_DEBUG("game loop completed");
         }
     }
 
@@ -335,7 +348,7 @@ int initialize(void)
     }
     else
     {
-        LOG_DEBUG("initialize() -> GetDC() succeeded");
+        LOG_DEBUG("initialize() -> GetDC() succeeded. ghdc = %p", ghdc);
     }
 
     //get matching pixel foremat idex using hdc and pfd
@@ -370,7 +383,7 @@ int initialize(void)
     }
     else
     {
-        LOG_DEBUG("initialize() -> wglCreateContext() succeeded");
+        LOG_DEBUG("initialize() -> wglCreateContext() succeeded. ghrc = %p", ghrc);
     }
 
     // make this rendering contex as current contex
@@ -411,6 +424,28 @@ int initialize(void)
     addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
     addTextureNameToallTexturesArray("Smiley.bmp");
     addTextureNameToallTexturesArray("marble.bmp");
+
+    addTextureNameToallTexturesArray("Stone.bmp");
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+
+    addTextureNameToallTexturesArray("Stone.bmp");
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+
+    addTextureNameToallTexturesArray("Stone.bmp");
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+
+    addTextureNameToallTexturesArray("Stone.bmp");
+    addTextureNameToallTexturesArray("Vijay_Kundali.bmp");
+    addTextureNameToallTexturesArray("Smiley.bmp");
+    addTextureNameToallTexturesArray("marble.bmp");
+
+    addTextureNameToallTexturesArray("Window.png");
     addTextureNameToallTexturesArray("lamp1.png");
     addTextureNameToallTexturesArray("flowers.png");
     addTextureNameToallTexturesArray("kangaru3.png");
@@ -418,14 +453,30 @@ int initialize(void)
     addTextureNameToallTexturesArray("tree1.png");
     addTextureNameToallTexturesArray("stoneWall.png");
     addTextureNameToallTexturesArray("students1.png");
+    addTextureNameToallTexturesArray("piller.png");
     addTextureNameToallTexturesArray("tree2.png");
     addTextureNameToallTexturesArray("folwer.png");
+    addTextureNameToallTexturesArray("SchoolWall.png");
+    addTextureNameToallTexturesArray("Varanda.png");
 
+    // addTextureNameToallTexturesArray("Boy1.png");   //problem
+    // addTextureNameToallTexturesArray("Girl.png");   //problem
+    // addTextureNameToallTexturesArray("Khod.bmp");    //problem 
+    // addTextureNameToallTexturesArray("Leaf.png");   //problem
+
+    
+    
     //enable texturing
     glEnable(GL_TEXTURE_2D);
 
     quadric = gluNewQuadric();
     gluQuadricTexture(quadric, GL_TRUE);
+
+    GLenum  err = GetLastError();
+    if (err != GL_NO_ERROR)
+    {
+        LOG_ERROR("initialize() -> opengl error code 0x%X", err);
+    }
 
     LOG_DEBUG("*************initialize() Completed ***********");
 
@@ -481,6 +532,8 @@ void resize(int width, int height)
 
 void display(void)
 {
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************display() started ***********");
+
     // Start the ImGui frame
     startImGUIFrame();
     // Generate UI (Not rendering here)
@@ -501,6 +554,8 @@ void display(void)
     //Render/display Generated UI
     renderGeneratedUI();
 
+    LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("*************display() completed ***********");
+
     SwapBuffers(ghdc);
 }
 
@@ -516,9 +571,12 @@ void uninitialize(void)
 
     //code
     LOG_DEBUG("*************uninitialize() Started ***********");
+    LogOpenGLError("uninitialize() -> At the start the uninitialize()");
 
     // uninitialize ImGUI
     uninitializeImGUI();
+    LogOpenGLError("uninitialize() -> After uninitializeImGUI()");
+    LogWin32Error("uninitialize() -> After uninitializeImGUI()");
 
     // if is existing in FS then restore to back
     if(gbFullScreen == TRUE)
@@ -527,6 +585,7 @@ void uninitialize(void)
         gbFullScreen = FALSE;
     }
 
+    LOG_DEBUG("uninitialize() ->before deleting allLoadedTextureArray");
     //delete allLoadedTextureArray
     for(int i = 0; i<numberOfTextureAvailablesinallTexturesArray; i++)
     {
@@ -539,18 +598,46 @@ void uninitialize(void)
     }
     free(allLoadedTextureIdentifiers_Array);
     free(allTextureNames_Array);
+    LOG_DEBUG("uninitialize() ->after deleting allLoadedTextureArray");
 
-    // make hdc as current context by releasing rendering contex as current contex
-    if(wglGetCurrentContext() == ghrc)
+    if(quadric)
     {
-        wglMakeCurrent(NULL, NULL);
+        gluDeleteQuadric(quadric);
+        quadric = NULL;
+        LOG_DEBUG("uninitialize() -> gluDeleteQuadric() completed");
+        LogOpenGLError("uninitialize() -> After gluDeleteQuadric()");
     }
 
-    // delete the rendering context
+    HGLRC currentRC = wglGetCurrentContext();
+    HDC currentDC = wglGetCurrentDC();
+    LOG_DEBUG("Before wglDeleteContext()");
+    LOG_DEBUG("Current RC: %p, ghrc: %p", currentRC, ghrc);
+    LOG_DEBUG("Current DC: %p, ghdc: %p", currentDC, ghdc);
+    //make hdc as current context by releasing rendering contex as current contex
+    if(wglGetCurrentContext() == ghrc)
+    {
+        SetLastError(0);
+        if(wglMakeCurrent(NULL, NULL) == FALSE)
+            LogWin32Error("uninitialize() -> wglMakeCurrent(). Make current context as null failed");
+        else
+            LOG_DEBUG("uninitialize() -> wglMakeCurrent(): Make current context as null successed");
+    }
+
+    //delete the rendering context
+    LOG_DEBUG("uninitialize() -> before block of wglDeleteContext() completed");
     if(ghrc)
     {
-        wglDeleteContext(ghrc);
-        ghrc = NULL;
+        SetLastError(0);
+        LOG_DEBUG("uninitialize() -> before wglDeleteContext() completed");
+        if(wglDeleteContext(ghrc) == FALSE)
+        {
+            LogWin32Error("uninitialize() -> wglDeleteContext(). deletinng rendering context ghrc failed");
+        }
+        else
+        {
+            ghrc = NULL;
+            LOG_DEBUG("uninitialize() -> after wglDeleteContext() completed");
+        }
     }
 
     // release the dc
@@ -558,6 +645,7 @@ void uninitialize(void)
     {
         ReleaseDC(ghwnd, ghdc);
         ghdc = NULL;
+        LOG_DEBUG("***********ReleaseDC() completed");
     }
 
     // destroy window
@@ -565,11 +653,7 @@ void uninitialize(void)
     {
         DestroyWindow(ghwnd);
         ghwnd = NULL;
-    }
-    if(quadric)
-    {
-        gluDeleteQuadric(quadric);
-        quadric = NULL;
+        LOG_DEBUG("***********DestroyWindow() completed");
     }
 
     // close the file

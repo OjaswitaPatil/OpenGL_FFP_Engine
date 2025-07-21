@@ -460,10 +460,22 @@ void uninitializeImGUI()
     free(isTextureEnabled);
     isTextureEnabled = NULL;
 
+	
+   	LogWin32Error("uninitializeImGUI() -> At start of  uninitializeImGUI()");
+	LogOpenGLError("uninitializeImGUI() -> At start of  uninitializeImGUI()");
+
     // Cleanup ImGui
     ImGui_ImplOpenGL3_Shutdown();
+	LogOpenGLError("uninitializeImGUI() -> ImGui_ImplOpenGL3_Shutdown()");
+
+	SetLastError(0);
     ImGui_ImplWin32_Shutdown();
+	LogWin32Error("uninitializeImGUI() -> ImGui_ImplOpenGL3_Shutdown()");
+
+	SetLastError(0);
     ImGui::DestroyContext();
+	LogWin32Error("uninitializeImGUI() -> DestroyContext()");
+
 
     LOG_DEBUG("*************uninitializeImGUI() Completed ***********");
 }
