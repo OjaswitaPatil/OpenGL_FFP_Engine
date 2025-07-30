@@ -3,9 +3,7 @@
 #include "SaveAndLoadModels.h"
 
 //Global variables for imgui UI controls
-// static float triangleColor[3] = { 1.0f, 0.0f, 0.0f }; // Default red color
-// bool show_demo_window = true;
-// bool show_another_window = false;
+
 
 int *selectedTextureIndex = NULL;
 bool *isTextureEnabled = NULL;
@@ -79,32 +77,31 @@ void generateUI()
     if(ImGui::Begin("Engine's Controls"));
     {
         //LOG_DEBUG("generateUI() -> ImGui UI opened: Engine's Controls");
-		if (ImGui::Button("Exit"))
+		if (ImGui::Button("Exit##ExitButton"))
 			{
 				gbEscapeKeyIsPress = TRUE;
                 LOG_INFO("generateUI() -> Triangle model created.");
 			}
 
-		if(ImGui::CollapsingHeader("ScreenRotation"))
+		if(ImGui::CollapsingHeader("ScreenRotation##ScreenRotationCollapsingHeader"))
 		{
 
 			ImGui::SliderFloat("SceneRotationX", &(screenRotate.rotate.x),-360.0f, 360.0f);
 			ImGui::SliderFloat("SceneRotationY", &(screenRotate.rotate.y),-360.0f, 360.0f);
 			ImGui::SliderFloat("SceneRotationZ", &(screenRotate.rotate.z),-360.0f, 360.0f);
 
-			if (ImGui::Button("Reset Scene Rotation"))
+			if (ImGui::Button("Reset Scene Rotation##ResetSceneRotationButton"))
 			{
 				screenRotate.rotate.x = 9.0f;
 				screenRotate.rotate.y = 12.0f;
 				screenRotate.rotate.z = 0.0f;
                 LOG_INFO("generateUI() -> Scene rotation reset to default values.");
 			}
-
 		}
 
-        if(ImGui::CollapsingHeader("Add/Delete Shape"))
+        if(ImGui::CollapsingHeader("Add/Delete Shape##AddDeleteShapeCollapsingHeader"))
 		{
-			if (ImGui::Button("Triangle"))
+			if (ImGui::Button("Triangle##TriangleButton"))
 			{
 				createModel(TRIANGLE);
 				scaleAllOffSet = 0.0f;
@@ -112,7 +109,7 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("Quad"))
+			if (ImGui::Button("Quad##QuadButton"))
 			{
 				createModel(RECTANGLE);
 				scaleAllOffSet = 0.0f;
@@ -120,7 +117,7 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("Pyramid"))
+			if (ImGui::Button("Pyramid##PyramidButton"))
 			{
 				createModel(PYRAMID);
 				scaleAllOffSet = 0.0f;
@@ -128,7 +125,7 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("Cube"))
+			if (ImGui::Button("Cube##CubeButton"))
 			{
 				createModel(CUBE);
 				scaleAllOffSet = 0.0f;
@@ -136,35 +133,35 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("TEXT"))
+			if (ImGui::Button("TEXT#RenderTextButton"))
 			{
-				ImGui::OpenPopup("MyPopup");
-                LOG_DEBUG("generateUI() -> TEXT popup opened.");
+				ImGui::OpenPopup("RenderTextPopup##RenderTextPopup");
+                LOG_DEBUG("generateUI() -> RenderTextPopup: TEXT popup opened.");
 			}
 
-			if (ImGui::BeginPopup("MyPopup"))
+			if (ImGui::BeginPopup("RenderTextPopup##RenderTextPopup"))
 			{
 				static char inputText[128] = "";
 				ImGui::InputText("Enter Text", inputText, IM_ARRAYSIZE(inputText));
 
-				if (ImGui::Button("OK"))
+				if (ImGui::Button("OK##RenderTextPopupOKButton"))
 				{
                     strncpy(textString, inputText, sizeof(textString));
-					LOG_INFO("generateUI() -> Text model created with input: %s", textString);
+					LOG_INFO("generateUI() -> RenderTextPopup: Text model created with input: %s", textString);
 					createModel(TEXT);
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel"))
+				if (ImGui::Button("Cancel##RenderTextPopupCancelButton"))
 				{
 					ImGui::CloseCurrentPopup();
-                    LOG_DEBUG("generateUI() -> Text model creation canceled.");
+                    LOG_DEBUG("generateUI() ->RenderTextPopup: Text model creation canceled.");
 				}
 
 				ImGui::EndPopup();
 			}
 
-			if (ImGui::Button("CYLINDER"))
+			if (ImGui::Button("CYLINDER##CylinderButton"))
 			{
 				createModel(CYLINDER);
 				scaleAllOffSet = 0.0f;
@@ -172,7 +169,7 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("SPHERE"))
+			if (ImGui::Button("SPHERE##SphereButton"))
 			{
 				createModel(SPHERE);
 				scaleAllOffSet = 0.0f;
@@ -180,7 +177,7 @@ void generateUI()
 			}
 
 			ImGui::SameLine();
-			if (ImGui::Button("DISK"))
+			if (ImGui::Button("DISK##DiskButton"))
 			{
 				createModel(DISK);
 				scaleAllOffSet = 0.0f;
@@ -188,7 +185,7 @@ void generateUI()
 			}
 
 			ImGui::NewLine();
-			if (ImGui::Button("Delete selected Shape"))
+			if (ImGui::Button("Delete selected Shape##DeleteShapeButton"))
 			{
                 if (selectedmodel != NULL)
                 {
@@ -203,32 +200,34 @@ void generateUI()
 
 			//save model
 			ImGui::NewLine();
-			if (ImGui::Button("SaveModel"))
+
+			if (ImGui::Button("SaveModel##SaveModelPopUpButton"))
 			{
-				ImGui::OpenPopup("SaveModelPopUp");
-                LOG_DEBUG("generateUI() -> SaveModelPopUp popup opened.");
+				ImGui::OpenPopup("SaveModelPopUp##SaveModelPopUp");
+                LOG_DEBUG("generateUI() -> SaveModelPopUp:  popup opened.");
 			}
 
-			if (ImGui::BeginPopup("SaveModelPopUp"))
+			if (ImGui::BeginPopup("SaveModelPopUp##SaveModelPopUp"))
 			{
-				static char inputText[128] = "";
-				ImGui::InputText(".csv", inputText, IM_ARRAYSIZE(inputText));
+				static char inputTextSaveModel[128] = "";
+				ImGui::InputText(".csv##SaveModelPopUpInputText", inputTextSaveModel, IM_ARRAYSIZE(inputTextSaveModel));
 
-				if (ImGui::Button("OK"))
+				if (ImGui::Button("OK##SaveModelPopUpOKButton"))
 				{
-					char *saveModelFileName = (char*)malloc((strlen("resources/CsvModels/") + IM_ARRAYSIZE(inputText) + strlen(".csv")) * sizeof(char));
+                    size_t saveModelFileNameLength = strlen("resources/CsvModels/") + strlen(inputTextSaveModel) + strlen(".csv") + 1;
+					char *saveModelFileName = (char*)malloc(saveModelFileNameLength * sizeof(char));
 					strcpy(saveModelFileName,"resources/CsvModels/");
-					strcat(saveModelFileName, inputText);
+					strcat(saveModelFileName, inputTextSaveModel);
 					strcat(saveModelFileName, ".csv");
-					
+
 					if(saveModel(saveModelFileName) == TRUE)
 					{
-						LOG_INFO("generateUI() -> model saved with file name: %s", saveModelFileName);
+						LOG_INFO("generateUI() -> SaveModelPopUp: model saved with file name: %s", saveModelFileName);
 					}
 					else
 					{
 						ImGui::Text("Model save with file: %s.csv failed", saveModelFileName);
-						LOG_INFO("generateUI() -> model saving with file name failed: %s", saveModelFileName);
+						LOG_INFO("generateUI() -> SaveModelPopUp: model saving with file name failed: %s", saveModelFileName);
 					}
 					if(saveModelFileName)
 					{
@@ -238,62 +237,69 @@ void generateUI()
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel"))
+				if (ImGui::Button("Cancel##SaveModelPopUpCancelButton"))
 				{
 					ImGui::CloseCurrentPopup();
-                    LOG_DEBUG("generateUI() ->  model saving canceled.");
+                    LOG_DEBUG("generateUI() ->  SaveModelPopUp: model saving canceled.");
 				}
 
 				ImGui::EndPopup();
 			}
 
 			//load model
-			if (ImGui::Button("LoadModel"))
-			{
-				ImGui::OpenPopup("LoadModelPopUp");
-                LOG_DEBUG("generateUI() -> LoadModelPopUp popup opened.");
-			}
-			if (ImGui::BeginPopup("LoadModelPopUp"))
-			{
-				static char inputText[128] = "";
-				ImGui::InputText(".csv", inputText, IM_ARRAYSIZE(inputText));
+            ImGui::NewLine();
 
-				if (ImGui::Button("OK"))
+			if (ImGui::Button("LoadModel##LoadModelPopUpButton"))
+			{
+				ImGui::OpenPopup("LoadModelPopUp##LoadModelPopUp");
+                LOG_DEBUG("generateUI() -> LoadModelPopUp :  popup opened.");
+			}
+			if (ImGui::BeginPopup("LoadModelPopUp##LoadModelPopUp"))
+			{
+				static char inputTextLoadModel[128] = "";
+				ImGui::InputText(".csv##LoadModelPopUpInputText", inputTextLoadModel, IM_ARRAYSIZE(inputTextLoadModel));
+
+                LOG_DEBUG("generateUI() -> LoadModelPopUp: Just before load Model OK button block");//remove after debug done
+				if (ImGui::Button("OK##LoadModelPopUpOKButton"))
 				{
-					char *loadModelFileName = (char*)malloc((strlen("resources/CsvModels/") + IM_ARRAYSIZE(inputText) + strlen(".csv")) * sizeof(char));
+                    ImGui::CloseCurrentPopup();
+
+					char *loadModelFileName = (char*)malloc((strlen("resources/CsvModels/") + IM_ARRAYSIZE(inputTextLoadModel) + strlen(".csv")) * sizeof(char));
 					strcpy(loadModelFileName,"resources/CsvModels/");
-					strcat(loadModelFileName, inputText);
+					strcat(loadModelFileName, inputTextLoadModel);
 					strcat(loadModelFileName, ".csv");
-					
+
+                 LOG_DEBUG("generateUI() -> LoadModelPopUp: Inside load Model OK button block. Full file path %s", loadModelFileName);//remove after debug done
 					if(loadCSVModel(loadModelFileName) == TRUE)
 					{
-						LOG_INFO("generateUI() -> model loaded with file name: %s", loadModelFileName);
+						LOG_INFO("generateUI() -> LoadModelPopUp: model loaded with file name: %s", loadModelFileName);
 					}
 					else
 					{
-						LOG_INFO("generateUI() -> model loading with file name failed: %s", loadModelFileName);
+						LOG_INFO("generateUI() -> LoadModelPopUp: model loading with file name failed: %s", loadModelFileName);
 					}
 					if(loadModelFileName)
 					{
 						free(loadModelFileName);
 						loadModelFileName = NULL;
 					}
-					ImGui::CloseCurrentPopup();
+					//ImGui::CloseCurrentPopup();
 				}
+                LOG_DEBUG("generateUI() -> LoadModelPopUp: Just After load Model OK button block");//remove after debug done
 				ImGui::SameLine();
-				if (ImGui::Button("Cancel"))
+				if (ImGui::Button("Cancel##LoadModelPopUpCancelButton"))
 				{
 					ImGui::CloseCurrentPopup();
-                    LOG_DEBUG("generateUI() ->  model loading canceled.");
+                    LOG_DEBUG("generateUI() -> LoadModelPopUp:  model loading canceled.");
 				}
 
 				ImGui::EndPopup();
 			}
 		}
 
-		if(ImGui::CollapsingHeader("Navigation"))
+		if(ImGui::CollapsingHeader("Navigation##NavigationCollapsingHeader"))
 		{
-			if (ImGui::Button("Next Shape"))
+			if (ImGui::Button("Next Shape##NextShapeButton"))
 			{
 				if (selectedmodel != NULL && selectedmodel->next != NULL)
 				{
@@ -302,7 +308,7 @@ void generateUI()
 				}
 			}
 			ImGui::SameLine();
-			if (ImGui::Button("previous Shape"))
+			if (ImGui::Button("previous Shape##PreviousShapeButton"))
 			{
 				if (selectedmodel != NULL && selectedmodel->pre != NULL)
 				{
@@ -314,25 +320,25 @@ void generateUI()
 
 		if(selectedmodel != NULL) //means linklist has at least one node
 		{
-			if(ImGui::CollapsingHeader("Transformations"))
+			if(ImGui::CollapsingHeader("Transformations##TransformationCollapsingHeader"))
 			{
 				//--- TRANSLATE------
-				if (ImGui::TreeNode("Shape's placement"))
+				if (ImGui::TreeNode("Shape's placement###ShapePlacementTreeNode"))
 				{
 					//--- TRANSLATE------
-					ImGui::SliderFloat("translateX", &(selectedmodel->model.translate.x), -15.0f, 15.0f);
-					ImGui::SliderFloat("translateY", &(selectedmodel->model.translate.y), -15.0f, 15.0f);
-					ImGui::SliderFloat("translateZ", &(selectedmodel->model.translate.z), -15.0f, 15.0f);
+					ImGui::SliderFloat("translateX##translateXSlider", &(selectedmodel->model.translate.x), -15.0f, 15.0f);
+					ImGui::SliderFloat("translateY##translateYSlider", &(selectedmodel->model.translate.y), -15.0f, 15.0f);
+					ImGui::SliderFloat("translateZ##translateZSlider", &(selectedmodel->model.translate.z), -15.0f, 15.0f);
 					ImGui::TreePop();
                     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("generateUI() -> Model translation updated.");
 				}
 
 				//--- SCALE------
-				if(ImGui::TreeNode("Shape's Scaling"))
+				if(ImGui::TreeNode("Shape's Scaling##ShapeScalingTreeNode"))
 				{
 					float beforeScaleAllOffSet = scaleAllOffSet;
 					float scaleAllOffSetChanged = 0.0f;
-					if(ImGui::SliderFloat("ScaleAll%", &scaleAllOffSet, -400.0f, 400.0f))
+					if(ImGui::SliderFloat("ScaleAll%##ScaleAllSlider", &scaleAllOffSet, -400.0f, 400.0f))
 					{
 						scaleAllOffSetChanged = scaleAllOffSet-beforeScaleAllOffSet;
 						selectedmodel->model.scale.x += selectedmodel->model.scale.x * (scaleAllOffSetChanged / 100);
@@ -340,26 +346,26 @@ void generateUI()
 						selectedmodel->model.scale.z += selectedmodel->model.scale.z * (scaleAllOffSetChanged / 100);
                         LOG_DEBUG("generateUI() -> Model scaled: scaleAll=%.2f", scaleAllOffSetChanged);
 					}
-					ImGui::SliderFloat("ScaleX", &(selectedmodel->model.scale.x), -1.0f, 5.0f);
-					ImGui::SliderFloat("ScaleY", &(selectedmodel->model.scale.y), -1.0f, 5.0f);
-					ImGui::SliderFloat("ScaleZ", &(selectedmodel->model.scale.z), -1.0f, 5.0f);
+					ImGui::SliderFloat("ScaleX##ScaleXSlider", &(selectedmodel->model.scale.x), -1.0f, 5.0f);
+					ImGui::SliderFloat("ScaleY##ScaleYSlider", &(selectedmodel->model.scale.y), -1.0f, 5.0f);
+					ImGui::SliderFloat("ScaleZ##ScaleZSlider", &(selectedmodel->model.scale.z), -1.0f, 5.0f);
 					ImGui::TreePop();
 				}
 
 				//--- Rotation------
-				if(ImGui::TreeNode("Shape's Rotation"))
+				if(ImGui::TreeNode("Shape's Rotation##ShapeRotationTreeNode"))
 				{
-					ImGui::SliderFloat("rotationX", &(selectedmodel->model.rotationAngle.x), 0.0f, 360.0f);
-					ImGui::SliderFloat("rotationY", &(selectedmodel->model.rotationAngle.y), 0.0f, 360.0f);
-					ImGui::SliderFloat("rotationZ", &(selectedmodel->model.rotationAngle.z), 0.0f, 360.0f);
+					ImGui::SliderFloat("rotationX##rotationXSlider", &(selectedmodel->model.rotationAngle.x), 0.0f, 360.0f);
+					ImGui::SliderFloat("rotationY##rotationYSlider", &(selectedmodel->model.rotationAngle.y), 0.0f, 360.0f);
+					ImGui::SliderFloat("rotationZ##rotationZSlider", &(selectedmodel->model.rotationAngle.z), 0.0f, 360.0f);
                     LOG_DEBUG_DISPLAY_LOOP_ITERATIONS("generateUI() -> Model rotation updated.");
 					ImGui::TreePop();
 				}
 
 				//--- Color and texture -----
-				if(ImGui::TreeNode("Shape's Colors and textures"))
+				if(ImGui::TreeNode("Shape's Colors and textures##ShapeColorTextureTreeNode"))
 				{
-                    //initialzed needed array for fuirst time when program starts
+                    //initialized needed array for fuirst time when program starts
                     if(selectedTextureIndex == NULL || isTextureEnabled == NULL)
                     {
                         isTextureEnabled = (bool*)malloc(sizeof(bool) * MAX_NUMBER_OF_LOADED_TEXTURES);
@@ -449,7 +455,7 @@ void generateUI()
 					ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.0f, 1.0f), "Entire model's Color");
 					static GLfloat colorsForAllVertices[] = {1.0f, 1.0f, 1.0f, 1.0f};
 					GLfloat beforeChangeColor[] = {colorsForAllVertices[0],colorsForAllVertices[1],colorsForAllVertices[2],colorsForAllVertices[3]};
-					ImGui::ColorEdit3("colorAll", (float*)colorsForAllVertices);
+					ImGui::ColorEdit3("colorAll##ColorAllColorEdit", (float*)colorsForAllVertices);
 
 					if(colorsForAllVertices[0]!=beforeChangeColor[0] || colorsForAllVertices[1]!=beforeChangeColor[1] || colorsForAllVertices[2]!=beforeChangeColor[2])
 					{
@@ -468,10 +474,10 @@ void generateUI()
 				//custom attributes
 				if(selectedmodel->model.customModelAttributes != NULL)
 				{
-					if(ImGui::TreeNode("Shape's Custom attributes"))
+					if(ImGui::TreeNode("Shape's Custom attributes##ShapeCustomAttributeTreeNode"))
 					{
 						static bool enableWireframe = false;
-						ImGui::Checkbox("Enable Wireframe", &enableWireframe);
+						ImGui::Checkbox("Enable Wireframe##WireFrameCheckBox", &enableWireframe);
 						if(enableWireframe == true)
 							selectedmodel->model.customModelAttributes[0]= 0.0f;
 						else
@@ -480,36 +486,36 @@ void generateUI()
 						//SPHERE
 						if(selectedmodel->model.modeltype == SPHERE)
 						{
-							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[1]), 1.0f, 60.0f);
-							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[2]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Slices##SPHERESlicesSlider", &(selectedmodel->model.customModelAttributes[1]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks##SPHEREStacksSlider", &(selectedmodel->model.customModelAttributes[2]), 1.0f, 60.0f);
 						}
 						//CYLINDER
 						if(selectedmodel->model.modeltype == CYLINDER)
 						{
-							ImGui::SliderFloat("1st opening radius", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
-							ImGui::SliderFloat("2nd opening radius", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
-							ImGui::SliderFloat("Length", &(selectedmodel->model.customModelAttributes[3]), 0.0f, 20.0f);
-							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
-							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[5]), 1.0f, 60.0f);
+							ImGui::SliderFloat("1st opening radius##CYLINDERFirstRediusSlider", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
+							ImGui::SliderFloat("2nd opening radius##CYLINDERSecondRediusSlider", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Length##CYLINDERLengthSlider", &(selectedmodel->model.customModelAttributes[3]), 0.0f, 20.0f);
+							ImGui::SliderFloat("Slices##CYLINDERSlicessSlider", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks##CYLINDERStackSlider", &(selectedmodel->model.customModelAttributes[5]), 1.0f, 60.0f);
 						}
 						//DISK
 						if(selectedmodel->model.modeltype == DISK)
 						{
-							ImGui::SliderFloat("Inner radius", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
-							ImGui::SliderFloat("Outer radius", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
-							ImGui::SliderFloat("Slices", &(selectedmodel->model.customModelAttributes[3]), 1.0f, 60.0f);
-							ImGui::SliderFloat("Stacks", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Inner radius##DISKInnerRadiusSlider", &(selectedmodel->model.customModelAttributes[1]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Outer radius##DISKOuterRadiusSlider", &(selectedmodel->model.customModelAttributes[2]), 0.0f, 10.0f);
+							ImGui::SliderFloat("Slices##DISKSlicesSlider", &(selectedmodel->model.customModelAttributes[3]), 1.0f, 60.0f);
+							ImGui::SliderFloat("Stacks##DISKStaclSlider", &(selectedmodel->model.customModelAttributes[4]), 1.0f, 60.0f);
 						}
 						ImGui::Text("currently selected shape= %d", selectedmodel->model.modeltype);
 						ImGui::TreePop();
 					}
 				}
 
-				if (ImGui::TreeNode("Blending"))
+				if (ImGui::TreeNode("Blending##BlendingTreeNode"))
 				{
 					static float blendValue = 1.0f;
 
-					ImGui::SliderFloat("blend", &blendValue, 0.0f, 1.0f);
+					ImGui::SliderFloat("Blend##BlendSlider", &blendValue, 0.0f, 1.0f);
 
 					for (GLint i = 3; i < selectedmodel->model.colorsSize; i += 4)
 					{
