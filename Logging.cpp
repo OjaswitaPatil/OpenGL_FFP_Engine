@@ -7,7 +7,7 @@ FILE *gpFile = NULL;
 // Initialize and Cleanup Logging
 int init_logging(const char* filename)
 {
-    gpFile = fopen(filename, "a");
+    gpFile = fopen(filename, "w");
     if (gpFile == NULL)
     {
         fprintf(stderr, "Failed to open log file: %s\n", filename);

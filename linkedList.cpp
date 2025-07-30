@@ -89,19 +89,42 @@ void deleteModel(struct Node *ptr)
 
     //free heap memory assigned for struct memberss
     if(ptr->model.vertices)
+    {
         free(ptr->model.vertices);
+        ptr->model.vertices = NULL;
+    }
     if(ptr->model.colors)
+    {
         free(ptr->model.colors);
+        ptr->model.colors = NULL;
+    }
     if(ptr->model.texcoords)
+    {
         free(ptr->model.texcoords);
-    if(ptr->model.textureVariables)
-        free(ptr->model.textureVariables);
+        ptr->model.texcoords = NULL;
+    }
+    //IMPORTANT: DELETE MODEL CRASH bug is there due to this line
+    // if(ptr->model.textureVariables)
+    // {
+    //     free(ptr->model.textureVariables);
+    //     ptr->model.textureVariables = NULL;
+    // }
     if(ptr->model.normals)
+    {
         free(ptr->model.normals);
+        ptr->model.normals = NULL;
+    }
     if(ptr->model.customModelAttributes)
+    {
         free(ptr->model.customModelAttributes);
-    if(ptr->model.text)
-        free(ptr->model.text);
+        ptr->model.customModelAttributes = NULL;
+    }
+    //IMPORTANT: DELETE MODEL CRASH bug is there due to this line. Delting readymodel
+    // if(ptr->model.text)
+    // {
+    //     free(ptr->model.text);
+    //     ptr->model.text = NULL;
+    // }
 
     if(head == last)
     {
