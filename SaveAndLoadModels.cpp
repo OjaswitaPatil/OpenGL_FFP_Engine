@@ -257,6 +257,364 @@ BOOL saveModel(const char *fileName)
     return TRUE;
 }
 
+BOOL printModelFunction(char *fileName)
+{
+    int result = createFile("Exported_DrawFunction.txt", "w");
+    if(result != 0)
+    {
+        return FALSE;
+    }
+
+    FILE *variableFile = fopen("Exported_ModelGlobalVariables.txt", "w");
+    if(variableFile == NULL)
+    {
+        return FALSE;
+    }
+
+    FILE *initializeAndUninitializeFunctionFile = fopen("Exported_InitializeAndUninitializeFunctions.txt", "w");
+    if(initializeAndUninitializeFunctionFile == NULL)
+    {
+        return FALSE;
+    }
+
+
+    int flag = 0;
+    struct Node *saveAndLoadModelPtr = head;
+
+    //Draw function start
+    fprintf(
+            modelFile,
+            "void drawReadyModel()\n" \
+            "{\n" \
+            "\t glPushMatrix();\n" \
+            "\t {\n"  \
+        );
+
+    //initialize function start
+    fprintf(
+            initializeAndUninitializeFunctionFile,
+            "void initializeReadyModel()\n" \
+            "{\n"
+        );
+
+    int primitiveIndexCountInModel = 0;
+    while(saveAndLoadModelPtr != NULL && flag == 0)
+    {
+        //**********Intialize function START***********
+        // malloc functions
+        if(saveAndLoadModelPtr->model.customModelAttributesCount > 0)
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                "\t //------ReadyModel[%d]------\n" \
+                "\t ReadyModel[%d]->colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
+                "\t ReadyModel[%d]->textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n" \
+                "\t ReadyModel[%d]->customModelAttributes = (GLfloat*)malloc(%d * sizeof(GLfloat));\n\n",
+                primitiveIndexCountInModel,
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.colorsSize,
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces,
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.customModelAttributesCount
+            );
+        }
+        else
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                "\t //------ReadyModel[%d]------\n" \
+                "\t ReadyModel[%d]->colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
+                "\t ReadyModel[%d]->textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n\n",
+                primitiveIndexCountInModel,
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.colorsSize,
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces
+            );
+        }
+
+        //Asssigning values to variables
+        //Color
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\t {\n" \
+            "\t\t GLfloat colors[%d] = { ",
+            saveAndLoadModelPtr->model.colorsSize
+        );
+
+        for(int i = 0; i < saveAndLoadModelPtr->model.colorsSize; i++)
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                "%lff",
+                saveAndLoadModelPtr->model.colors[i]
+                );
+
+            if(i < saveAndLoadModelPtr->model.colorsSize - 1)
+            {
+                fprintf(
+                    initializeAndUninitializeFunctionFile,
+                    ", "
+                    );
+            }
+        }
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            " };      // colors\n"
+        );
+
+        //textureVariables
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\t\t GLfloat textureVariables[%d] = { ",
+            saveAndLoadModelPtr->model.numberOfFaces
+        );
+        for(int i = 0; i < saveAndLoadModelPtr->model.numberOfFaces; i++)
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                "%d",
+                saveAndLoadModelPtr->model.textureVariables[i]
+                );
+
+            if(i < saveAndLoadModelPtr->model.numberOfFaces - 1)
+            {
+                fprintf(
+                    initializeAndUninitializeFunctionFile,
+                    ", "
+                    );
+            }
+        }
+        if(saveAndLoadModelPtr->model.customModelAttributesCount > 0)
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                " };      // textureVariables\n"
+            );
+        }
+        else
+        {
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                " };      // textureVariables\n"
+            );
+        }
+
+        //customModelAttributes
+        if(saveAndLoadModelPtr->model.customModelAttributesCount > 0)
+        {
+           fprintf(
+                initializeAndUninitializeFunctionFile,
+                "\t\t GLfloat customModelAttributes[%d] = { ",
+                saveAndLoadModelPtr->model.customModelAttributesCount
+            );
+            for(int i = 0; i < saveAndLoadModelPtr->model.customModelAttributesCount; i++)
+            {
+                fprintf(
+                    initializeAndUninitializeFunctionFile,
+                    "%lff",
+                    saveAndLoadModelPtr->model.customModelAttributes[i]
+                    );
+
+                if(i < saveAndLoadModelPtr->model.customModelAttributesCount - 1)
+                {
+                    fprintf(
+                        initializeAndUninitializeFunctionFile,
+                        ", "
+                        );
+                }
+            }
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                " };      // customModelAttributes\n"
+            );
+        }
+
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\n"
+        );
+
+        //Fill the values in Structure now
+        //color
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\t\t for(int i = 0; i < sizeof(colors)/sizeof(colors[0]); i++)\n" \
+            "\t\t {\n" \
+            "\t\t\t ReadyModel[%d]->colors[i] = colors[i];\n" \
+            "\t\t }\n" ,
+            primitiveIndexCountInModel
+        );
+        //textureVariables
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\t\t for(int i = 0; i < sizeof(textureVariables)/sizeof(textureVariables[0]); i++)\n" \
+            "\t\t {\n" \
+            "\t\t\t ReadyModel[%d]->textureVariables[i] = textureVariables[i];\n" \
+            "\t\t }\n" ,
+            primitiveIndexCountInModel
+        );
+        if(saveAndLoadModelPtr->model.customModelAttributesCount > 0)
+        {
+            //customModelAttributes
+            fprintf(
+                initializeAndUninitializeFunctionFile,
+                "\t\t for(int i = 0; i < sizeof(customModelAttributes)/sizeof(customModelAttributes[0]); i++)\n" \
+                "\t\t {\n" \
+                "\t\t\t ReadyModel[%d]->customModelAttributes[i] = customModelAttributes[i];\n" \
+                "\t\t }\n" ,
+                primitiveIndexCountInModel
+            );
+        }
+
+        fprintf(
+                initializeAndUninitializeFunctionFile,
+                "\t }\n\n"
+            );
+
+        //reassigning correct texture variables as per current state
+        for(int i = 0; i < saveAndLoadModelPtr->model.numberOfFaces; i++)
+        {
+            if(saveAndLoadModelPtr->model.textureVariables[i] > 0)
+            {
+                fprintf(
+                    initializeAndUninitializeFunctionFile,
+                    "\tReadyModel[%d]->textureVariables[%d] = loadGLTexture(\"%s\"); \n" ,
+                    primitiveIndexCountInModel,
+                    i,
+                    allTextureNames_Array[(saveAndLoadModelPtr->model.textureVariables[i])-1]
+                );
+            }
+        }
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\n\t========================\n\n"
+        );
+
+
+        //**********Intialize function END***********
+
+        //**********DRAW function START***********
+
+        fprintf(
+            modelFile,
+            "\t\tglPushMatrix();\n" \
+            "\t\t{\n"  \
+            "\t\t\tglTranslatef(%lff, %lff, %lff);\n"  \
+            "\t\t\tglRotatef(%lff, 1.0f, 0.0f, 0.0f);\n"  \
+            "\t\t\tglRotatef(%lff, 0.0f, 1.0f, 0.0f);\n"  \
+            "\t\t\tglRotatef(%lff, 0.0f, 0.0f, 1.0f);\n"  \
+            "\t\t\tglScalef(%lff, %lff, %lff);\n",
+            saveAndLoadModelPtr->model.translate.x, saveAndLoadModelPtr->model.translate.y, saveAndLoadModelPtr->model.translate.z,
+            saveAndLoadModelPtr->model.rotationAngle.x,
+            saveAndLoadModelPtr->model.rotationAngle.y,
+            saveAndLoadModelPtr->model.rotationAngle.z,
+            saveAndLoadModelPtr->model.scale.x, saveAndLoadModelPtr->model.scale.y, saveAndLoadModelPtr->model.scale.z
+        );
+
+        //Model indentfiers - Draw Primimitive function
+        fprintf(
+            modelFile,
+            "\t\t\tdraw%sModel(&ReadyModel[%d]);\n",
+            getModelNameFromModelType(saveAndLoadModelPtr->model.modeltype),
+            primitiveIndexCountInModel
+        );
+
+
+        fprintf(
+            modelFile,
+            "\t\t}\n" \
+            "\t\tglPopMatrix();\n",
+            getModelNameFromModelType(saveAndLoadModelPtr->model.modeltype)
+        );
+
+        //**********DRAW function END***********
+
+
+        if(saveAndLoadModelPtr->next == head)
+           flag = 1;
+
+        saveAndLoadModelPtr = saveAndLoadModelPtr->next;
+
+        primitiveIndexCountInModel++;
+    }
+
+    //***********GLOBAL VAR SECTION START *************
+    fprintf(
+        variableFile,
+        "struct Model\n" \
+        "{\n" \
+        "\t int noOfVerticesPerFace;\n" \
+        "\t GLfloat *colors;\n"  \
+        "\t GLuint *textureVariables;\n"  \
+        "\t GLfloat *customModelAttributes;\n"  \
+        "};\n",
+        primitiveIndexCountInModel
+    );
+    fprintf(
+        variableFile,
+        "struct Model ReadyModel[%d];\n" ,
+        primitiveIndexCountInModel
+    );
+    //***********GLOBAL VAR SECTION END *************
+
+
+    //function closure
+    //initialize function closure
+    fprintf(
+            initializeAndUninitializeFunctionFile,
+            "}\n"
+        );
+    //draw function closure
+    fprintf(
+        modelFile,
+        "\t}\n" \
+        "\tglPopMatrix();\n" \
+        "}\n",
+        getModelNameFromModelType(saveAndLoadModelPtr->model.modeltype)
+    );
+
+
+    // ************** Uninitialize function START **************
+    //UNinitialize function start
+    fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\n-------------------------------\n\n" \
+            "void uninitializeReadyModel()\n" \
+            "{\n" \
+            "\t for(int i = 0; i < %d; i++)\n" \
+            "\t {\n" \
+
+            "\t\t if(ReadyModel[i].colors != NULL)\n" \
+            "\t\t {\n" \
+            "\t\t\t free(ReadyModel[i].colors);\n" \
+            "\t\t\t ReadyModel[i].colors = NULL;\n" \
+            "\t\t }\n" \
+
+            "\t\t if(ReadyModel[i].textureVariables != NULL)\n" \
+            "\t\t {\n" \
+            "\t\t\t free(ReadyModel[i].textureVariables);\n" \
+            "\t\t\t ReadyModel[i].textureVariables = NULL;\n" \
+            "\t\t }\n" \
+
+            "\t\t if(ReadyModel[i].customModelAttributes != NULL)\n" \
+            "\t\t {\n" \
+            "\t\t\t free(ReadyModel[i].customModelAttributes);\n" \
+            "\t\t\t ReadyModel[i].customModelAttributes = NULL;\n" \
+            "\t\t }\n" \
+
+            "\t }\n" \
+            "}\n",
+            primitiveIndexCountInModel
+        );
+
+    // ************** Uninitialize function END **************
+
+
+    fclose(initializeAndUninitializeFunctionFile);
+    fclose(variableFile);
+    closeFile(modelFile);
+
+    return TRUE;
+}
+
+
 int splitStringBaseOnToken(const char* source, void* destination, int type)
 {
     if(source == NULL)

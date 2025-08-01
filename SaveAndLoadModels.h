@@ -17,6 +17,7 @@ void closeFile(FILE *modelFile);
 BOOL saveModel(const char *fileName);
 int splitStringBaseOnToken(const char* source, void* destination, int type);
 BOOL loadCSVModel(const char *filename) ;
+BOOL printModelFunction(char *fileName);
 
 
 #endif

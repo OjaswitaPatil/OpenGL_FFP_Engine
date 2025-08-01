@@ -198,6 +198,21 @@ void generateUI()
                 }
 			}
 
+            //print model
+            //save model
+            if (ImGui::Button("printModel##printModelButton"))
+			{
+                LOG_DEBUG("generateUI() -> printModel:  button clicked.");
+                if(printModelFunction("exportedmodel.txt") == TRUE)
+                {
+                    LOG_INFO("generateUI() -> printModel: model printed successfully.");
+                }
+                else
+                {
+                    LOG_ERROR("generateUI() -> printModel: model printing failed.");
+                }
+			}
+
 			//save model
 			ImGui::NewLine();
 
