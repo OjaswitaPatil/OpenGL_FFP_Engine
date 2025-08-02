@@ -198,7 +198,7 @@ void drawTriangle(Model *model)
 
         //offset jumps for array
         vertexIndex += 9;
-        colorIndex += 12,
+        colorIndex += 12;
         texCoordIndex += 6;
     }
 
@@ -445,7 +445,7 @@ void drawQuad(Model *model)
 
         //offset jumps for array
         vertexIndex += 18;
-        colorIndex += 24,
+        colorIndex += 24;
         texCoordIndex += 12;
     }
 
@@ -816,7 +816,7 @@ void drawPyramid(Model *model)
 
         //offset jumps for array
         vertexIndex += 9;
-        colorIndex += 12,
+        colorIndex += 12;
         texCoordIndex += 6;
     }
 
@@ -1204,7 +1204,7 @@ void drawCube(Model *model)
 
         //offset jumps for array
         vertexIndex += 18;
-        colorIndex += 24,
+        colorIndex += 24;
         texCoordIndex += 12;
     }
     glPopMatrix();
@@ -1243,7 +1243,7 @@ void createSphere(Model *model)
 
     model->texcoords = 0;
     model->texcoordsSize = 0;
- 
+
     //allocate memory for textureVariables in a model struct and fill default values in it
     model->textureVariables = NULL;
     model->textureVariables = (GLuint*)malloc(sizeof(GLuint) * model->numberOfFaces);
@@ -1311,7 +1311,7 @@ void drawSphere(Model *model)
     if((int)model->customModelAttributes[0] == 1)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
     else
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
@@ -1441,7 +1441,7 @@ void drawCylinder(Model *model)
     if((int)model->customModelAttributes[0] == 1)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
     else
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
@@ -1569,7 +1569,7 @@ void drawDisk(Model *model)
     if((int)model->customModelAttributes[0] == 1)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
     else
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
@@ -1735,42 +1735,42 @@ char* getModelNameFromModelType(ModelType modelType)
         case TRIANGLE:
             modelIDname = (char*)malloc(sizeof(char) * strlen("TRIANGLE"));
             strcpy(modelIDname, "TRIANGLE");
-        break; 
+        break;
 
         case RECTANGLE:
             modelIDname = (char*)malloc(sizeof(char) * strlen("RECTANGLE"));
             strcpy(modelIDname, "RECTANGLE");
-        break; 
+        break;
 
         case TEXT:
             modelIDname = (char*)malloc(sizeof(char) * strlen("TEXT"));
             strcpy(modelIDname, "TEXT");
-        break; 
+        break;
 
         case PYRAMID:
             modelIDname = (char*)malloc(sizeof(char) * strlen("PYRAMID"));
             strcpy(modelIDname, "PYRAMID");
-        break; 
+        break;
 
         case CUBE:
             modelIDname = (char*)malloc(sizeof(char) * strlen("CUBE"));
             strcpy(modelIDname, "CUBE");
-        break; 
+        break;
 
         case SPHERE:
             modelIDname = (char*)malloc(sizeof(char) * strlen("SPHERE"));
             strcpy(modelIDname, "SPHERE");
-        break; 
+        break;
 
         case CYLINDER:
             modelIDname = (char*)malloc(sizeof(char) * strlen("CYLINDER"));
             strcpy(modelIDname, "CYLINDER");
-        break; 
+        break;
 
         case DISK:
             modelIDname = (char*)malloc(sizeof(char) * strlen("DISK"));
             strcpy(modelIDname, "DISK");
-        break; 
+        break;
 
         default:
         LOG_DEBUG("getModelType() -> cannot get modelType %d", modelType);
@@ -1799,7 +1799,7 @@ ModelType getModelTypeFromModelName(char *modelName)
         return DISK;
     else
         return INVALIDSHAPE;
-    
+
 
 }
 

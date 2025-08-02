@@ -21,6 +21,8 @@ void drawTRIANGLEModel(Model *model)
         1.0f, 0.0f
         };
 
+    glPushMatrix();
+
     GLint vertexIndex = 0, colorIndex = 0, texCoordIndex = 0;
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
     {
@@ -67,7 +69,7 @@ void drawTRIANGLEModel(Model *model)
 
         //offset jumps for array
         vertexIndex += 9;
-        colorIndex += 12,
+        colorIndex += 12;
         texCoordIndex += 6;
     }
 
@@ -97,6 +99,8 @@ void drawRECTANGLEModel(Model *model)
         1.0f, 0.0f,
         1.0f, 1.0f
     };
+
+    glPushMatrix();
 
     GLint vertexIndex = 0, colorIndex = 0, texCoordIndex = 0;
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
@@ -167,7 +171,7 @@ void drawRECTANGLEModel(Model *model)
 
         //offset jumps for array
         vertexIndex += 18;
-        colorIndex += 24,
+        colorIndex += 24;
         texCoordIndex += 12;
     }
 
@@ -216,6 +220,8 @@ void drawPYRAMIDModel(Model *model)
         1.0f, 0.0f
         };
 
+    glPushMatrix();
+
     GLint vertexIndex = 0, colorIndex = 0, texCoordIndex = 0;
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
     {
@@ -263,7 +269,7 @@ void drawPYRAMIDModel(Model *model)
 
         //offset jumps for array
         vertexIndex += 9;
-        colorIndex += 12,
+        colorIndex += 12;
         texCoordIndex += 6;
     }
 
@@ -384,6 +390,8 @@ void drawCUBEModel(Model *model)
         1.0f, 1.0f,
     };
 
+    glPushMatrix();
+
 
     GLint vertexIndex = 0, colorIndex = 0, texCoordIndex = 0;
     for(GLint faceIndex = 0; faceIndex < model->numberOfFaces; faceIndex++)
@@ -454,7 +462,7 @@ void drawCUBEModel(Model *model)
 
         //offset jumps for array
         vertexIndex += 18;
-        colorIndex += 24,
+        colorIndex += 24;
         texCoordIndex += 12;
     }
     glPopMatrix();
@@ -465,10 +473,14 @@ void drawSPHEREModel(Model *model)
 {
     BOOL EnableTexture = FALSE;
 
+    ;
+
     if((int)model->customModelAttributes[0] == 1)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glPushMatrix();
 
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
@@ -504,6 +516,8 @@ void drawCYLINDERModel(Model *model)
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    glPushMatrix();
+
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 
     if(model->textureVariables[0] > 0)
@@ -536,6 +550,8 @@ void drawDISKModel(Model *model)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Fill the sphere
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glPushMatrix();
 
     gluQuadricNormals(quadric, GLU_SMOOTH);  // Use smooth shading for normals
 

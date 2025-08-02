@@ -301,16 +301,23 @@ BOOL printModelFunction(char *fileName)
     while(saveAndLoadModelPtr != NULL && flag == 0)
     {
         //**********Intialize function START***********
+        fprintf(
+            initializeAndUninitializeFunctionFile,
+            "\t //------ReadyModel[%d]------\n" \
+            "\t ReadyModel[%d].noOfVerticesPerFace = %d;\n" \
+            "\t ReadyModel[%d].numberOfFaces = %d;\n\n",
+            primitiveIndexCountInModel,
+            primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfVerticesPerFace,
+            primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces
+        );
         // malloc functions
         if(saveAndLoadModelPtr->model.customModelAttributesCount > 0)
         {
             fprintf(
                 initializeAndUninitializeFunctionFile,
-                "\t //------ReadyModel[%d]------\n" \
-                "\t ReadyModel[%d]->colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
-                "\t ReadyModel[%d]->textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n" \
-                "\t ReadyModel[%d]->customModelAttributes = (GLfloat*)malloc(%d * sizeof(GLfloat));\n\n",
-                primitiveIndexCountInModel,
+                "\t ReadyModel[%d].colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
+                "\t ReadyModel[%d].textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n" \
+                "\t ReadyModel[%d].customModelAttributes = (GLfloat*)malloc(%d * sizeof(GLfloat));\n\n",
                 primitiveIndexCountInModel,saveAndLoadModelPtr->model.colorsSize,
                 primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces,
                 primitiveIndexCountInModel,saveAndLoadModelPtr->model.customModelAttributesCount
@@ -320,12 +327,12 @@ BOOL printModelFunction(char *fileName)
         {
             fprintf(
                 initializeAndUninitializeFunctionFile,
-                "\t //------ReadyModel[%d]------\n" \
-                "\t ReadyModel[%d]->colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
-                "\t ReadyModel[%d]->textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n\n",
-                primitiveIndexCountInModel,
+                "\t ReadyModel[%d].colors = (GLfloat*)malloc(%d * sizeof(GLfloat));\n" \
+                "\t ReadyModel[%d].textureVariables = (GLuint*)malloc(%d * sizeof(GLuint));\n" \
+                "\t ReadyModel[%d].customModelAttributes = NULL;\n\n",
                 primitiveIndexCountInModel,saveAndLoadModelPtr->model.colorsSize,
-                primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces
+                primitiveIndexCountInModel,saveAndLoadModelPtr->model.numberOfFaces,
+                primitiveIndexCountInModel
             );
         }
 
@@ -362,7 +369,7 @@ BOOL printModelFunction(char *fileName)
         //textureVariables
         fprintf(
             initializeAndUninitializeFunctionFile,
-            "\t\t GLfloat textureVariables[%d] = { ",
+            "\t\t GLuint textureVariables[%d] = { ",
             saveAndLoadModelPtr->model.numberOfFaces
         );
         for(int i = 0; i < saveAndLoadModelPtr->model.numberOfFaces; i++)
@@ -437,7 +444,7 @@ BOOL printModelFunction(char *fileName)
             initializeAndUninitializeFunctionFile,
             "\t\t for(int i = 0; i < sizeof(colors)/sizeof(colors[0]); i++)\n" \
             "\t\t {\n" \
-            "\t\t\t ReadyModel[%d]->colors[i] = colors[i];\n" \
+            "\t\t\t ReadyModel[%d].colors[i] = colors[i];\n" \
             "\t\t }\n" ,
             primitiveIndexCountInModel
         );
@@ -446,7 +453,7 @@ BOOL printModelFunction(char *fileName)
             initializeAndUninitializeFunctionFile,
             "\t\t for(int i = 0; i < sizeof(textureVariables)/sizeof(textureVariables[0]); i++)\n" \
             "\t\t {\n" \
-            "\t\t\t ReadyModel[%d]->textureVariables[i] = textureVariables[i];\n" \
+            "\t\t\t ReadyModel[%d].textureVariables[i] = textureVariables[i];\n" \
             "\t\t }\n" ,
             primitiveIndexCountInModel
         );
@@ -457,7 +464,7 @@ BOOL printModelFunction(char *fileName)
                 initializeAndUninitializeFunctionFile,
                 "\t\t for(int i = 0; i < sizeof(customModelAttributes)/sizeof(customModelAttributes[0]); i++)\n" \
                 "\t\t {\n" \
-                "\t\t\t ReadyModel[%d]->customModelAttributes[i] = customModelAttributes[i];\n" \
+                "\t\t\t ReadyModel[%d].customModelAttributes[i] = customModelAttributes[i];\n" \
                 "\t\t }\n" ,
                 primitiveIndexCountInModel
             );
@@ -475,7 +482,7 @@ BOOL printModelFunction(char *fileName)
             {
                 fprintf(
                     initializeAndUninitializeFunctionFile,
-                    "\tReadyModel[%d]->textureVariables[%d] = loadGLTexture(\"%s\"); \n" ,
+                    "\tReadyModel[%d].textureVariables[%d] = loadGLTexture(\"%s\"); \n" ,
                     primitiveIndexCountInModel,
                     i,
                     allTextureNames_Array[(saveAndLoadModelPtr->model.textureVariables[i])-1]
@@ -484,7 +491,7 @@ BOOL printModelFunction(char *fileName)
         }
         fprintf(
             initializeAndUninitializeFunctionFile,
-            "\n\t========================\n\n"
+            "\n\t//========================\n\n"
         );
 
 
@@ -540,6 +547,7 @@ BOOL printModelFunction(char *fileName)
         variableFile,
         "struct Model\n" \
         "{\n" \
+        "\t int numberOfFaces;\n" \
         "\t int noOfVerticesPerFace;\n" \
         "\t GLfloat *colors;\n"  \
         "\t GLuint *textureVariables;\n"  \

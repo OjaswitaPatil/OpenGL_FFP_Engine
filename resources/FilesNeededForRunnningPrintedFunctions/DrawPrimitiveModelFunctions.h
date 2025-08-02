@@ -8,6 +8,8 @@
 #include<gl/GL.h>
 #include<gl/GLU.h>
 
+#include <stdlib.h>
+
 struct Model
 {
     int numberOfFaces;
